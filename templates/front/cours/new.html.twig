@@ -1,0 +1,14 @@
+
+{% extends 'front/formateur.html.twig' %}
+
+{% block title %}New Course{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1>Create New Course</h1>
+
+        {{ include('front/cours/_form_cours.html.twig') }}
+
+        <a href="{{ path('front_cours_index') }}" class="btn btn-secondary mt-3">Back to list</a>
+    </div>
+{% endblock %}

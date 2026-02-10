@@ -1,0 +1,51 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Gestion des Chapitres{% endblock %}
+
+{% block body %}
+<h2>Gestion des Chapitres</h2>
+
+<hr>
+
+<!-- Liste des chapitres -->
+<div class="row">
+{% for chapitre in chapitres %}
+    <div class="col-md-4 mb-3">
+        <div class="card p-2">
+            <h5>{{ chapitre.titreChap }}</h5>
+            <p>{{ chapitre.descChap|slice(0, 100) ~ '...' }}</p>
+
+            <a href="{{ path('app_chapitres_edit', {'id': chapitre.id}) }}" class="btn btn-sm btn-warning">Éditer</a>
+            <form method="post" action="{{ path('app_chapitres_delete', {'id': chapitre.id}) }}" style="display:inline-block;">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ chapitre.id) }}">
+                <button class="btn btn-sm btn-danger">Supprimer</button>
+            </form>
+        </div>
+    </div>
+{% else %}
+<p>Aucun chapitre disponible.</p>
+{% endfor %}
+</div>
+
+<!-- Bouton pour afficher le formulaire général en dessous -->
+
+
+<!-- Formulaire caché -->
+<div id="addChapterForm" style="display: none;">
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button type="submit" class="btn btn-primary mt-2">Ajouter</button>
+    {{ form_end(form) }}
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+function toggleAddChapterForm() {
+    const formDiv = document.getElementById('addChapterForm');
+    formDiv.style.display = formDiv.style.display === 'none' ? 'block' : 'none';
+}
+</script>
+{% endblock %}

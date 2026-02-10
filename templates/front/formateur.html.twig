@@ -1,0 +1,137 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de Bord Formateur - Educenter{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+<section class="section bg-light py-5">
+  <div class="container">
+    <div class="row">
+
+      <!-- Main Content -->
+      <div class="col-lg-8">
+        <!-- Profile Summary -->
+        <div class="card mb-4 border-primary rounded-0 hover-shadow">
+          <div class="card-body">
+            <h3 class="mb-3">Bienvenue, {{ instructor.nom }} {{ instructor.prenom }}</h3>
+            <p>Email : {{ instructor.email }}</p>
+            <p>Spécialité : {{ instructor.specialite ?? 'Non renseignée' }}</p>
+            <p>Formateur depuis : {{ instructor.DateInscription|date('d F Y') }}</p>
+          </div>
+        </div>
+
+        <!-- Mes Cours -->
+        <div class="mb-4">
+          <h4 class="mb-3">Mes Cours Enseignés</h4>
+          {% for course in courses %}
+          <div class="card mb-3 border-primary rounded-0 hover-shadow">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start">
+                <h5>{{ course.title }}</h5>
+                <span class="badge {% if course.isArchived %}badge-secondary{% else %}badge-success{% endif %}">
+                  {% if course.isArchived %}Archivé{% else %}Actif{% endif %}
+                </span>
+              </div>
+              <p class="text-muted mb-2">
+                {% if course.isArchived %}
+                  Archivé: {{ course.archivedAt|date('d F Y') }}
+                {% else %}
+                  Créé: {{ course.createdAt|date('d F Y') }}
+                {% endif %}
+              </p>
+              <div class="d-flex justify-content-between">
+                <p>{{ course.enrolledStudents }} étudiants inscrits</p>
+                <p>Taux de complétion : {{ course.completionRate }}%</p>
+              </div>
+              <div class="d-flex">
+                <a href="#" class="btn btn-primary btn-sm mr-2">Gérer le Cours</a>
+                <a href="#" class="btn btn-outline-primary btn-sm">Voir les Étudiants</a>
+              </div>
+            </div>
+          </div>
+          {% else %}
+          <div class="card text-center py-4 border-primary">
+            <p class="mb-0">Vous n'avez pas encore créé de cours.</p>
+          </div>
+          {% endfor %}
+          <div class="text-center mt-3">
+            <a href="#" class="btn btn-primary"><i class="ti-plus mr-2"></i>Créer un Nouveau Cours</a>
+          </div>
+        </div>
+
+        <!-- Mes Quiz -->
+        <div class="mb-4">
+          <h4 class="mb-3">Mes Quiz</h4>
+          {% for quiz in quizzes %}
+          <div class="card mb-3 border-primary rounded-0 hover-shadow">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start">
+                <h5>{{ quiz.title }}</h5>
+                <span class="badge {% if quiz.isArchived %}badge-secondary{% else %}badge-success{% endif %}">
+                  {% if quiz.isArchived %}Archivé{% else %}Actif{% endif %}
+                </span>
+              </div>
+              <p class="text-muted mb-2">Questions: {{ quiz.questionCount }}, Tentatives: {{ quiz.attemptCount }}</p>
+              <div class="d-flex">
+                <a href="{{ path('app_edit_quiz', {id: quiz.id}) }}" class="btn btn-primary btn-sm mr-2">Gérer le Quiz</a>
+                <a href="{{ path('app_quiz_results', {id: quiz.id}) }}" class="btn btn-outline-primary btn-sm">Résultats</a>
+              </div>
+            </div>
+          </div>
+          {% else %}
+          <div class="card text-center py-4 border-primary">
+            <p class="mb-0">Vous n'avez pas encore créé de quiz.</p>
+          </div>
+          {% endfor %}
+          <div class="text-center mt-3">
+            <a href="#" class="btn btn-primary"><i class="ti-plus mr-2"></i>Créer un Nouveau Quiz</a>
+          </div>
+        </div>
+
+        <!-- Évaluations récentes -->
+        <div class="mb-4">
+          <h4 class="mb-3">Évaluations des Étudiants</h4>
+          {% if recentReviews|length > 0 %}
+            {% for review in recentReviews %}
+              <div class="border-bottom pb-2 mb-2">
+                <strong>{{ review.student.firstName }} {{ review.student.lastName }}</strong>
+                <span class="text-muted ml-2">• {{ review.course.title }}</span>
+                <p class="mb-0">"{{ review.comment }}"</p>
+              </div>
+            {% endfor %}
+          {% else %}
+            <p class="text-center text-muted">Aucune évaluation pour le moment.</p>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <div class="card mb-4 border-primary rounded-0 hover-shadow p-3">
+          <h5 class="mb-3">Statistiques Globales</h5>
+          <p>Cours Actifs: {{ stats.activeCourses }}</p>
+          <p>Total Étudiants: {{ stats.totalStudents }}</p>
+          <p>Évaluations: {{ stats.totalReviews }}</p>
+          <p>Note Moyenne: {{ stats.averageRating }}/5</p>
+        </div>
+        <div class="card border-primary rounded-0 hover-shadow p-3">
+          <h5 class="mb-3">Actions Rapides</h5>
+          <a href="#" class="btn btn-primary btn-block mb-2"><i class="ti-plus mr-2"></i>Créer un Cours</a>
+          <a href="#" class="btn btn-primary btn-block mb-2"><i class="ti-write mr-2"></i>Créer un Quiz</a>
+          <a href="#" class="btn btn-outline-primary btn-block mb-2"><i class="ti-user mr-2"></i>Mes Étudiants</a>
+          <a href="{{ path('app_logout') }}" class="btn btn-outline-danger btn-block"><i class="ti-power-off mr-2"></i>Déconnexion</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'front/formateur.html.twig' %}
+
+{% block title %}Edit Chapitres{% endblock %}
+
+{% block body %}
+    <h1>Edit Chapitres</h1>
+
+    {{ include('front/chapitres/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('front_cours_index') }}">back to list</a>
+
+    {{ include('front/chapitres/_delete_form.html.twig') }}
+{% endblock %}
+
+

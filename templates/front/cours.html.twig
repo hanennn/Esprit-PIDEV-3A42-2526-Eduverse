@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Courses{% endblock %}
+
+{% block body %}
+
+<section class="page-title-section overlay" style="background-image: url('/assets/images/banner/banner-1.jpg');">
+    <div class="container">
+        <h1 class="text-white">Our Courses</h1>
+    </div>
+</section>
+
+<section class="section-sm">
+    <div class="container">
+
+        <!-- Recherche & Tri -->
+        <form method="get" action="{{ path('courses') }}" class="mb-4 row align-items-end">
+
+            <div class="col-md-3">
+                <label><strong>Critère :</strong></label>
+                <select name="criteria" class="form-control">
+                    <option value="titre" {{ criteria == 'titre' ? 'selected' : '' }}>Titre</option>
+                    <option value="niveau" {{ criteria == 'niveau' ? 'selected' : '' }}>Niveau</option>
+                    <option value="langue" {{ criteria == 'langue' ? 'selected' : '' }}>Langue</option>
+                </select>
+            </div>
+
+            <div class="col-md-5">
+                <label>&nbsp;</label>
+                <input type="text" name="search" class="form-control" placeholder="Entrez votre recherche..."
+                       value="{{ search }}">
+            </div>
+
+            <div class="col-md-3">
+                <label><strong>Trier par :</strong></label>
+                <select name="sort" class="form-control">
+                    <option value="">-- Sélectionner --</option>
+                    <option value="titre" {{ sort == 'titre' ? 'selected' : '' }}>Titre</option>
+                    <option value="niveau" {{ sort == 'niveau' ? 'selected' : '' }}>Niveau</option>
+                </select>
+            </div>
+
+            <div class="col-md-1">
+                <button class="btn btn-primary w-100">OK</button>
+            </div>
+        </form>
+
+        <!-- 📚 Liste des cours -->
+        <div class="row">
+            {% set favorites = app.session.get('favorites', []) %} {# récupère les favoris #}
+            {% for c in cours %}
+                <div class="col-lg-4 col-sm-6 mb-4">
+                    <div class="card p-3 border-primary">
+                        <h4>{{ c.titreCours }}</h4>
+                        <p>{{ c.descCours|slice(0, 100) ~ '...' }}</p>
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ path('course_show', {'id': c.id}) }}" class="btn btn-sm btn-primary">
+                                Voir plus
+                            </a>
+
+                            <!-- Bouton favoris -->
+                            <button class="add-fav" data-id="{{ c.id }}" 
+                                    style="font-size: 2rem; color: {% if c.id in favorites %}#FFD700{% else %}#ccc{% endif %}; border: none; background: transparent; cursor: pointer;">
+                                {% if c.id in favorites %}
+                                    ★
+                                {% else %}
+                                    ☆
+                                {% endif %}
+                            </button>
+
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <p>Aucun cours trouvé.</p>
+            {% endfor %}
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+
+<script>
+document.querySelectorAll('.add-fav').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const courseId = this.dataset.id;
+        fetch('/front/favorites/toggle/' + courseId, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success){
+                // change le texte selon l'état
+                if(data.added){
+                    btn.innerText = '★';
+                    btn.style.color = '#FFD700';
+                    btn.classList.remove('btn-outline-warning');
+                    btn.classList.add('btn-warning');
+                } else {
+                    btn.innerText = ' ☆';
+                    btn.style.color = '#ccc';
+                    btn.classList.remove('btn-warning');
+                    btn.classList.add('btn-outline-warning');
+                }
+            }
+        })
+        .catch(err => console.error(err));
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}BackOffice | Educenter{% endblock %}</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="{{ asset('assets/plugins/bootstrap/bootstrap.min.css') }}">
+  <!-- Icons -->
+  <link rel="stylesheet" href="{{ asset('assets/plugins/themify-icons/themify-icons.css') }}">
+  <!-- Main style -->
+  <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+
+  <style>
+    body {
+      background-color: #f4f6f9;
+      margin: 0;
+    }
+
+    /* HEADER */
+    .bo-header {
+      height: 70px;
+      background: #ffffff;
+      border-bottom: 1px solid #ddd;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      padding: 0 30px;
+    }
+
+    .bo-header img {
+      height: 45px;
+    }
+
+    .bo-header .right {
+      margin-left: auto;
+    }
+
+    /* SIDEBAR */
+    .bo-sidebar {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      bottom: 0;
+      width: 260px;
+      background-color: #2c2f4a;
+      padding: 25px 15px;
+      color: #fff;
+    }
+
+    .bo-sidebar h4 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-weight: 600;
+    }
+
+    .bo-sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .bo-sidebar ul li {
+      margin-bottom: 12px;
+    }
+
+    .bo-sidebar ul li a {
+      color: #ddd;
+      text-decoration: none;
+      display: block;
+      padding: 12px 15px;
+      border-radius: 6px;
+      transition: 0.3s;
+    }
+
+    .bo-sidebar ul li a:hover,
+    .bo-sidebar ul li a.active {
+      background-color: #6c63ff;
+      color: #fff;
+    }
+
+    /* CONTENT */
+    .bo-content {
+      margin-left: 260px;
+      margin-top: 70px;
+      padding: 30px;
+    }
+
+    .bo-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 25px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.05);
+    }
+  </style>
+
+  {% block stylesheets %}{% endblock %}
+</head>
+
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="bo-header">
+  <img src="{{ asset('assets/images/logo.png') }}" alt="logo">
+
+  <div class="right">
+    <a href="#" class="btn btn-outline-primary btn-sm">
+      Voir le site
+    </a>
+    <a href="#" class="btn btn-outline-danger btn-sm ml-2">
+      Déconnexion
+    </a>
+  </div>
+</header>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="bo-sidebar">
+  <h4>Back-Office</h4>
+
+  <ul>
+    <li>
+      <a href="#">
+        <i class="ti-dashboard mr-2"></i> Dashboard
+      </a>
+    </li>
+
+    <li>
+      <a href="#" class="active">
+        <i class="ti-book mr-2"></i> Gestion des Cours
+      </a>
+    </li>
+
+    <li>
+      <a href="#">
+        <i class="ti-layers mr-2"></i> Chapitres
+      </a>
+    </li>
+
+    <li>
+      <a href="#">
+        <i class="ti-comment mr-2"></i> Forum
+      </a>
+    </li>
+
+    <li>
+      <a href="#">
+        <i class="ti-user mr-2"></i> Utilisateurs
+      </a>
+    </li>
+
+    <li>
+      <a href="#">
+        <i class="ti-settings mr-2"></i> Paramètres
+      </a>
+    </li>
+  </ul>
+</aside>
+
+<!-- ===== CONTENT ===== -->
+<main class="bo-content">
+  <div class="bo-card">
+    {% block body %}
+      <h2>Bienvenue dans le Back-Office</h2>
+      <p>Sélectionnez une section depuis le menu.</p>
+    {% endblock %}
+  </div>
+</main>
+
+<!-- JS -->
+<script src="{{ asset('assets/plugins/jQuery/jquery.min.js') }}"></script>
+<script src="{{ asset('assets/plugins/bootstrap/bootstrap.min.js') }}"></script>
+
+{% block javascripts %}{% endblock %}
+
+</body>
+</html>

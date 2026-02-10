@@ -1,0 +1,69 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Chapitres{% endblock %}
+
+{% block body %}
+    <h1>Chapitres</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ chapitre.id }}</td>
+            </tr>
+            <tr>
+                <th>Titre_chap</th>
+                <td>{{ chapitre.titreChap }}</td>
+            </tr>
+            <tr>
+                <th>Desc_chap</th>
+                <td>{{ chapitre.descChap }}</td>
+            </tr>
+            <tr>
+                <th>Ordre_chap</th>
+                <td>{{ chapitre.ordreChap }}</td>
+            </tr>
+            <tr>
+                <th>Duree_chap</th>
+                <td>{{ chapitre.dureeChap }}</td>
+            </tr>
+            <tr>
+                <th>StatutChap</th>
+                <td>{{ chapitre.statutChap }}</td>
+            </tr>
+            <tr>
+                <th>Resume_chap</th>
+                <td>{{ chapitre.resumeChap }}</td>
+            </tr>
+            <tr>
+                <th>Contenu_chap</th>
+                <td>{{ chapitre.contenuChap }}</td>
+            </tr>
+            <tr>
+                <th>TypeContenu</th>
+                <td>{{ chapitre.typeContenu }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_chapitres_index') }}">back to list</a>
+
+    <a href="{{ path('app_chapitres_edit', {'id': chapitre.id}) }}">edit</a>
+
+    {{ include('back/chapitres/_delete_form.html.twig') }}
+    <div class="progress">
+    <div class="progress-bar" style="width: {{ (consultet / totalChapitres) * 100 }}%">
+        {{ ((consultet / totalChapitres) * 100)|number_format(0) }}%
+    </div>
+</div>
+<h2>{{ chapitre.titreChap }}</h2>
+
+{% if chapitre.type == 'pdf' %}
+    <embed src="{{ asset('uploads/' ~ chapitre.contenuChap) }}" type="application/pdf" width="100%" height="600px">
+{% elseif chapitre.type == 'video' %}
+    <video controls width="100%">
+        <source src="{{ asset('uploads/' ~ chapitre.contenuChap) }}" type="video/mp4">
+    </video>
+{% endif %}
+
+{% endblock %}

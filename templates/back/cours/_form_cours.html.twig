@@ -1,0 +1,35 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+    <div>
+        {{ form_label(form.titreCours) }}
+        {{ form_widget(form.titreCours) }}
+        {{ form_errors(form.titreCours) }}
+    </div>
+
+    <div>
+        {{ form_label(form.descCours) }}
+        {{ form_widget(form.descCours) }}
+        {{ form_errors(form.descCours) }}
+    </div>
+
+    <div>
+        {{ form_label(form.nivCours) }}
+        {{ form_widget(form.nivCours) }}
+        {{ form_errors(form.nivCours) }}
+    </div>
+
+    <div>
+        {{ form_label(form.matiereCours) }}
+        {{ form_widget(form.matiereCours) }}
+        {{ form_errors(form.matiereCours) }}
+    </div>
+
+    <div>
+        {{ form_label(form.langueCours) }}
+        {{ form_widget(form.langueCours) }}
+        {{ form_errors(form.langueCours) }}
+    </div>
+
+    <button type="submit">Ajouter</button>
+
+{{ form_end(form) }}

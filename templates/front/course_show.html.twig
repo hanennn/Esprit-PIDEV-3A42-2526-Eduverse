@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ cours.titreCours }}{% endblock %}
+
+{% block body %}
+<section class="section-sm">
+    <div class="container">
+        <h2 class="mb-3">{{ cours.titreCours }}</h2>
+        <p class="mb-4">{{ cours.descCours }}</p>
+
+        <h3 class="mb-3">Chapitres</h3>
+
+        {% if chapitres|length > 0 %}
+            <div class="accordion" id="chapitresAccordion">
+                {% for chapitre in chapitres %}
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-header d-flex align-items-center justify-content-between" id="heading{{ chapitre.id }}">
+                            
+                            <div class="d-flex align-items-center">
+                                {# Icône et badge statut #}
+                                <span class="mr-3" style="font-size: 1.5rem;">
+                                    {% if chapitre.statutChap == 'Ouvert' %}
+                                        ✅
+                                    {% else %}
+                                        🔒
+                                    {% endif %}
+                                </span>
+                               
+                                <span class="badge 
+                                    {% if chapitre.statutChap == 'Ouvert' %}badge-success
+                                    {% elseif chapitre.statutChap == 'Non ouvert' %}badge-warning
+                                    {% else %}badge-secondary{% endif %}">
+                                    {{ chapitre.statutChap|capitalize }}
+                                </span>
+                            </div>
+
+                            <h5 class="mb-0 flex-grow-1 ml-3">
+                                <button class="btn btn-link text-left" type="button" data-toggle="collapse"
+                                        data-target="#collapse{{ chapitre.id }}" aria-expanded="false"
+                                        aria-controls="collapse{{ chapitre.id }}">
+                                    {{ chapitre.ordreChap }}. {{ chapitre.titreChap }} 
+                                    <small class="text-muted">({{ chapitre.dureeChap }})</small>
+                                </button>
+                            </h5>
+                        </div>
+
+                        <div id="collapse{{ chapitre.id }}" class="collapse" aria-labelledby="heading{{ chapitre.id }}"
+                             data-parent="#chapitresAccordion">
+                            <div class="card-body">
+                                <p>{{ chapitre.descChap }}</p>
+                                <p><strong>Type de contenu :</strong> {{ chapitre.typeContenu }}</p>
+                                {% if chapitre.resumeChap %}
+                                    <p><strong>Résumé :</strong> {{ chapitre.resumeChap }}</p>
+                                {% endif %}
+                                <div class="text-right mt-3">
+                                    <a href="{{ path('chapitre_contenu', {'id': chapitre.id}) }}" class="btn btn-primary">
+                                        Voir le contenu
+                                    </a>
+                                    <a href="{{ path('courses') }}" class="btn btn-secondary mb-3">
+                                        ← Retour aux cours
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">Aucun chapitre pour ce cours.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

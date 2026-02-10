@@ -1,0 +1,106 @@
+{% extends 'back/base.html.twig' %}
+
+{% block title %}Cours et Chapitres{% endblock %}
+
+{% block body %}
+<h1>Liste des cours</h1>
+
+<!-- 🔹 Bouton Ajouter un cours -->
+
+
+
+
+{# 🔍 Formulaire de recherche et tri #}
+<form method="get" class="mb-3 row g-2 align-items-end">
+    <div class="col-md-4">
+        <label>Critère de recherche</label>
+        <select name="search_criteria" class="form-control">
+            <option value="titre" {{ search_criteria == 'titre' ? 'selected' : '' }}>Titre</option>
+            <option value="niv" {{ search_criteria == 'niv' ? 'selected' : '' }}>Niveau</option>
+            <option value="matiere" {{ search_criteria == 'matiere' ? 'selected' : '' }}>Matière</option>
+        </select>
+    </div>
+    <div class="col-md-5">
+        <label>Recherche</label>
+        <input type="text" name="search" class="form-control" placeholder="Recherche..." value="{{ search|default('') }}">
+    </div>
+    <div class="col-md-2">
+        <label>Trier par</label>
+        <select name="sort" class="form-control">
+            <option value="titre" {{ sort == 'titre' ? 'selected' : '' }}>Titre</option>
+            <option value="niv" {{ sort == 'niv' ? 'selected' : '' }}>Niveau</option>
+        </select>
+    </div>
+    <div class="col-md-1">
+        <button class="btn btn-primary w-100">OK</button>
+    </div>
+</form>
+
+{# 🔹 Liste des cours en cartes (inchangée) #}
+{% for course in cours %}
+<div class="card mb-3 p-3">
+    <h5>{{ course.titreCours }}</h5>
+    <p>{{ course.descCours }}</p>
+
+    <!-- 🔹 Boutons Modifier / Supprimer Cours -->
+    <div class="mb-2">
+        <a href="{{ path('app_cours_edit', {id: course.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+        <form method="post" action="{{ path('app_cours_delete', {id: course.id}) }}" style="display:inline-block;" onsubmit="return confirm('Supprimer ce cours ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ course.id) }}">
+            <button class="btn btn-sm btn-danger">Supprimer</button>
+        </form>
+    </div>
+
+    <!-- Formulaire caché pour Chapitre -->
+    <div id="addChapterForm-{{ course.id }}" style="display: none;" class="mt-2">
+        <form method="post" action="{{ path('app_chapitres_new', {course_id: course.id}) }}" enctype="multipart/form-data">
+            {{ form_widget(forms[course.id]) }}
+            <button type="submit" class="btn btn-primary btn-sm mt-2">Créer Chapitre</button>
+        </form>
+    </div>
+
+    <!-- Liste des chapitres -->
+    <ul class="mt-3">
+        {% for chapitre in course.chapitres %}
+            <li>
+                {{ chapitre.titreChap }}
+                <a href="{{ path('app_chapitres_edit', {id: chapitre.id}) }}" class="btn btn-sm btn-outline-primary">Edit</a>
+                <form method="post" action="{{ path('app_chapitres_delete', {id: chapitre.id}) }}" style="display:inline-block;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ chapitre.id) }}">
+                    <button class="btn btn-sm btn-outline-danger">Supprimer</button>
+                </form>
+            </li>
+        {% else %}
+            <li>Aucun chapitre</li>
+        {% endfor %}
+    </ul>
+</div>
+{% else %}
+<p>Aucun cours disponible</p>
+{% endfor %}
+
+<!-- 🔹 Formulaire caché pour Ajouter un cours -->
+<div id="addCourseForm" style="display: none;" class="mb-4">
+    <form method="post" action="{{ path('app_cours_index') }}" enctype="multipart/form-data">
+        {{ form_widget(formCours) }}
+        <button type="submit" class="btn btn-primary mt-2">Créer Cours</button>
+    </form>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+function toggleAddChapterForm(courseId) {
+    const formDiv = document.getElementById('addChapterForm-' + courseId);
+    formDiv.style.display = formDiv.style.display === 'none' ? 'block' : 'none';
+}
+
+// 🔹 Fonction pour afficher/cacher le formulaire Ajouter Cours
+function toggleAddCourseForm() {
+    const formDiv = document.getElementById('addCourseForm');
+    formDiv.style.display = formDiv.style.display === 'none' ? 'block' : 'none';
+}
+</script>
+{% endblock %}

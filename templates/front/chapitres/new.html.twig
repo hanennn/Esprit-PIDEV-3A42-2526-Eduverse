@@ -1,0 +1,11 @@
+{% extends 'front/formateur.html.twig' %}
+
+{% block title %}New Chapitres{% endblock %}
+
+{% block body %}
+    <h1>Create new Chapitres</h1>
+
+    {{ include('front/chapitres/_form.html.twig') }}
+
+    <a href="{{ path('front_cours_index') }}">back to list</a>
+{% endblock %}
