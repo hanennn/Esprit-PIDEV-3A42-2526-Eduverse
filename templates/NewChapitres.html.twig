@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un chapitre{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1>Ajouter un chapitre</h1>
+
+    {{ form_start(formChapitre, {'attr': {'novalidate': 'novalidate'}}) }}
+
+    <div class="mb-3">
+        {{ form_label(formChapitre.titreChap, "Titre du chapitre") }}
+        {{ form_widget(formChapitre.titreChap, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(formChapitre.titreChap) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(formChapitre.descChap, "Description") }}
+        {{ form_widget(formChapitre.descChap, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(formChapitre.descChap) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(formChapitre.ordreChap, "Ordre") }}
+        {{ form_widget(formChapitre.ordreChap, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(formChapitre.ordreChap) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(formChapitre.dureeChap, "Durée") }}
+        {{ form_widget(formChapitre.dureeChap, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(formChapitre.dureeChap) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(formChapitre.statutChap, "Statut") }}
+        {{ form_widget(formChapitre.statutChap, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(formChapitre.statutChap) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(formChapitre.resumeChap, "Résumé") }}
+        {{ form_widget(formChapitre.resumeChap, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(formChapitre.resumeChap) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(formChapitre.contenuChap, "Contenu (fichier)") }}
+        {{ form_widget(formChapitre.contenuChap, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(formChapitre.contenuChap) }}
+    </div>
+
+    <div class="mb-3">
+        {{ form_label(formChapitre.typeContenu, "Type de contenu") }}
+        {{ form_widget(formChapitre.typeContenu, {'attr': {'class': 'form-control'}}) }}
+        {{ form_errors(formChapitre.typeContenu) }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Ajouter le chapitre</button>
+
+    {{ form_end(formChapitre) }}
+
+    <br>
+    <a href="{{ path('front_cours_index') }}" class="btn btn-secondary">Retour à la liste des cours</a>
+</div>
+{% endblock %}

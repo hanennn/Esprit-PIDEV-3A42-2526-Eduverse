@@ -1,0 +1,210 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter une Bourse{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <style>
+        /* Reusing Backoffice Styles */
+        .navigation, header, .header, .top-header, nav.navbar { display: none !important; }
+        body { margin: 0 !important; padding: 0 !important; overflow-x: hidden; background: #f8f9fa; }
+        
+        /* Sidebar */
+        .admin-sidebar { position: fixed; left: 0; top: 0; width: 250px; height: 100vh; background: #2c3e50; color: white; z-index: 1000; padding-top: 20px; transition: all 0.3s; overflow-y: auto;}
+        .sidebar-menu { list-style: none; padding: 0; margin: 20px 0; }
+        .sidebar-menu a { display: flex; align-items: center; padding: 15px 20px; color: rgba(255, 255, 255, 0.7); text-decoration: none; border-left: 3px solid transparent; transition: all 0.3s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background: rgba(255, 188, 59, 0.1); color: #ffbc3b; border-left: 3px solid #ffbc3b; }
+        .sidebar-menu a i { margin-right: 15px; font-size: 18px; min-width: 20px; }
+        
+        /* Mobile Sidebar */
+        @media (max-width: 768px) {
+            .admin-sidebar { transform: translateX(-100%); }
+            .admin-sidebar.mobile-open { transform: translateX(0); }
+            .admin-content { margin-left: 0 !important; }
+            .mobile-menu-toggle { display: block !important; }
+        }
+
+        /* Content */
+        .admin-content { margin-left: 250px; padding: 30px; min-height: 100vh; background: #f8f9fa; transition: all 0.3s; }
+        
+        /* Mobile Toggle */
+        .mobile-menu-toggle { display: none; position: fixed; top: 20px; left: 20px; z-index: 999; background: #2c3e50; color: white; padding: 10px 15px; border-radius: 5px; cursor: pointer; }
+
+        /* Dashboard Card */
+        .dashboard-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); margin-bottom: 30px; border: 1px solid #edf2f9; }
+        
+        /* Page Header */
+        .page-header { margin-bottom: 25px; display: flex; align-items: center; }
+        .back-btn { margin-right: 15px; color: #6c757d; font-size: 20px; text-decoration: none; transition: all 0.2s; background: white; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #eef0f8; }
+        .back-btn:hover { color: #ffbc3b; transform: translateX(-3px); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .page-title h2 { font-size: 24px; font-weight: 700; color: #2c3e50; margin: 0; }
+        .page-title p { color: #6c757d; margin: 0; font-size: 14px; }
+
+        /* Form Styles */
+        .form-section-title { font-size: 16px; font-weight: 700; color: #2c3e50; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #f8f9fa; }
+        
+        .form-group { margin-bottom: 25px; }
+        .form-label { font-weight: 600; color: #2c3e50; margin-bottom: 8px; display: block; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-control { width: 100%; padding: 12px 15px; border: 2px solid #eef0f8; border-radius: 8px; transition: all 0.3s; font-size: 14px; color: #495057; background: #fcfcfd; }
+        .form-control:focus { border-color: #ffbc3b; outline: none; box-shadow: 0 0 0 4px rgba(255, 188, 59, 0.1); background: white; }
+        
+        /* File Upload */
+        .file-upload-wrapper { position: relative; width: 100%; height: 180px; border: 2px dashed #e0e6ed; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; background: #fcfcfd; }
+        .file-upload-wrapper:hover { border-color: #ffbc3b; background: #fffbf0; }
+        .file-upload-wrapper i { font-size: 40px; color: #ffbc3b; margin-bottom: 15px; transition: transform 0.3s; }
+        .file-upload-wrapper:hover i { transform: translateY(-5px); }
+        .file-upload-wrapper p { margin: 0; color: #6c757d; font-size: 14px; font-weight: 500; }
+        .file-upload-wrapper input[type="file"] { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+
+        /* Buttons */
+        .btn-primary { background: #ffbc3b; color: white; padding: 12px 30px; border-radius: 8px; border: none; text-decoration: none; font-weight: 600; box-shadow: 0 4px 6px rgba(255, 188, 59, 0.2); transition: all 0.3s; cursor: pointer; display: inline-flex; align-items: center; font-size: 14px; }
+        .btn-primary:hover { background: #ff8c00; color: white; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(255, 188, 59, 0.3); }
+        .btn-secondary { background: #f1f3f5; color: #495057; padding: 12px 25px; border-radius: 8px; border: none; text-decoration: none; font-weight: 600; margin-right: 10px; transition: all 0.3s; cursor: pointer; display: inline-flex; align-items: center; font-size: 14px; }
+        .btn-secondary:hover { background: #e9ecef; color: #212529; }
+    </style>
+{% endblock %}
+
+{% block body %}
+<!-- Sidebar -->
+<div class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-toggle" onclick="toggleSidebar()" style="text-align: center; padding: 20px; font-size: 24px;">
+        <i class="ti-menu"></i>
+    </div>
+    
+    <ul class="sidebar-menu">
+        <li><a href="{{ path('app_profile') }}"><i class="ti-dashboard"></i><span>Tableau de Bord</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-user"></i><span>Utilisateurs</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-id-badge"></i><span>Quiz</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-book"></i><span>Cours</span></a></li>
+        <li><a href="{{ path('app_bourse_index') }}" class="active"><i class="ti-medall"></i><span>Bourses</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-comments"></i><span>Forum</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-bar-chart"></i><span>Analytiques</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-files"></i><span>Contenu</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-settings"></i><span>Paramètres</span></a></li>
+    </ul>
+</div>
+
+<!-- Mobile Menu Toggle -->
+<div class="mobile-menu-toggle" onclick="toggleMobileSidebar()">
+    <i class="ti-menu"></i>
+</div>
+
+<!-- Main Content -->
+<div class="admin-content">
+    
+    <!-- Page Header -->
+    <div class="page-header">
+        <a href="{{ path('app_bourse_index') }}" class="back-btn"><i class="ti-arrow-left"></i></a>
+        <div class="page-title">
+            <h2>Nouvelle Bourse</h2>
+            <p>Ajoutez une nouvelle offre de bourse pour les étudiants</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="dashboard-card">
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    <div class="row">
+                        <!-- Left Column: General Info -->
+                        <div class="col-md-7 border-right" style="border-right: 1px solid #f0f0f0;">
+                            <h5 class="form-section-title"><i class="ti-info-alt mr-2" style="color: #ffbc3b;"></i>Informations Générales</h5>
+                            
+                            <div class="form-group">
+                                <label class="form-label">Titre de la Bourse <span class="text-danger">*</span></label>
+                                <input type="text" name="titre" value="{{ old_values.titre ?? '' }}" class="form-control {{ errors.titre is defined ? 'is-invalid' : '' }}" placeholder="Ex: Bourse d'Excellence 2024">
+                                {% if errors.titre is defined %}
+                                    <div class="text-danger mt-1" style="font-size: 13px;">{{ errors.titre }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Description Détaillée <span class="text-danger">*</span></label>
+                                <textarea name="description" class="form-control {{ errors.description is defined ? 'is-invalid' : '' }}" rows="8" placeholder="Décrivez les critères d'éligibilité, les avantages et les détails de la bourse..." style="resize: none;">{{ old_values.description ?? '' }}</textarea>
+                                {% if errors.description is defined %}
+                                    <div class="text-danger mt-1" style="font-size: 13px;">{{ errors.description }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Montant (DT) <span class="text-danger">*</span></label>
+                                        <div class="input-group position-relative">
+                                            <input type="number" name="montant" value="{{ old_values.montant ?? '' }}" class="form-control {{ errors.montant is defined ? 'is-invalid' : '' }}" step="0.01" placeholder="0.00" style="padding-right: 45px;">
+                                            <span style="position: absolute; right: 15px; top: 12px; color: #adb5bd; font-weight: 600; pointer-events: none;">DT</span>
+                                        </div>
+                                        {% if errors.montant is defined %}
+                                            <div class="text-danger mt-1" style="font-size: 13px;">{{ errors.montant }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Dates & Media -->
+                        <div class="col-md-5 pl-4">
+                            <h5 class="form-section-title"><i class="ti-calendar mr-2" style="color: #ffbc3b;"></i>Période & Média</h5>
+
+                            <div class="form-group">
+                                <label class="form-label">Date de Début (Attribution)</label>
+                                <input type="datetime-local" name="dateAttribution" value="{{ old_values.dateAttribution ?? '' }}" class="form-control {{ errors.dateAttribution is defined ? 'is-invalid' : '' }}">
+                                <small class="form-text text-muted mt-1">Date à laquelle la bourse sera active.</small>
+                                {% if errors.dateAttribution is defined %}
+                                    <div class="text-danger mt-1" style="font-size: 13px;">{{ errors.dateAttribution }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Date de Fin (Expiration)</label>
+                                <input type="datetime-local" name="dateFin" value="{{ old_values.dateFin ?? '' }}" class="form-control {{ errors.dateFin is defined ? 'is-invalid' : '' }}">
+                                <small class="form-text text-muted mt-1">Date limite pour les candidatures.</small>
+                                {% if errors.dateFin is defined %}
+                                    <div class="text-danger mt-1" style="font-size: 13px;">{{ errors.dateFin }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="form-group mt-4">
+                                <label class="form-label">Image de couverture</label>
+                                <div class="file-upload-wrapper">
+                                    <input type="file" name="image" accept="image/*" onchange="updateFileName(this)">
+                                    <i class="ti-cloud-up"></i>
+                                    <p>Cliquez ou glissez une image</p>
+                                    <small id="fileName" class="text-muted mt-2 d-block text-center font-weight-bold"></small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 pt-3 d-flex justify-content-end border-top">
+                        <a href="{{ path('app_bourse_index') }}" class="btn-secondary">
+                            <i class="ti-close mr-2"></i>Annuler
+                        </a>
+                        <button type="submit" class="btn-primary">
+                            <i class="ti-check mr-2"></i>Enregistrer la Bourse
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleMobileSidebar() {
+        document.getElementById('adminSidebar').classList.toggle('mobile-open');
+    }
+
+    function updateFileName(input) {
+        if (input.files && input.files[0]) {
+            document.getElementById('fileName').innerText = input.files[0].name;
+            // Add a visual indicator of success
+            input.parentElement.style.borderColor = '#28a745';
+            input.parentElement.style.backgroundColor = '#f0fff4';
+            input.parentElement.querySelector('i').className = 'ti-check';
+            input.parentElement.querySelector('i').style.color = '#28a745';
+        }
+    }
+</script>
+{% endblock %}

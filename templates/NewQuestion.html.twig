@@ -1,0 +1,381 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter des questions - {{ quiz.titre }}{% endblock %}
+
+{% block body %}
+<div class="admin-content">
+    {# Page Header #}
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2><i class="fas fa-question-circle mr-3"></i>Ajouter des questions</h2>
+                <p class="text-muted mb-0">Quiz: <strong>{{ quiz.titre }}</strong></p>
+            </div>
+            <a href="{{ path('back_quiz_index') }}" class="btn btn-success">
+                <i class="fas fa-check-circle mr-2"></i>Terminer et voir tous les quiz
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        {# Left side: Add new question form #}
+        <div class="col-md-6">
+            <div class="dashboard-card">
+                <h5 class="mb-4">
+                    <i class="fas fa-plus-circle mr-2" style="color: #ffbc3b;"></i>
+                    Nouvelle question
+                </h5>
+
+                {{ form_start(form, {'attr': {'class': 'question-form'}}) }}
+                
+                {# Question text #}
+                <div class="form-group mb-4">
+                    {{ form_label(form.question, null, {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-with-icon">
+                        <i class="fas fa-edit"></i>
+                        {{ form_widget(form.question, {'attr': {'class': 'form-control form-control-modern', 'placeholder': 'Entrez votre question...'}}) }}
+                    </div>
+                    {{ form_errors(form.question) }}
+                </div>
+
+                {# Points #}
+                <div class="form-group mb-4">
+                    {{ form_label(form.points, null, {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-with-icon">
+                        <i class="fas fa-star"></i>
+                        {{ form_widget(form.points, {'attr': {'class': 'form-control form-control-modern', 'placeholder': 'Points pour cette question...'}}) }}
+                    </div>
+                    {{ form_errors(form.points) }}
+                    <small class="form-text text-muted">
+                        <i class="fas fa-info-circle mr-1"></i>Nombre de points attribués pour une bonne réponse
+                    </small>
+                </div>
+
+                {# Answers (JSON) #}
+                <div class="form-group mb-4">
+                    {{ form_label(form.reponses, null, {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-with-icon">
+                        <i class="fas fa-list-ul"></i>
+                        {{ form_widget(form.reponses, {'attr': {'class': 'form-control form-control-modern', 'style': 'padding-left: 50px;'}}) }}
+                    </div>
+                    {{ form_errors(form.reponses) }}
+                    <small class="form-text text-muted">
+                        <i class="fas fa-info-circle mr-1"></i>Format JSON: tableau avec "texte" et "correct" (true/false)
+                    </small>
+                </div>
+
+                {# Submit button #}
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-plus-circle mr-2"></i>Ajouter cette question
+                    </button>
+                </div>
+
+                {{ form_end(form) }}
+            </div>
+
+            {# Helper Card #}
+            <div class="dashboard-card mt-4" style="background: linear-gradient(135deg, #fff9f0 0%, #ffffff 100%); border-left: 4px solid #ffbc3b;">
+                <h6 class="mb-3">
+                    <i class="fas fa-lightbulb mr-2" style="color: #ffbc3b;"></i>
+                    Format JSON pour les réponses
+                </h6>
+                <pre class="json-example">[
+  {"texte": "Réponse correcte", "correct": true},
+  {"texte": "Réponse incorrecte 1", "correct": false},
+  {"texte": "Réponse incorrecte 2", "correct": false}
+]</pre>
+                <small class="text-muted">
+                    <i class="fas fa-info-circle mr-1"></i>Une seule réponse doit avoir "correct": true
+                </small>
+            </div>
+        </div>
+
+        {# Right side: List of existing questions #}
+        <div class="col-md-6">
+            <div class="dashboard-card">
+                <h5 class="mb-4">
+                    <i class="fas fa-list mr-2" style="color: #11998e;"></i>
+                    Questions ajoutées ({{ quiz.questions|length }})
+                </h5>
+
+                {% if quiz.questions|length > 0 %}
+                    <div class="questions-list">
+                        {% for question in quiz.questions %}
+                            <div class="question-item">
+                                <div class="question-header">
+                                    <span class="question-number">#{{ loop.index }}</span>
+                                    <span class="question-points">
+                                        <i class="fas fa-star mr-1"></i>{{ question.points }} pts
+                                    </span>
+                                </div>
+                                <div class="question-text">
+                                    {{ question.question }}
+                                </div>
+                                <div class="question-answers">
+                                    {% for reponse in question.reponses %}
+                                        <div class="answer-item {% if reponse.correct %}answer-correct{% endif %}">
+                                            {% if reponse.correct %}
+                                                <i class="fas fa-check-circle"></i>
+                                            {% else %}
+                                                <i class="fas fa-times-circle"></i>
+                                            {% endif %}
+                                            {{ reponse.texte }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="question-actions">
+                                    <a href="{{ path('back_question_edit', {'id': question.id}) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-edit"></i> Modifier
+                                    </a>
+                                    <form method="post" action="{{ path('back_question_delete', {'id': question.id}) }}" style="display: inline;" 
+                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette question ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ question.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-trash"></i> Supprimer
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-inbox" style="font-size: 3rem; color: #eef0f8; margin-bottom: 15px;"></i>
+                        <p class="text-muted">Aucune question ajoutée pour le moment</p>
+                        <small class="text-muted">Utilisez le formulaire à gauche pour ajouter votre première question</small>
+                    </div>
+                {% endif %}
+            </div>
+
+            {# Quiz info card #}
+            <div class="dashboard-card mt-4" style="background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%); border-left: 4px solid #11998e;">
+                <h6 class="mb-3">
+                    <i class="fas fa-info-circle mr-2" style="color: #11998e;"></i>
+                    Informations du quiz
+                </h6>
+                <ul class="quiz-info-list">
+                    <li>
+                        <strong>Type:</strong> {{ quiz.typeQuiz }}
+                    </li>
+                    <li>
+                        <strong>Durée:</strong> {{ quiz.duree }} minutes
+                    </li>
+                    <li>
+                        <strong>Score minimum:</strong> {{ quiz.scoreMinimum }}
+                    </li>
+                    <li>
+                        <strong>Cours:</strong> {{ quiz.coursAssocie.titreCours }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Form Styles */
+.question-form .form-group {
+    position: relative;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #2d3142;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+    display: block;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon i {
+    position: absolute;
+    left: 18px;
+    top: 18px;
+    color: #ffbc3b;
+    font-size: 1.1rem;
+    z-index: 2;
+}
+
+.form-control-modern {
+    padding: 14px 20px 14px 50px !important;
+    border: 2px solid #eef0f8 !important;
+    border-radius: 12px !important;
+    font-size: 0.95rem !important;
+    transition: all 0.3s ease !important;
+    background: white !important;
+    width: 100% !important;
+}
+
+.form-control-modern:focus {
+    border-color: #ffbc3b !important;
+    box-shadow: 0 0 0 4px rgba(255, 188, 59, 0.1) !important;
+    outline: none !important;
+}
+
+textarea.form-control-modern {
+    min-height: 120px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem !important;
+}
+
+.form-text.text-muted {
+    font-size: 0.85rem;
+    margin-top: 8px;
+    color: #6c757d;
+}
+
+.form-actions .btn {
+    padding: 14px 32px;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+/* JSON Example */
+.json-example {
+    background: #2d3142;
+    color: #ffbc3b;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    margin: 10px 0;
+    overflow-x: auto;
+}
+
+/* Questions List */
+.questions-list {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.question-item {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border: 2px solid #eef0f8;
+    transition: all 0.3s ease;
+}
+
+.question-item:hover {
+    border-color: #ffbc3b;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.question-number {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.question-points {
+    color: #ffbc3b;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.question-text {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2d3142;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.question-answers {
+    margin-bottom: 15px;
+}
+
+.answer-item {
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.answer-item i {
+    font-size: 0.85rem;
+}
+
+.answer-correct {
+    background: #d4edda;
+    color: #155724;
+}
+
+.answer-correct i {
+    color: #28a745;
+}
+
+.answer-item:not(.answer-correct) {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.answer-item:not(.answer-correct) i {
+    color: #dc3545;
+}
+
+.question-actions {
+    display: flex;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+/* Quiz Info List */
+.quiz-info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.quiz-info-list li {
+    padding: 10px 0;
+    color: #2d3142;
+    font-size: 0.9rem;
+}
+
+.quiz-info-list li:not(:last-child) {
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .row > div {
+        margin-bottom: 20px;
+    }
+    
+    .question-actions {
+        flex-direction: column;
+    }
+    
+    .question-actions .btn,
+    .question-actions form {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Educenter{% endblock %}</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  {# === CSS commun et spécifique === #}
+  {% block stylesheets %}
+    {% if app.request.attributes.get('_route') starts with 'front_' %}
+      {# CSS Front Office #}
+      <link rel="stylesheet" href="{{ asset('plugins/bootstrap/bootstrap.min.css') }}">
+      <link rel="stylesheet" href="{{ asset('plugins/slick/slick.css') }}">
+      <link rel="stylesheet" href="{{ asset('plugins/themify-icons/themify-icons.css') }}">
+      <link rel="stylesheet" href="{{ asset('plugins/animate/animate.css') }}">
+      <link rel="stylesheet" href="{{ asset('plugins/aos/aos.css') }}">
+      <link rel="stylesheet" href="{{ asset('plugins/venobox/venobox.css') }}">
+      <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    {% else %}
+      {# CSS Back Office #}
+      <link rel="stylesheet" href="{{ asset('back/plugins/bootstrap/bootstrap.min.css') }}">
+      <link rel="stylesheet" href="{{ asset('back/css/admin-style.css') }}">
+    {% endif %}
+  {% endblock %}
+
+  <link rel="shortcut icon" href="{{ asset('images/favicon.ico') }}" type="image/x-icon">
+  <link rel="icon" href="{{ asset('images/favicon.ico') }}" type="image/x-icon">
+</head>
+
+<body>
+
+  {# === HEADER === #}
+  {% block header %}
+    {% if app.request.attributes.get('_route') starts with 'front_' %}
+      <header class="fixed-top header">
+        <div class="navigation w-100">
+          <div class="container">
+            <nav class="navbar navbar-expand-lg navbar-light p-0">
+              <a class="navbar-brand" href="index.html"><img src="{{ asset('images/logo.png') }}" alt="logo"></a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navigation">
+                <ul class="navbar-nav ms-auto text-center">
+                  <li class="nav-item"><a class="nav-link" href="index.html">Accueil</a></li>
+                  <li class="nav-item"><a class="nav-link" href="about.html">À Propos</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#">Cours</a></li>
+                  <li class="nav-item"><a class="nav-link" href="events.html">ÉVÉNEMENTS</a></li>
+                  <li class="nav-item"><a class="nav-link" href="blog.html">FORUM</a></li>
+                  <li class="nav-item"><a class="nav-link" href="contact.html">CONTACT</a></li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </header>
+    {% else %}
+      <header class="admin-header">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+          <a class="navbar-brand" href="#">Admin</a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </nav>
+      </header>
+    {% endif %}
+  {% endblock %}
+
+  {# === BODY === #}
+  {% block body %}{% endblock %}
+
+  {# === FOOTER === #}
+  {% block footer %}
+    {% if app.request.attributes.get('_route') starts with 'front_' %}
+      <footer>
+        <div class="footer bg-footer section border-bottom">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-4 col-sm-8 mb-5 mb-lg-0">
+                <a class="logo-footer" href="index.html"><img class="img-fluid mb-4" src="{{ asset('images/logo.png') }}" alt="logo"></a>
+                <ul class="list-unstyled">
+                  <li class="mb-2">Adresse: 23621 15 Mile Rd #C104, Tunisie</li>
+                  <li class="mb-2">+1 (2) 345 6789</li>
+                  <li class="mb-2">contact@yourdomain.com</li>
+                </ul>
+              </div>
+              {# autres colonnes ... #}
+            </div>
+          </div>
+        </div>
+      </footer>
+    {% else %}
+      <footer class="admin-footer bg-dark text-white py-3 text-center">
+        Admin © {{ "now"|date("Y") }}
+      </footer>
+    {% endif %}
+  {% endblock %}
+
+  {# === JS === #}
+  {% block javascripts %}
+    {% if app.request.attributes.get('_route') starts with 'front_' %}
+      <script src="{{ asset('plugins/jQuery/jquery.min.js') }}"></script>
+      {# Bootstrap 5 + Popper pour modals #}
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+
+      <script src="{{ asset('plugins/slick/slick.min.js') }}"></script>
+      <script src="{{ asset('plugins/aos/aos.js') }}"></script>
+      <script src="{{ asset('plugins/venobox/venobox.min.js') }}"></script>
+      <script src="{{ asset('plugins/mixitup/mixitup.min.js') }}"></script>
+      <script src="{{ asset('js/script.js') }}"></script>
+    {% else %}
+      <script src="{{ asset('back/plugins/jquery/jquery.min.js') }}"></script>
+      <script src="{{ asset('back/plugins/bootstrap/bootstrap.min.js') }}"></script>
+      <script src="{{ asset('back/js/admin-script.js') }}"></script>
+    {% endif %}
+  {% endblock %}
+
+</body>
+</html>

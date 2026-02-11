@@ -1,0 +1,213 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Demandes - {{ bourse.titre }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <style>
+        /* Reusing Backoffice Styles */
+        .navigation, header, .header, .top-header, nav.navbar { display: none !important; }
+        body { margin: 0 !important; padding: 0 !important; overflow-x: hidden; background: #f8f9fa; }
+        
+        /* Sidebar */
+        .admin-sidebar { position: fixed; left: 0; top: 0; width: 250px; height: 100vh; background: #2c3e50; color: white; z-index: 1000; padding-top: 20px; transition: all 0.3s; }
+        .sidebar-menu { list-style: none; padding: 0; margin: 20px 0; }
+        .sidebar-menu a { display: flex; align-items: center; padding: 15px 20px; color: rgba(255, 255, 255, 0.7); text-decoration: none; border-left: 3px solid transparent; transition: all 0.3s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background: rgba(255, 188, 59, 0.1); color: #ffbc3b; border-left: 3px solid #ffbc3b; }
+        .sidebar-menu a i { margin-right: 15px; font-size: 18px; min-width: 20px; }
+        
+        /* Content */
+        .admin-content { margin-left: 250px; padding: 20px 30px; min-height: 100vh; background: #f8f9fa; }
+        
+        /* Cards */
+        .dashboard-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); margin-bottom: 30px; border: 1px solid #edf2f9; }
+        
+        /* Stats Cards */
+        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); position: relative; overflow: hidden; margin-bottom: 20px; transition: transform 0.3s, box-shadow 0.3s; border: 1px solid #edf2f9; }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08); }
+        .stat-card.primary { border-left: 4px solid #007bff; }
+        .stat-card.success { border-left: 4px solid #28a745; }
+        .stat-card.warning { border-left: 4px solid #ffc107; }
+        .stat-card.info { border-left: 4px solid #17a2b8; }
+        .stat-card .stat-icon { position: absolute; right: 20px; top: 20px; font-size: 40px; opacity: 0.1; }
+        .stat-card h3 { font-size: 28px; font-weight: 700; margin: 5px 0; color: #2c3e50; }
+        .stat-card p { color: #6c757d; margin: 0; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+        /* Page Header */
+        .page-header { margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .page-header h2 { font-size: 26px; font-weight: 700; color: #2c3e50; margin: 0; }
+        .page-description { color: #6c757d; margin-top: 5px; font-size: 14px; }
+
+        /* Buttons */
+        .btn-primary { background: #ffbc3b; color: white; padding: 10px 25px; border-radius: 8px; border: none; text-decoration: none; font-weight: 600; box-shadow: 0 4px 6px rgba(255, 188, 59, 0.2); transition: all 0.3s; }
+        .btn-primary:hover { background: #ff8c00; color: white; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(255, 188, 59, 0.3); }
+        .btn-back { background: #6c757d; color: white; padding: 10px 25px; border-radius: 8px; border: none; text-decoration: none; font-weight: 600; transition: all 0.3s; }
+        .btn-back:hover { background: #5a6268; color: white; }
+        
+        /* Table Styles */
+        .admin-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        .admin-table thead th { background: #f8f9fa; padding: 15px; font-weight: 600; color: #6c757d; border-bottom: 1px solid #dee2e6; text-align: left; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+        .admin-table tbody td { padding: 15px; border-bottom: 1px solid #eef0f8; vertical-align: middle; background: white; color: #555; }
+        .admin-table tbody tr:last-child td { border-bottom: none; }
+        .admin-table tbody tr:hover td { background: #fcfcfd; }
+        
+        /* Badges & Actions */
+        .status-badge { padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .status-badge.en-attente { background: #fff3cd; color: #856404; }
+        .status-badge.accepte, .status-badge.accepté { background: #e3f9e5; color: #1f7a36; }
+        .status-badge.refuse, .status-badge.refusé { background: #ffebeb; color: #c92a2a; }
+
+        .action-btn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; margin-right: 5px; color: #6c757d; background: #f8f9fa; transition: all 0.2s; border: 1px solid #e9ecef; }
+        .action-btn:hover { color: white; transform: translateY(-2px); border-color: transparent; }
+        .action-btn.download:hover { background: #4dabf7; }
+        .action-btn.edit:hover { background: #fab005; }
+        .action-btn.delete:hover { background: #fa5252; }
+    </style>
+{% endblock %}
+
+{% block body %}
+<!-- Sidebar -->
+<div class="admin-sidebar">
+    <div class="sidebar-toggle" style="text-align: center; padding: 20px; font-size: 24px;">
+        <i class="ti-menu"></i>
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="{{ path('app_profile') }}"><i class="ti-dashboard"></i><span>Tableau de Bord</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-user"></i><span>Utilisateurs</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-id-badge"></i><span>Quiz</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-book"></i><span>Cours</span></a></li>
+        <li><a href="{{ path('app_bourse_index') }}" class="active"><i class="ti-medall"></i><span>Bourses</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-comments"></i><span>Forum</span></a></li>
+    </ul>
+</div>
+
+<!-- Main Content -->
+<div class="admin-content">
+    
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h2>Demandes de Bourse</h2>
+            <p class="page-description">Candidatures pour : {{ bourse.titre }}</p>
+        </div>
+        <a href="{{ path('app_bourse_index') }}" class="btn-back">
+            <i class="ti-arrow-left mr-2"></i>Retour aux Bourses
+        </a>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="row mb-4">
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card primary">
+                <i class="ti-files stat-icon"></i>
+                <h3>{{ demandes|length }}</h3>
+                <p>Total Demandes</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card warning">
+                <i class="ti-time stat-icon"></i>
+                <h3>{{ demandes|filter(d => d.statut == 'En attente')|length }}</h3>
+                <p>En Attente</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card success">
+                <i class="ti-wallet stat-icon"></i>
+                <h3>{{ bourse.montant|number_format(0, ',', ' ') }} DT</h3>
+                <p>Montant Bourse</p>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="stat-card info">
+                <i class="ti-calendar stat-icon"></i>
+                <h3>{{ bourse.dateFin|date('d/m/Y') }}</h3>
+                <p>Date Limite</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Card -->
+    <div class="dashboard-card">
+        
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h4 class="mb-0" style="padding-top: 10px; color: #2c3e50; font-size: 18px;">Liste des Candidatures</h4>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Étudiant</th>
+                        <th>Niveau d'études</th>
+                        <th>Date de demande</th>
+                        <th>Statut</th>
+                        <th>Note</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for demande in demandes %}
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <div style="width: 45px; height: 45px; border-radius: 8px; background: #f1f3f5; display: flex; align-items: center; justify-content: center; margin-right: 15px; color: #adb5bd;">
+                                    <i class="ti-user"></i>
+                                </div>
+                                <div>
+                                    <div style="font-weight: 600; color: #2c3e50;">{{ demande.etudiant.nom }} {{ demande.etudiant.prenom }}</div>
+                                    <small style="color: #6c757d;">{{ demande.etudiant.email }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="font-weight: 500;">{{ demande.niveauEtudes }}</td>
+                        <td>
+                            <div style="font-size: 13px;">
+                                <div><i class="ti-calendar mr-1" style="color: #28a745;"></i> {{ demande.dateDemande|date('d/m/Y') }}</div>
+                                <div><small style="color: #6c757d;">{{ demande.dateDemande|date('H:i') }}</small></div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge {{ demande.statut|lower|replace({' ': '-'}) }}">
+                                {{ demande.statut }}
+                            </span>
+                        </td>
+                        <td>
+                            <small style="color: #6c757d; display: block; line-height: 1.5; max-width: 200px;">
+                            {% if demande.note %}
+                                {{ demande.note|length > 60 ? demande.note|slice(0, 60) ~ '...' : demande.note }}
+                            {% else %}
+                                -
+                            {% endif %}
+                            </small>
+                        </td>
+                        <td>
+                            <a href="{{ path('app_demande_show', {'id': demande.id}) }}" class="action-btn view" title="Voir Détails" style="background: #e7f5ff; color: #1c7ed6;"><i class="ti-eye"></i></a>
+                            <a href="{{ path('app_demande_edit', {'id': demande.id}) }}" class="action-btn edit" title="Modifier"><i class="ti-pencil"></i></a>
+                            <a href="{{ asset('uploads/cancelatures/' ~ demande.lettreMotivation) }}" target="_blank" class="action-btn download" title="Télécharger lettre" style="background: #e7f5ff; color: #1c7ed6;"><i class="ti-download"></i></a>
+                            
+                            <form method="post" action="{{ path('app_demande_delete', {'id': demande.id}) }}" style="display: inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette demande ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_demande' ~ demande.id) }}">
+                                <button class="action-btn delete" title="Supprimer" style="border: none; cursor: pointer;"><i class="ti-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5">
+                            <i class="ti-folder" style="font-size: 40px; color: #e9ecef; display: block; margin-bottom: 15px;"></i>
+                            <h5 style="color: #6c757d; font-size: 16px;">Aucune demande trouvée</h5>
+                            <p class="text-muted" style="font-size: 13px;">Les candidatures apparaîtront ici une fois soumises.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

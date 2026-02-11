@@ -1,0 +1,267 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration des Bourses{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <style>
+        /* Reusing Backoffice Styles */
+        .navigation, header, .header, .top-header, nav.navbar { display: none !important; }
+        body { margin: 0 !important; padding: 0 !important; overflow-x: hidden; background: #f8f9fa; }
+        
+        /* Sidebar */
+        .admin-sidebar { position: fixed; left: 0; top: 0; width: 250px; height: 100vh; background: #2c3e50; color: white; z-index: 1000; padding-top: 20px; transition: all 0.3s; }
+        .sidebar-menu { list-style: none; padding: 0; margin: 20px 0; }
+        .sidebar-menu a { display: flex; align-items: center; padding: 15px 20px; color: rgba(255, 255, 255, 0.7); text-decoration: none; border-left: 3px solid transparent; transition: all 0.3s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background: rgba(255, 188, 59, 0.1); color: #ffbc3b; border-left: 3px solid #ffbc3b; }
+        .sidebar-menu a i { margin-right: 15px; font-size: 18px; min-width: 20px; }
+        
+        /* Content */
+        .admin-content { margin-left: 250px; padding: 20px 30px; min-height: 100vh; background: #f8f9fa; }
+        
+        /* Cards */
+        .dashboard-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); margin-bottom: 30px; border: 1px solid #edf2f9; }
+
+        /* Page Header */
+        .page-header { margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .page-header h2 { font-size: 26px; font-weight: 700; color: #2c3e50; margin: 0; }
+        .page-description { color: #6c757d; margin-top: 5px; font-size: 14px; }
+
+        /* Buttons */
+        .btn-primary { background: #ffbc3b; color: white; padding: 10px 25px; border-radius: 8px; border: none; text-decoration: none; font-weight: 600; box-shadow: 0 4px 6px rgba(255, 188, 59, 0.2); transition: all 0.3s; }
+        .btn-primary:hover { background: #ff8c00; color: white; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(255, 188, 59, 0.3); }
+        
+        /* Table Styles */
+        .admin-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        .admin-table thead th { background: #f8f9fa; padding: 15px; font-weight: 600; color: #6c757d; border-bottom: 1px solid #dee2e6; text-align: left; text-transform: uppercase; font-size: 12px; letter-spacing: 0.5px; }
+        .admin-table tbody td { padding: 15px; border-bottom: 1px solid #eef0f8; vertical-align: middle; background: white; color: #555; }
+        .admin-table tbody tr:last-child td { border-bottom: none; }
+        .admin-table tbody tr:hover td { background: #fcfcfd; }
+        
+        /* Actions */
+        .action-btn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 8px; margin-right: 5px; color: #6c757d; background: #f8f9fa; transition: all 0.2s; border: 1px solid #e9ecef; }
+        .action-btn:hover { color: white; transform: translateY(-2px); border-color: transparent; }
+        .action-btn.edit:hover { background: #fab005; }
+        .action-btn.delete:hover { background: #fa5252; }
+        
+        /* Search & Filter */
+        .admin-search { display: flex; }
+        .admin-search input { flex: 1; padding: 10px 15px; border: 1px solid #e0e6ed; border-right: none; border-radius: 8px 0 0 8px; font-size: 14px; outline: none; background: #f8f9fa; transition: all 0.3s; }
+        .admin-search input:focus { border-color: #ffbc3b; background: white; box-shadow: 0 0 0 3px rgba(255, 188, 59, 0.1); }
+        .admin-search button { padding: 10px 20px; background: #ffbc3b; color: white; border: none; border-radius: 0 8px 8px 0; cursor: pointer; transition: all 0.3s; font-weight: 600; }
+        .admin-search button:hover { background: #ff8c00; }
+
+        .filter-select { padding: 10px 15px; border: 1px solid #e0e6ed; border-radius: 8px; font-size: 14px; outline: none; background: #f8f9fa; transition: all 0.3s; color: #555; cursor: pointer; }
+        .filter-select:focus { border-color: #ffbc3b; background: white; box-shadow: 0 0 0 3px rgba(255, 188, 59, 0.1); }
+
+        .no-results { display: none; text-align: center; padding: 40px; color: #6c757d; }
+    </style>
+{% endblock %}
+
+{% block body %}
+<!-- Sidebar -->
+<div class="admin-sidebar">
+    <div class="sidebar-toggle" style="text-align: center; padding: 20px; font-size: 24px;">
+        <i class="ti-menu"></i>
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="{{ path('app_profile') }}"><i class="ti-dashboard"></i><span>Tableau de Bord</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-user"></i><span>Utilisateurs</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-id-badge"></i><span>Quiz</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-book"></i><span>Cours</span></a></li>
+        <li><a href="{{ path('app_bourse_index') }}" class="active"><i class="ti-medall"></i><span>Bourses</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-comments"></i><span>Forum</span></a></li>
+    </ul>
+</div>
+
+<!-- Main Content -->
+<div class="admin-content">
+    
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h2>Gestion des Bourses</h2>
+            <p class="page-description">Gérez les bourses et les aides financières</p>
+        </div>
+        <a href="{{ path('app_bourse_add') }}" class="btn-primary">
+            <i class="ti-plus mr-2"></i>Ajouter une Bourse
+        </a>
+    </div>
+
+    <!-- Content Card -->
+    <div class="dashboard-card">
+        
+        <!-- Search & Filter Bar -->
+        <div class="row mb-4 align-items-center">
+            <div class="col-md-5">
+                <div class="admin-search">
+                    <input type="text" id="searchInput" placeholder="Rechercher par titre...">
+                    <button><i class="ti-search"></i></button>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select id="sortBy" class="filter-select w-100">
+                    <option value="">Trier par...</option>
+                    <option value="titre-asc">Titre A-Z</option>
+                    <option value="titre-desc">Titre Z-A</option>
+                    <option value="montant-asc">Montant ↑</option>
+                    <option value="montant-desc">Montant ↓</option>
+                    <option value="date-asc">Date ↑</option>
+                    <option value="date-desc">Date ↓</option>
+                </select>
+            </div>
+            <div class="col-md-2 text-right">
+                <span id="resultCount" style="color: #6c757d; font-size: 13px; font-weight: 600;"></span>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-responsive">
+            <table class="admin-table" id="bourseTable">
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Description</th>
+                        <th>Période</th>
+                        <th>Montant</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bourse in bourses %}
+
+                    <tr class="bourse-row" 
+                        data-titre="{{ bourse.titre|lower }}" 
+                        data-montant="{{ bourse.montant }}" 
+                        data-date="{{ bourse.dateAttribution ? bourse.dateAttribution|date('Y-m-d') : '' }}">
+                        <td>
+                            <div class="d-flex align-items-center">
+                                {% if bourse.image %}
+                                    <img src="{{ bourse.image }}" style="width: 45px; height: 45px; border-radius: 8px; object-fit: cover; margin-right: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+                                {% else %}
+                                    <div style="width: 45px; height: 45px; border-radius: 8px; background: #f1f3f5; display: flex; align-items: center; justify-content: center; margin-right: 15px; color: #adb5bd;">
+                                        <i class="ti-image"></i>
+                                    </div>
+                                {% endif %}
+                                <div style="font-weight: 600; color: #2c3e50;">{{ bourse.titre }}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <small style="color: #6c757d; display: block; line-height: 1.5; max-width: 300px;">{{ bourse.description|length > 80 ? bourse.description|slice(0, 80) ~ '...' : bourse.description }}</small>
+                        </td>
+                        <td>
+                            <div style="font-size: 13px;">
+                                <div style="margin-bottom: 2px;"><i class="ti-calendar mr-1" style="color: #28a745;"></i> {{ bourse.dateAttribution ? bourse.dateAttribution|date('d/m/Y') : '-' }}</div>
+                                <div><i class="ti-calendar mr-1" style="color: #fa5252;"></i> {{ bourse.dateFin ? bourse.dateFin|date('d/m/Y') : '-' }}</div>
+                            </div>
+                        </td>
+                        <td style="font-weight: 700; color: #2c3e50;">{{ bourse.montant|number_format(0, ',', ' ') }} DT</td>
+                        <td>
+                            <a href="{{ path('app_bourse_show', {'id': bourse.id}) }}" class="action-btn view" title="Voir Détails" style="background: #e7f5ff; color: #1c7ed6;"><i class="ti-eye"></i></a>
+                            <a href="{{ path('app_bourse_applications', {'id': bourse.id}) }}" class="action-btn applications" title="Voir Demandes" style="background: #d0f0fd; color: #0c8599;"><i class="ti-files"></i></a>
+                            <a href="{{ path('app_bourse_edit', {'id': bourse.id}) }}" class="action-btn edit" title="Modifier"><i class="ti-pencil"></i></a>
+                            
+                            <form method="post" action="{{ path('app_bourse_delete', {'id': bourse.id}) }}" style="display: inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer {{ bourse.titre }} ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ bourse.id) }}">
+                                <button class="action-btn delete" title="Supprimer" style="border: none; cursor: pointer;"><i class="ti-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr class="empty-row">
+                        <td colspan="5" class="text-center py-5">
+                            <i class="ti-folder" style="font-size: 40px; color: #e9ecef; display: block; margin-bottom: 15px;"></i>
+                            <h5 style="color: #6c757d; font-size: 16px;">Aucune bourse trouvée</h5>
+                            <p class="text-muted" style="font-size: 13px;">Commencez par ajouter une nouvelle bourse.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- No results message -->
+        <div id="noResults" class="no-results">
+            <i class="ti-search" style="font-size: 40px; color: #e9ecef; display: block; margin-bottom: 15px;"></i>
+            <h5 style="color: #6c757d; font-size: 16px;">Aucun résultat trouvé</h5>
+            <p class="text-muted" style="font-size: 13px;">Essayez de modifier vos critères de recherche.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const sortBy = document.getElementById('sortBy');
+    const tbody = document.querySelector('#bourseTable tbody');
+    const rows = Array.from(document.querySelectorAll('.bourse-row'));
+    const noResults = document.getElementById('noResults');
+    const resultCount = document.getElementById('resultCount');
+
+    function applyFilters() {
+        const searchTerm = searchInput.value.toLowerCase().trim();
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const titre = row.dataset.titre;
+
+            const matchSearch = !searchTerm || titre.includes(searchTerm);
+
+            if (matchSearch) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        const emptyRow = document.querySelector('.empty-row');
+        if (rows.length === 0) {
+            noResults.style.display = 'none';
+        } else if (visibleCount === 0) {
+            noResults.style.display = 'block';
+            if (emptyRow) emptyRow.style.display = 'none';
+        } else {
+            noResults.style.display = 'none';
+        }
+
+        resultCount.textContent = visibleCount + ' / ' + rows.length + ' bourse(s)';
+    }
+
+    function applySort() {
+        const sortValue = sortBy.value;
+        if (!sortValue) return;
+
+        const [field, direction] = sortValue.split('-');
+        const multiplier = direction === 'asc' ? 1 : -1;
+
+        rows.sort((a, b) => {
+            let valA, valB;
+            if (field === 'titre') {
+                valA = a.dataset.titre;
+                valB = b.dataset.titre;
+                return multiplier * valA.localeCompare(valB);
+            } else if (field === 'montant') {
+                valA = parseFloat(a.dataset.montant) || 0;
+                valB = parseFloat(b.dataset.montant) || 0;
+                return multiplier * (valA - valB);
+            } else if (field === 'date') {
+                valA = a.dataset.date || '';
+                valB = b.dataset.date || '';
+                return multiplier * valA.localeCompare(valB);
+            }
+            return 0;
+        });
+
+        rows.forEach(row => tbody.appendChild(row));
+        applyFilters();
+    }
+
+    searchInput.addEventListener('input', applyFilters);
+    sortBy.addEventListener('change', applySort);
+
+    applyFilters();
+});
+</script>
+{% endblock %}

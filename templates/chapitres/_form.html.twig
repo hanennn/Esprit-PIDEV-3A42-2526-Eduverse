@@ -1,0 +1,59 @@
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+<div>
+    {{ form_label(form.titreChap, "Titre du chapitre") }}
+    {{ form_widget(form.titreChap) }}
+    {{ form_errors(form.titreChap) }}
+</div>
+
+<div>
+    {{ form_label(form.descChap, "Description") }}
+    {{ form_widget(form.descChap) }}
+    {{ form_errors(form.descChap) }}
+</div>
+
+<div>
+    {{ form_label(form.ordreChap, "Ordre") }}
+    {{ form_widget(form.ordreChap) }}
+    {{ form_errors(form.ordreChap) }}
+</div>
+
+<div>
+    {{ form_label(form.dureeChap, "Durée") }}
+    {{ form_widget(form.dureeChap) }}
+    {{ form_errors(form.dureeChap) }}
+</div>
+
+<div>
+    {{ form_label(form.statutChap, "Statut") }}
+    {{ form_widget(form.statutChap) }}
+    {{ form_errors(form.statutChap) }}
+</div>
+
+<div>
+    {{ form_label(form.resumeChap, "Résumé") }}
+    {{ form_widget(form.resumeChap) }}
+    {{ form_errors(form.resumeChap) }}
+</div>
+
+<div>
+    {{ form_label(form.contenuChap, "Contenu") }}
+    {{ form_widget(form.contenuChap) }}
+    {{ form_errors(form.contenuChap) }}
+</div>
+
+<div>
+    {{ form_label(form.typeContenu, "Type de contenu") }}
+    {{ form_widget(form.typeContenu) }}
+    {{ form_errors(form.typeContenu) }}
+</div>
+{#}
+<div>
+    {{ form_label(form.cours, "Cours") }}
+    {{ form_widget(form.cours) }}
+    {{ form_errors(form.cours) }}
+</div>
+#}
+<button type="submit">Ajouter le chapitre</button>
+
+{{ form_end(form) }}
