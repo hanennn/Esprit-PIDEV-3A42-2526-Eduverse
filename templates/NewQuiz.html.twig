@@ -1,0 +1,262 @@
+{# templates/back/quiz/new.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un Quiz{% endblock %}
+
+{% block body %}
+<div class="admin-content">
+    {# Page Header #}
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2><i class="fas fa-plus-circle mr-3"></i>Créer un nouveau Quiz</h2>
+                <p class="text-muted mb-0">Remplissez les informations ci-dessous pour créer un nouveau quiz</p>
+            </div>
+            <a href="{{ path('app_profile') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left mr-2"></i>Retour à la liste des quiz
+            </a>
+        </div>
+    </div>
+
+    {# Main Form Card #}
+    <div class="dashboard-card">
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'quiz-form'}}) }}
+        
+        <div class="row">
+            {# Titre du Quiz #}
+            <div class="col-md-12 mb-4">
+                <div class="form-group">
+                    {{ form_label(form.titre, null, {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-with-icon">
+                        <i class="fas fa-heading"></i>
+                        {{ form_widget(form.titre, {'attr': {'class': 'form-control form-control-modern', 'placeholder': 'Entrez le titre du quiz...'}}) }}
+                    </div>
+                    {{ form_errors(form.titre) }}
+                </div>
+            </div>
+
+            {# Type de Quiz #}
+            <div class="col-md-6 mb-4">
+                <div class="form-group">
+                    {{ form_label(form.typeQuiz, null, {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-with-icon">
+                        <i class="fas fa-list-ul"></i>
+                        {{ form_widget(form.typeQuiz, {'attr': {'class': 'form-control form-control-modern'}}) }}
+                    </div>
+                    {{ form_errors(form.typeQuiz) }}
+                </div>
+            </div>
+
+            {# Durée #}
+            <div class="col-md-6 mb-4">
+                <div class="form-group">
+                    {{ form_label(form.duree, null, {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-with-icon">
+                        <i class="fas fa-clock"></i>
+                        {{ form_widget(form.duree, {'attr': {'class': 'form-control form-control-modern', 'placeholder': 'Durée en minutes...'}}) }}
+                    </div>
+                    {{ form_errors(form.duree) }}
+                    <small class="form-text text-muted">
+                        <i class="fas fa-info-circle mr-1"></i>Durée en minutes
+                    </small>
+                </div>
+            </div>
+
+            {# Score Minimum #}
+            <div class="col-md-6 mb-4">
+                <div class="form-group">
+                    {{ form_label(form.scoreMinimum, null, {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-with-icon">
+                        <i class="fas fa-star"></i>
+                        {{ form_widget(form.scoreMinimum, {'attr': {'class': 'form-control form-control-modern', 'placeholder': 'Score minimum requis...'}}) }}
+                    </div>
+                    {{ form_errors(form.scoreMinimum) }}
+                    <small class="form-text text-muted">
+                        <i class="fas fa-info-circle mr-1"></i>Score minimum pour réussir le quiz
+                    </small>
+                </div>
+            </div>
+
+            {# Cours Associé #}
+            <div class="col-md-6 mb-4">
+                <div class="form-group">
+                    {{ form_label(form.coursAssocie, null, {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-with-icon">
+                        <i class="fas fa-book"></i>
+                        {{ form_widget(form.coursAssocie, {'attr': {'class': 'form-control form-control-modern'}}) }}
+                    </div>
+                    {{ form_errors(form.coursAssocie) }}
+                    <small class="form-text text-muted">
+                        <i class="fas fa-info-circle mr-1"></i>Sélectionnez le cours auquel ce quiz appartient
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        {# Action Buttons #}
+        <div class="form-actions mt-4">
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-check-circle mr-2"></i>Créer le quiz et ajouter des questions
+            </button>
+            <a href="{{ path('app_profile') }}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-times-circle mr-2"></i>Annuler
+            </a>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+
+    {# Helper Card #}
+    <div class="dashboard-card mt-4" style="background: linear-gradient(135deg, #fff9f0 0%, #ffffff 100%); border-left: 4px solid #ffbc3b;">
+        <h5 class="mb-3">
+            <i class="fas fa-lightbulb mr-2" style="color: #ffbc3b;"></i>
+            Conseils pour créer un bon quiz
+        </h5>
+        <ul class="helper-list">
+            <li><i class="fas fa-check-circle mr-2" style="color: #11998e;"></i>Choisissez un titre clair et descriptif</li>
+            <li><i class="fas fa-check-circle mr-2" style="color: #11998e;"></i>Adaptez la durée en fonction du nombre de questions</li>
+            <li><i class="fas fa-check-circle mr-2" style="color: #11998e;"></i>Définissez un score minimum réaliste</li>
+            <li><i class="fas fa-check-circle mr-2" style="color: #11998e;"></i>Associez le quiz au cours approprié pour une meilleure organisation</li>
+        </ul>
+    </div>
+</div>
+
+<style>
+/* Quiz Form Specific Styles */
+.quiz-form .form-group {
+    position: relative;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #2d3142;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+    display: block;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon i {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ffbc3b;
+    font-size: 1.1rem;
+    z-index: 2;
+}
+
+.form-control-modern {
+    padding: 14px 20px 14px 50px !important;
+    border: 2px solid #eef0f8 !important;
+    border-radius: 12px !important;
+    font-size: 0.95rem !important;
+    transition: all 0.3s ease !important;
+    background: white !important;
+    width: 100% !important;
+}
+
+.form-control-modern:focus {
+    border-color: #ffbc3b !important;
+    box-shadow: 0 0 0 4px rgba(255, 188, 59, 0.1) !important;
+    outline: none !important;
+}
+
+.form-control-modern:hover {
+    border-color: #ffd580 !important;
+}
+
+select.form-control-modern {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffbc3b' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 18px center !important;
+    background-size: 12px !important;
+    padding-right: 45px !important;
+}
+
+.form-text.text-muted {
+    font-size: 0.85rem;
+    margin-top: 8px;
+    color: #6c757d;
+    display: block;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    padding-top: 20px;
+    border-top: 2px solid #eef0f8;
+}
+
+.form-actions .btn {
+    padding: 14px 32px;
+    font-weight: 600;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+/* Error Styling */
+.form-error-message {
+    color: #f5576c;
+    font-size: 0.85rem;
+    margin-top: 8px;
+    display: block;
+    font-weight: 500;
+}
+
+.form-control.is-invalid,
+.form-control-modern.is-invalid {
+    border-color: #f5576c !important;
+}
+
+.invalid-feedback {
+    color: #f5576c;
+    font-size: 0.85rem;
+    margin-top: 8px;
+    display: block;
+}
+
+/* Helper List */
+.helper-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.helper-list li {
+    padding: 10px 0;
+    color: #2d3142;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+}
+
+.helper-list li:not(:last-child) {
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .form-actions .btn {
+        width: 100%;
+    }
+    
+    .page-header .d-flex {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .page-header .btn {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}

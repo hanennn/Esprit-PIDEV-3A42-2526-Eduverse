@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier le Sujet - Forum{% endblock %}
+
+{% block body %}
+<div style="margin-top: 200px; margin-left: auto; margin-right: auto; max-width: 800px;">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Modifier le Sujet</h3>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form) }}
+                        <div class="form-group">
+                            {{ form_label(form.titre, 'Titre', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_widget(form.titre, {'attr': {'class': 'form-control', 'placeholder': 'Entrez le titre du sujet'}}) }}
+                            {{ form_errors(form.titre) }}
+                        </div>
+
+                        <div class="form-group">
+                            {{ form_label(form.contenu, 'Contenu', {'label_attr': {'class': 'font-weight-bold'}}) }}
+                            {{ form_widget(form.contenu, {'attr': {'class': 'form-control', 'rows': 8, 'placeholder': 'Entrez le contenu du sujet'}}) }}
+                            {{ form_errors(form.contenu) }}
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ti-save"></i> Mettre à Jour
+                            </button>
+                            <a href="{{ path('app_forum_show', {'id': sujet.id}) }}" class="btn btn-outline-secondary">Annuler</a>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

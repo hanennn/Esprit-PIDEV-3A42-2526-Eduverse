@@ -1,0 +1,128 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Forum - Sujets{% endblock %}
+
+{% block body %}
+<div style="margin-top: 200px; margin-left: auto; margin-right: auto; max-width: 1000px;">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h1>Forum - Tous les Sujets</h1>
+        <div>
+            {% if app.user %}
+                <a href="{{ path('app_assistant') }}" class="btn btn-outline-info mr-2">
+                    <i class="ti-comments"></i> Assistant IA
+                </a>
+                {% if 'ROLE_TEACHER' in app.user.roles %}
+                    <a href="{{ path('app_forum_new') }}" class="btn btn-primary">
+                        <i class="ti-plus"></i> Nouveau Sujet
+                    </a>
+                {% endif %}
+            {% else %}
+                <a href="{{ path('app_login') }}" class="btn btn-primary">
+                    <i class="ti-lock"></i> Se Connecter Pour Créer
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+
+    <!-- Search & Sort Bar -->
+    <div class="card bg-light mb-4">
+        <div class="card-body">
+            <form method="get" action="{{ path('app_forum_index') }}" class="form-inline" id="filterForm">
+                <div class="form-group mr-3 mb-2">
+                    <input type="text" name="search" class="form-control" placeholder="Rechercher..." value="{{ search }}" id="searchInput">
+                </div>
+                <div class="form-group mr-3 mb-2">
+                    <select name="sort" class="form-control" id="sortSelect">
+                        <option value="dateCreation" {% if sort == 'dateCreation' %}selected{% endif %}>Plus Récent</option>
+                        <option value="titre" {% if sort == 'titre' %}selected{% endif %}>Titre (A-Z)</option>
+                    </select>
+                </div>
+                {% if search or sort != 'dateCreation' %}
+                    <a href="{{ path('app_forum_index') }}" class="btn btn-outline-secondary mb-2 ml-2">
+                        <i class="ti-close"></i> Réinitialiser
+                    </a>
+                {% endif %}
+            </form>
+            {% if search %}
+                <small class="text-muted d-block mt-2">
+                    Recherche pour: <strong>{{ search }}</strong>
+                </small>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('searchInput').addEventListener('input', function() {
+            document.getElementById('filterForm').submit();
+        });
+        
+        document.getElementById('sortSelect').addEventListener('change', function() {
+            document.getElementById('filterForm').submit();
+        });
+    </script>
+
+    <div class="row">
+        {% if sujets is empty %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    {% if search %}
+                        Aucun sujet trouvé. <a href="{{ path('app_forum_index') }}">Réinitialiser la recherche</a> ou <a href="{{ path('app_forum_new') }}">créer un nouveau sujet</a>!
+                    {% else %}
+                        Aucun sujet pour le moment. <a href="{{ path('app_forum_new') }}">Créez le premier sujet</a>!
+                    {% endif %}
+                </div>
+            </div>
+        {% else %}
+            {% for sujet in sujets %}
+                <div class="col-12 mb-4">
+                    <div class="card border-0 rounded-0 hover-shadow">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <a href="{{ path('app_forum_show', {'id': sujet.id}) }}">
+                                        <h4 class="card-title text-primary">{{ sujet.titre }}</h4>
+                                    </a>
+                                    <p class="card-text text-muted">{{ sujet.contenu|length > 150 ? sujet.contenu|slice(0, 150) ~ '...' : sujet.contenu }}</p>
+                                    <ul class="list-inline small">
+                                        <li class="list-inline-item">
+                                            <i class="ti-user text-primary mr-2"></i>
+                                            <span>{{ sujet.auteur.prenom }} {{ sujet.auteur.nom }}</span>
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <i class="ti-calendar text-primary mr-2"></i>
+                                            <span>{{ sujet.dateCreation|date('d/m/Y H:i') }}</span>
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <i class="ti-comments text-primary mr-2"></i>
+                                            <span>{{ sujet.messages|length }} messages</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-4 text-md-right mt-3 mt-md-0">
+                                    <a href="{{ path('app_forum_show', {'id': sujet.id}) }}" class="btn btn-primary btn-sm mb-2">Voir</a>
+                                    {% if app.user and (app.user == sujet.auteur or 'ROLE_ADMIN' in app.user.roles) and 'ROLE_TEACHER' in app.user.roles %}
+                                        <a href="{{ path('app_forum_edit', {'id': sujet.id}) }}" class="btn btn-outline-primary btn-sm mb-2">Modifier</a>
+                                        <form method="post" action="{{ path('app_forum_delete', {'id': sujet.id}) }}" style="display:inline-block;" onsubmit="return confirm('Êtes-vous sûr?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sujet.id) }}">
+                                            <button class="btn btn-outline-danger btn-sm mb-2">Supprimer</button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

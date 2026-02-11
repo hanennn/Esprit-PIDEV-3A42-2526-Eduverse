@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Assistant IA - Eduverse{% endblock %}
+
+{% block body %}
+<div style="margin-top: 200px; margin-left: auto; margin-right: auto; max-width: 900px; margin-bottom: 50px;">
+    <div class="mb-4">
+        <h1 class="mb-2">Assistant IA Eduverse</h1>
+        <p class="text-muted">Posez n'importe quelle question sur l'éducation, les stratégies d'apprentissage, ou les cours.</p>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="ti-comments mr-2"></i>Assistant Éducatif</h4>
+        </div>
+        <div class="card-body" style="height: 500px; overflow-y: auto; background-color: #f8f9fa;" id="chatWindow">
+            <div class="mb-3">
+                <div class="badge badge-primary">Assistant</div>
+                <p class="mb-0 mt-2">Bonjour! Posez-moi des questions sur l'éducation, les stratégies d'apprentissage, les cours, ou vous avez besoin d'aide. Je suis là pour vous aider!</p>
+            </div>
+        </div>
+        <div class="card-footer bg-light">
+            <form id="chatForm" class="d-flex">
+                <input type="text" class="form-control mr-2" id="chatInput" placeholder="Posez votre question..." autocomplete="off" style="border-radius: 20px; padding: 10px 15px;">
+                <button type="submit" class="btn btn-primary" style="border-radius: 20px; padding: 10px 20px;">
+                    <i class="ti-arrow-right"></i> Envoyer
+                </button>
+            </form>
+            <small class="text-muted d-block mt-2" id="chatStatus"></small>
+        </div>
+    </div>
+</div>
+
+<script>
+  const chatForm = document.getElementById('chatForm');
+  const chatInput = document.getElementById('chatInput');
+  const chatWindow = document.getElementById('chatWindow');
+  const chatStatus = document.getElementById('chatStatus');
+
+  function addMessage(role, text) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'mb-3';
+
+    const badge = document.createElement('div');
+    badge.className = role === 'user' ? 'badge badge-secondary' : 'badge badge-primary';
+    badge.textContent = role === 'user' ? 'Vous' : 'Assistant';
+
+    const p = document.createElement('p');
+    p.className = 'mb-0 mt-2';
+    p.style.whiteSpace = 'pre-wrap';
+    p.textContent = text;
+
+    wrapper.appendChild(badge);
+    wrapper.appendChild(p);
+    chatWindow.appendChild(wrapper);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+  }
+
+  chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = chatInput.value.trim();
+    if (!text) return;
+
+    addMessage('user', text);
+    chatInput.value = '';
+    chatStatus.textContent = 'L\'assistant réfléchit...';
+    chatStatus.style.color = '#007bff';
+
+    try {
+      const response = await fetch('{{ path('app_assistant_ask') }}', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message: text })
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || 'Request failed');
+      }
+
+      addMessage('assistant', data.reply);
+      chatStatus.textContent = '';
+    } catch (err) {
+      chatStatus.textContent = 'Erreur: ' + (err.message || 'L\'assistant n\'a pas pu répondre. Veuillez réessayer.');
+      chatStatus.style.color = '#dc3545';
+      console.error('Assistant error:', err);
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,383 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ cours.titreCours }} - Chapitres{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    {# Course Header #}
+    <div class="course-header mb-5">
+        <a href="{{ path('front_cours_catalogue') }}" class="btn btn-outline-secondary mb-3">
+            <i class="bi bi-arrow-left"></i> Retour au catalogue
+        </a>
+        
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h1 class="mb-3">
+                    <i class="bi bi-book"></i> {{ cours.titreCours }}
+                </h1>
+                
+                {% if cours.description %}
+                    <p class="lead text-muted">{{ cours.description }}</p>
+                {% endif %}
+                
+                <div class="row mt-4">
+                    <div class="col-md-3">
+                        <div class="info-badge">
+                            <i class="bi bi-graph-up text-primary"></i>
+                            <strong>Niveau:</strong>
+                            <span class="badge bg-info ms-2">{{ cours.nivCours }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="info-badge">
+                            <i class="bi bi-journal-text text-success"></i>
+                            <strong>Matière:</strong>
+                            <span class="badge bg-secondary ms-2">{{ cours.matiereCours }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="info-badge">
+                            <i class="bi bi-translate text-warning"></i>
+                            <strong>Langue:</strong>
+                            <span class="badge bg-warning text-dark ms-2">{{ cours.langueCours }}</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="info-badge">
+                            <i class="bi bi-list-ol text-danger"></i>
+                            <strong>Chapitres:</strong>
+                            <span class="badge bg-success ms-2">{{ chapitres|length }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {# Subscribe Button #}
+                <div class="text-center mt-4">
+                    {% if isEnrolled %}
+                        <button class="btn btn-lg btn-success subscribe-btn" disabled>
+                            <i class="bi bi-check-circle"></i> Inscrit
+                        </button>
+                    {% else %}
+                        <form method="post" action="{{ path('course_enroll', {'id': cours.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('enroll' ~ cours.id) }}">
+                            <button type="submit" class="btn btn-lg btn-primary subscribe-btn">
+                                <i class="bi bi-cart-plus"></i> S'inscrire à ce cours
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Chapters List #}
+    <div class="chapters-section mb-5">
+        <h2 class="mb-4">
+            <i class="bi bi-bookmark-fill"></i> Contenu du cours
+        </h2>
+
+        {% if chapitres is empty %}
+            <div class="alert alert-info text-center">
+                <i class="bi bi-info-circle fs-3"></i>
+                <h4 class="mt-2">Aucun chapitre disponible</h4>
+                <p>Ce cours n'a pas encore de contenu publié.</p>
+            </div>
+        {% else %}
+            <div class="dashboard-card">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-header-bg">
+                            <tr>
+                                <th>#</th>
+                                <th>Titre</th>
+                                <th>Description</th>
+                                <th>Ordre</th>
+                                <th>Durée</th>
+                                <th>Statut</th>
+                                <th>Type</th>
+                                <th>Voir</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for chapitre in chapitres|sort((a, b) => a.ordreChap <=> b.ordreChap) %}
+                                <tr>
+                                    <td>{{ chapitre.id }}</td>
+                                    <td><strong>{{ chapitre.titreChap }}</strong></td>
+                                    <td>{{ chapitre.descChap }}</td>
+                                    <td>{{ chapitre.ordreChap }}</td>
+                                    <td>{{ chapitre.dureeChap }} min</td>
+                                    <td>
+                                        <span class="badge {{ chapitre.statutChap == 'Ouvert' ? 'badge-success' : 'badge-secondary' }}">{{ chapitre.statutChap }}</span>
+                                    </td>
+                                    <td><span class="badge badge-info">{{ chapitre.typeContenu }}</span></td>
+                                    <td>
+                                        {% if chapitre.statutChap == 'Ouvert' %}
+                                            <a href="{{ path('chapitre_contenu', {'id': chapitre.id}) }}" class="btn btn-sm btn-primary">
+                                                <i class="bi bi-eye"></i> Voir
+                                            </a>
+                                        {% else %}
+                                            <button class="btn btn-sm btn-secondary" disabled>
+                                                <i class="bi bi-lock"></i>
+                                            </button>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    {# Quizzes Section - NEW #}
+    <div class="quizzes-section mb-5">
+        <h2 class="mb-4">
+            <i class="bi bi-patch-question-fill"></i> Quiz du cours
+        </h2>
+
+        {% if quizzes is defined and quizzes is not empty %}
+            <div class="row">
+                {% for quiz in quizzes %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card quiz-card shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="card-title mb-0">
+                                        <i class="bi bi-question-circle text-primary"></i>
+                                        {{ quiz.titre }}
+                                    </h5>
+                                    <span class="badge {{ quiz.typeQuiz == 'Final' ? 'bg-danger' : 'bg-warning text-dark' }}">
+                                        {{ quiz.typeQuiz }}
+                                    </span>
+                                </div>
+                                
+                                <div class="quiz-meta mb-3">
+                                    <div class="meta-item">
+                                        <i class="bi bi-clock text-info"></i>
+                                        <span>{{ quiz.duree }} minutes</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="bi bi-star text-warning"></i>
+                                        <span>Score min: {{ quiz.scoreMinimum }}</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="bi bi-list-check text-success"></i>
+                                        <span>{{ quiz.questions|length }} questions</span>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid gap-2">
+                                    {% if isEnrolled %}
+                                        <a href="{{ path('quiz_take', {'id': quiz.id}) }}" class="btn btn-primary">
+                                            <i class="bi bi-play-circle"></i> Commencer le quiz
+                                        </a>
+                                    {% else %}
+                                        <button class="btn btn-secondary" disabled>
+                                            <i class="bi bi-lock"></i> Inscrivez-vous pour accéder
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center">
+                <i class="bi bi-info-circle fs-3"></i>
+                <h4 class="mt-2">Aucun quiz disponible</h4>
+                <p>Ce cours n'a pas encore de quiz.</p>
+            </div>
+        {% endif %}
+    </div>
+
+    {# Course Summary Card #}
+    <div class="course-summary mt-5">
+        <div class="card shadow-sm bg-light">
+            <div class="card-body">
+                <h5 class="mb-3">
+                    <i class="bi bi-info-circle"></i> Résumé du cours
+                </h5>
+                <div class="row">
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="summary-stat">
+                            <h3 class="text-primary">{{ chapitres|length }}</h3>
+                            <p class="text-muted mb-0">Chapitres au total</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="summary-stat">
+                            <h3 class="text-success">
+                                {{ chapitres|filter(c => c.statutChap == 'Ouvert')|length }}
+                            </h3>
+                            <p class="text-muted mb-0">Chapitres ouverts</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="summary-stat">
+                            <h3 class="text-info">
+                                {% set totalDuration = 0 %}
+                                {% for chapitre in chapitres %}
+                                    {% set totalDuration = totalDuration + chapitre.dureeChap|replace({' min': '', 'min': ''})|trim|number_format %}
+                                {% endfor %}
+                                {{ totalDuration }}
+                            </h3>
+                            <p class="text-muted mb-0">Minutes de contenu</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 text-center mb-3">
+                        <div class="summary-stat">
+                            <h3 class="text-warning">
+                                {{ quizzes is defined ? quizzes|length : 0 }}
+                            </h3>
+                            <p class="text-muted mb-0">Quiz disponibles</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+body {
+    padding-top: 140px;
+    background-color: #f8f9fa;
+}
+
+.course-header .card {
+    border: none;
+    border-radius: 12px;
+}
+
+.info-badge {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.info-badge i {
+    font-size: 1.2rem;
+}
+
+.subscribe-btn {
+    padding: 12px 40px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.subscribe-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+}
+
+.chapters-section h2,
+.quizzes-section h2 {
+    color: #2d3142;
+    font-weight: 600;
+}
+
+.chapter-card .card {
+    border: none;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.chapter-card .card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Quiz Cards Styling */
+.quiz-card {
+    border: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.quiz-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15) !important;
+}
+
+.quiz-card .card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2d3142;
+}
+
+.quiz-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.95rem;
+    color: #6c757d;
+}
+
+.meta-item i {
+    font-size: 1.1rem;
+}
+
+.chapter-number {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.chapter-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.course-summary {
+    margin-bottom: 50px;
+}
+
+.summary-stat {
+    padding: 15px;
+}
+
+.summary-stat h3 {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+@media (max-width: 768px) {
+    .chapter-card .row {
+        text-align: center;
+    }
+    
+    .chapter-number {
+        margin: 0 auto 15px;
+    }
+    
+    .info-badge {
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    
+    .quiz-card {
+        margin-bottom: 20px;
+    }
+}
+</style>
+{% endblock %}
