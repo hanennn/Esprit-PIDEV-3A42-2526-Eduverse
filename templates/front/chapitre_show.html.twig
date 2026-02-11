@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ chapitre.titreChap }} - {{ chapitre.cours.titreCours }}{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <a href="{{ path('course_show', {'id': chapitre.cours.id}) }}" class="btn btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-left"></i> Retour au cours
+    </a>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h1 class="mb-3">{{ chapitre.titreChap }}</h1>
+
+            {% if chapitre.resumeChap %}
+                <p class="lead text-muted">{{ chapitre.resumeChap }}</p>
+            {% endif %}
+
+            {% if chapitre.descChap %}
+                <p>{{ chapitre.descChap }}</p>
+            {% endif %}
+
+            <div class="mb-3">
+                <span class="badge bg-info me-2">Ordre: {{ chapitre.ordreChap }}</span>
+                <span class="badge bg-secondary me-2">Durée: {{ chapitre.dureeChap }} min</span>
+                <span class="badge {{ chapitre.statutChap == 'Ouvert' ? 'bg-success' : 'bg-warning' }}">{{ chapitre.statutChap }}</span>
+                <span class="badge bg-light text-dark ms-2">Type: {{ chapitre.typeContenu|upper }}</span>
+            </div>
+
+            <hr>
+
+            <div class="chapter-content">
+                {% set fileUrl = asset('uploads/' ~ chapitre.contenuChap) %}
+
+                {% if chapitre.typeContenu == 'pdf' %}
+                    <div class="pdf-viewer mb-3">
+                        <iframe src="{{ fileUrl }}" width="100%" height="700" style="border:1px solid #ddd;"></iframe>
+                    </div>
+                    <p>
+                        <a href="{{ fileUrl }}" class="btn btn-outline-primary" target="_blank">Télécharger / Ouvrir le PDF</a>
+                    </p>
+
+                {% elseif chapitre.typeContenu == 'vidéo' %}
+                    <div class="video-player mb-3">
+                        <video controls width="100%" style="max-height:720px;">
+                            <source src="{{ fileUrl }}" type="video/mp4">
+                            Votre navigateur ne supporte pas la lecture vidéo.
+                        </video>
+                    </div>
+                    <p>
+                        <a href="{{ fileUrl }}" class="btn btn-outline-primary" target="_blank">Ouvrir la vidéo</a>
+                    </p>
+
+                {% else %}
+                    <div class="alert alert-secondary">Contenu non pris en charge: {{ chapitre.typeContenu }}</div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.pdf-viewer iframe { border-radius: 8px; }
+.video-player video { border-radius: 8px; background: #000; }
+@media (max-width: 768px) {
+    .pdf-viewer iframe, .video-player video { height: 400px; }
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Catalogue des Cours{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Catalogue des Cours</h1>
+
+    {# 🔍 Formulaire de recherche et tri #}
+    <form method="get" class="mb-4 card p-4 shadow-sm">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label fw-bold">Critère de recherche</label>
+                <select name="search_criteria" class="form-select">
+                    <option value="titre" {{ search_criteria == 'titre' ? 'selected' : '' }}>Titre</option>
+                    <option value="niv" {{ search_criteria == 'niv' ? 'selected' : '' }}>Niveau</option>
+                    <option value="matiere" {{ search_criteria == 'matiere' ? 'selected' : '' }}>Matière</option>
+                </select>
+            </div>
+            <div class="col-md-5">
+                <label class="form-label fw-bold">Recherche</label>
+                <input type="text" name="search" class="form-control" placeholder="Rechercher un cours..." value="{{ search|default('') }}">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label fw-bold">Trier par</label>
+                <select name="sort" class="form-select">
+                    <option value="titre" {{ sort == 'titre' ? 'selected' : '' }}>Titre</option>
+                    <option value="niv" {{ sort == 'niv' ? 'selected' : '' }}>Niveau</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+
+    {# 🔹 Liste des cours en cartes pour étudiants #}
+    {% if cours is not empty %}
+        <div class="row">
+            {% for course in cours %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow-sm hover-shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="card-title mb-0">
+                            <i class="bi bi-book"></i> {{ course.titreCours }}
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        {% if course.description %}
+                            <p class="card-text">{{ course.description }}</p>
+                        {% else %}
+                            <p class="card-text text-muted"><em>Pas de description disponible</em></p>
+                        {% endif %}
+                        
+                        <div class="mb-2">
+                            <strong><i class="bi bi-graph-up"></i> Niveau:</strong>
+                            <span class="badge bg-info">{{ course.nivCours }}</span>
+                        </div>
+                        
+                        <div class="mb-2">
+                            <strong><i class="bi bi-journal-text"></i> Matière:</strong>
+                            <span class="badge bg-secondary">{{ course.matiereCours }}</span>
+                        </div>
+
+                        <div class="mb-2">
+                            <strong><i class="bi bi-translate"></i> Langue:</strong>
+                            <span class="badge bg-warning text-dark">{{ course.langueCours }}</span>
+                        </div>
+
+                        <div class="mb-3">
+                            <strong><i class="bi bi-list-ol"></i> Chapitres:</strong>
+                            <span class="badge bg-success">{{ course.chapitres|length }}</span>
+                        </div>
+
+                        {# Liste des chapitres avec statut #}
+                        {% if course.chapitres is not empty %}
+                            <div class="mt-3">
+                                <h6 class="border-bottom pb-2">Contenu du cours:</h6>
+                                <ul class="list-unstyled">
+                                    {% for chapitre in course.chapitres|sort((a, b) => a.ordreChap <=> b.ordreChap) %}
+                                        <li class="mb-2">
+                                            <i class="bi bi-{{ chapitre.statutChap == 'Ouvert' ? 'unlock text-success' : 'lock text-secondary' }}"></i>
+                                            <strong>{{ chapitre.ordreChap }}.</strong> {{ chapitre.titreChap }}
+                                            <br>
+                                            <small class="text-muted ms-3">
+                                                <i class="bi bi-clock"></i> {{ chapitre.dureeChap }}
+                                                | <i class="bi bi-file-earmark-{{ chapitre.typeContenu == 'pdf' ? 'pdf' : 'play' }}"></i> {{ chapitre.typeContenu|upper }}
+                                            </small>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% else %}
+                            <p class="text-muted"><em>Aucun chapitre disponible</em></p>
+                        {% endif %}
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="{{ path('course_show', {'id': course.id}) }}" class="btn btn-primary w-100">
+                            <i class="bi bi-arrow-right-circle"></i> Accéder au cours
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle fs-3"></i>
+            <h4 class="mt-2">Aucun cours trouvé</h4>
+            <p>Essayez de modifier vos critères de recherche.</p>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+.hover-shadow {
+    transition: all 0.3s ease;
+}
+.hover-shadow:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
+}
+body {
+    padding-top: 140px; /* adjust to your header height */
+}
+
+</style>
+{% endblock %}

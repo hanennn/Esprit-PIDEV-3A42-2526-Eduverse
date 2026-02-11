@@ -1,0 +1,2020 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration - Educenter{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    
+    <style>
+    /* HIDE MAIN SITE NAVIGATION ON ADMIN PAGE */
+    .navigation,
+    header,
+    .header,
+    .top-header,
+    nav.navbar {
+        display: none !important;
+    }
+    
+    /* Reset body for admin page */
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow-x: hidden;
+    }
+    
+    /* Admin Sidebar */
+    .admin-sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 250px;
+        height: 100vh;
+        background: #2c3e50;
+        color: white;
+        transition: all 0.3s;
+        z-index: 1000;
+        overflow-y: auto;
+        padding-top: 20px;
+    }
+
+    .admin-sidebar.collapsed {
+        width: 70px;
+    }
+
+    .sidebar-toggle {
+        padding: 15px 20px;
+        cursor: pointer;
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        color: white;
+    }
+
+    .sidebar-menu {
+        list-style: none;
+        padding: 0;
+        margin: 20px 0;
+    }
+
+    .sidebar-menu li {
+        margin: 0;
+    }
+
+    .sidebar-menu a {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        transition: all 0.3s;
+        border-left: 3px solid transparent;
+    }
+
+    .sidebar-menu a:hover,
+    .sidebar-menu a.active {
+        background: rgba(255, 188, 59, 0.1);
+        color: #ffbc3b;
+        border-left: 3px solid #ffbc3b;
+    }
+
+    .sidebar-menu a i {
+        margin-right: 15px;
+        font-size: 18px;
+        min-width: 20px;
+    }
+
+    /* Admin Content Area */
+    .admin-content {
+        margin-left: 250px;
+        margin-top: 0 !important;
+        padding: 30px;
+        min-height: 100vh;
+        background: #f8f9fa;
+        transition: all 0.3s;
+        position: relative;
+        z-index: 1;
+    }
+
+    .admin-content.expanded {
+        margin-left: 70px;
+    }
+
+    /* Content Sections */
+    .content-section {
+        display: none !important;
+        width: 100%;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .content-section[style*="display: block"] {
+        display: block !important;
+    }
+
+    /* Dashboard Cards */
+    .dashboard-card {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 20px;
+    }
+
+    .stat-card.primary {
+        border-left: 4px solid #007bff;
+    }
+
+    .stat-card.success {
+        border-left: 4px solid #28a745;
+    }
+
+    .stat-card.warning {
+        border-left: 4px solid #ffc107;
+    }
+
+    .stat-card.info {
+        border-left: 4px solid #17a2b8;
+    }
+
+    .stat-card .stat-icon {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        font-size: 48px;
+        opacity: 0.1;
+    }
+
+    .stat-card h3 {
+        font-size: 32px;
+        font-weight: 700;
+        margin: 10px 0;
+        color: #2c3e50;
+    }
+
+    .stat-card p {
+        color: #6c757d;
+        margin: 0;
+        font-size: 14px;
+    }
+
+    /* Page Header */
+    .page-header {
+        margin-bottom: 30px;
+    }
+
+    .page-header h2 {
+        font-size: 28px;
+        font-weight: 700;
+        color: #2c3e50;
+    }
+
+    /* Admin Table */
+    .table-responsive {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    
+    .admin-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        background: white;
+        margin-bottom: 0;
+    }
+
+    .admin-table thead th {
+        background: #f8f9fa;
+        padding: 15px;
+        font-weight: 600;
+        color: #2c3e50;
+        border-bottom: 2px solid #eef0f8;
+        text-align: left;
+    }
+
+    .admin-table tbody td {
+        padding: 15px;
+        border-bottom: 1px solid #eef0f8;
+        vertical-align: middle;
+        background: white;
+    }
+
+    .admin-table tbody tr:hover {
+        background: #f8f9fa !important;
+    }
+
+    /* Action Buttons */
+    .action-btn {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        text-align: center;
+        border-radius: 6px;
+        margin-right: 5px;
+        transition: all 0.3s;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        color: #6c757d;
+        text-decoration: none;
+    }
+
+    .action-btn:hover {
+        color: white;
+        text-decoration: none;
+    }
+
+    .action-btn.view:hover {
+        background: #17a2b8;
+    }
+
+    .action-btn.edit:hover {
+        background: #ffc107;
+    }
+
+    .action-btn.delete:hover {
+        background: #dc3545;
+    }
+
+    /* Badges */
+    .badge {
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .badge-danger {
+        background: #dc3545;
+        color: white;
+    }
+
+    .badge-warning {
+        background: #ffc107;
+        color: #212529;
+    }
+
+    .badge-info {
+        background: #17a2b8;
+        color: white;
+    }
+
+    .badge-primary {
+        background: #007bff;
+        color: white;
+    }
+
+    .badge-secondary {
+        background: #6c757d;
+        color: white;
+    }
+
+    /* Status Badge */
+    .status-badge {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .status-badge.active {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status-badge.inactive {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    /* Rank Badge */
+    .rank-badge {
+        display: inline-block;
+        width: 35px;
+        height: 35px;
+        line-height: 35px;
+        text-align: center;
+        background: linear-gradient(135deg, #ffbc3b 0%, #ff8c00 100%);
+        color: white;
+        border-radius: 50%;
+        font-weight: 700;
+        font-size: 14px;
+        flex-shrink: 0;
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.3s;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: #ffbc3b;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #ff8c00;
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-outline-primary {
+        background: transparent;
+        color: #ffbc3b;
+        border: 2px solid #ffbc3b;
+    }
+
+    .btn-outline-primary:hover {
+        background: #ffbc3b;
+        color: white;
+    }
+
+    .btn-sm {
+        padding: 5px 15px;
+        font-size: 14px;
+    }
+
+    /* Quick Action Cards */
+    .quick-action-card {
+        display: block;
+        padding: 20px;
+        background: white;
+        border: 2px solid #eef0f8;
+        border-radius: 12px;
+        text-align: center;
+        text-decoration: none;
+        color: #2c3e50;
+        transition: all 0.3s;
+    }
+
+    .quick-action-card:hover {
+        border-color: #ffbc3b;
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(255, 188, 59, 0.2);
+        text-decoration: none;
+        color: #ffbc3b;
+    }
+
+    .quick-action-card i {
+        font-size: 36px;
+        color: #ffbc3b;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .quick-action-card h5 {
+        margin: 10px 0 5px;
+        font-weight: 600;
+    }
+
+    .quick-action-card p {
+        margin: 0;
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    /* Activity Items */
+    .activity-item {
+        display: flex;
+        padding: 15px 0;
+        border-bottom: 1px solid #eef0f8;
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        flex-shrink: 0;
+    }
+
+    .activity-icon.success {
+        background: #d4edda;
+        color: #28a745;
+    }
+
+    .activity-icon.primary {
+        background: #cfe2ff;
+        color: #0d6efd;
+    }
+
+    .activity-content h6 {
+        margin: 0 0 5px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .activity-content p {
+        margin: 0 0 5px;
+        font-size: 13px;
+        color: #6c757d;
+    }
+
+    .activity-time {
+        font-size: 12px;
+        color: #adb5bd;
+    }
+
+    /* Chart Container */
+    .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+
+    /* Filter buttons */
+    .filter-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .filter-btn {
+        padding: 8px 16px;
+        border: 2px solid #eef0f8;
+        border-radius: 8px;
+        background: white;
+        color: #6c757d;
+        text-decoration: none;
+        font-size: 14px;
+        transition: all 0.3s;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+        border-color: #ffbc3b;
+        background: #ffbc3b;
+        color: white;
+        text-decoration: none;
+    }
+
+    /* Admin Search */
+    .admin-search {
+        display: flex;
+        gap: 0;
+    }
+
+    .admin-search input {
+        flex: 1;
+        padding: 15px;
+        border: 2px solid #eef0f8;
+        border-right: none;
+        border-radius: 12px 0 0 12px;
+        font-size: 14px;
+    }
+
+    .admin-search button {
+        padding: 15px 30px;
+        background: #ffbc3b;
+        color: white;
+        border: none;
+        border-radius: 0 12px 12px 0;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .admin-search button:hover {
+        background: #ff8c00;
+    }
+
+    /* Mobile Menu Toggle */
+    .mobile-menu-toggle {
+        display: none;
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 999;
+        background: #2c3e50;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .admin-sidebar {
+            transform: translateX(-100%);
+        }
+        
+        .admin-sidebar.mobile-open {
+            transform: translateX(0);
+        }
+        
+        .admin-content {
+            margin-left: 0;
+        }
+        
+        .mobile-menu-toggle {
+            display: block;
+        }
+    }
+    .rounded-12 { border-radius: 12px !important; }
+    .bg-light { background-color: #f8f9fa !important; }
+    .text-primary { color: #ffbc3b !important; }
+    .bg-primary { background-color: #2c3e50 !important; }
+    </style>
+{% endblock %}
+
+{% block body %}
+<!-- Sidebar -->
+<div class="admin-sidebar" id="adminSidebar">
+  <div class="sidebar-toggle" onclick="toggleSidebar()">
+    <i class="ti-menu"></i>
+  </div>
+  
+  <ul class="sidebar-menu">
+    <li>
+      <a href="javascript:void(0);" class="active" onclick="showSection('dashboard', event)">
+        <i class="ti-dashboard"></i>
+        <span>Tableau de Bord</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0);" onclick="showSection('users', event)">
+        <i class="ti-user"></i>
+        <span>Utilisateurs</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0);" onclick="showSection('quiz', event)">
+        <i class="ti-id-badge"></i>
+        <span>Quiz</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0);" onclick="showSection('courses', event)">
+        <i class="ti-book"></i>
+        <span>Cours</span>
+      </a>
+    </li>
+    <li>
+      <a href="{{ path('app_bourse_index') }}">
+        <i class="ti-medall"></i>
+        <span>Bourses</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0);" onclick="showSection('stats', event)">
+        <i class="ti-pie-chart"></i>
+        <span>Statistiques</span>
+      </a>
+    </li>
+    <li>
+      <a href="{{ path('app_event_index') }}">
+        <i class="ti-calendar"></i>
+        <span>Événements</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0);" onclick="showSection('forum', event)">
+        <i class="ti-comments"></i>
+        <span>Forum</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0);" onclick="showSection('analytics', event)">
+        <i class="ti-bar-chart"></i>
+        <span>Analytiques</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0);" onclick="showSection('content', event)">
+        <i class="ti-files"></i>
+        <span>Contenu</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0);" onclick="showSection('settings', event)">
+        <i class="ti-settings"></i>
+        <span>Paramètres</span>
+      </a>
+    </li>
+    <li>
+      <a href="javascript:void(0);" onclick="showSection('reports', event)">
+        <i class="ti-receipt"></i>
+        <span>Rapports</span>
+      </a>
+    </li>
+  </ul>
+</div>
+
+<!-- Mobile Menu Toggle -->
+<div class="mobile-menu-toggle" onclick="toggleMobileSidebar()">
+  <i class="ti-menu"></i>
+</div>
+
+<!-- Main Content -->
+<div class="admin-content" id="adminContent">
+  
+  <!-- Dashboard Section -->
+  <div id="section-dashboard" class="content-section">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="mb-0">Tableau de Bord Administrateur</h2>
+      <div>
+        <a href="#" class="btn btn-primary mr-2">
+          <i class="ti-download mr-2"></i>Exporter Rapport
+        </a>
+        <button class="btn btn-outline-primary" onclick="location.reload()">
+          <i class="ti-reload mr-2"></i>Actualiser
+        </button>
+      </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+      <div class="col-lg-3 col-md-6">
+        <div class="stat-card primary">
+          <i class="ti-user stat-icon"></i>
+          <h3>{{ stats.totalUsers|number_format(0, ',', ' ') }}</h3>
+          <p>Total Utilisateurs</p>
+          <small style="opacity: 0.8;">+{{ 0 }}% ce mois</small>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="stat-card success">
+          <i class="ti-book stat-icon"></i>
+          <h3>{{ stats.activeCourses }}</h3>
+          <p>Cours Actifs</p>
+          <small style="opacity: 0.8;">+{{ stats.newCourses }} nouveaux</small>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="stat-card warning">
+          <i class="ti-id-badge stat-icon"></i>
+          <h3>{{ stats.totalInstructors }}</h3>
+          <p>Formateurs</p>
+          <small style="opacity: 0.8;">+{{ stats.newInstructors }} ce mois</small>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6">
+        <div class="stat-card info">
+          <i class="ti-medall stat-icon"></i>
+          <h3>{{ stats.scholarshipRequests }}</h3>
+          <p>Demandes de Bourses</p>
+          <small style="opacity: 0.8;">{{ stats.pendingScholarships }} en attente</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="dashboard-card">
+      <h4 class="mb-4">Actions Rapides</h4>
+      <div class="row">
+        <div class="col-lg-3 col-md-6 mb-3">
+          <a href="#" class="quick-action-card">
+            <i class="ti-plus"></i>
+            <h5>Nouveau Cours</h5>
+            <p>Ajouter un cours</p>
+          </a>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+          <a href="#" class="quick-action-card">
+            <i class="ti-user"></i>
+            <h5>Nouvel Utilisateur</h5>
+            <p>Créer un compte</p>
+          </a>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+          <a href="#" class="quick-action-card">
+            <i class="ti-announcement"></i>
+            <h5>Nouvelle Annonce</h5>
+            <p>Publier une annonce</p>
+          </a>
+        </div>
+        <div class="col-lg-3 col-md-6 mb-3">
+          <a href="#" class="quick-action-card">
+            <i class="ti-email"></i>
+            <h5>Email Groupe</h5>
+            <p>Envoyer un email</p>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row">
+      <div class="col-lg-8">
+        <div class="dashboard-card">
+          <h4 class="mb-3">Inscriptions Mensuelles</h4>
+          <div class="chart-container">
+            <canvas id="registrationsChart"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="dashboard-card">
+          <h4 class="mb-3">Activité Récente</h4>
+          <div style="max-height: 300px; overflow-y: auto;">
+            {% for activity in recentActivities %}
+            <div class="activity-item">
+              <div class="activity-icon {{ activity.type }}">
+                <i class="ti-{{ activity.icon }}"></i>
+              </div>
+              <div class="activity-content">
+                <h6>{{ activity.title }}</h6>
+                <p>{{ activity.description }}</p>
+                <span class="activity-time">{{ activity.time }}</span>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Courses -->
+    <div class="dashboard-card">
+      <h4 class="mb-3">Cours les Plus Populaires</h4>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Cours</th>
+            <th>Formateur</th>
+            <th>Étudiants</th>
+            <th>Note</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for course in popularCourses %}
+          <tr>
+            <td><strong>{{ course.title }}</strong></td>
+            <td>{{ course.instructor.title }} {{ course.instructor.firstName }} {{ course.instructor.lastName }}</td>
+            <td>{{ course.enrolledCount|number_format(0, ',', ' ') }}</td>
+            <td>⭐ {{ course.averageRating }}/5</td>
+            <td>
+              {% if course.isActive %}
+                <span class="status-badge active">Actif</span>
+              {% else %}
+                <span class="status-badge inactive">Inactif</span>
+              {% endif %}
+            </td>
+            <td>
+              <a href="#" class="action-btn view"><i class="ti-eye"></i></a>
+              <a href="#" class="action-btn edit"><i class="ti-pencil"></i></a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Users Section -->
+  <div id="section-users" class="content-section" style="display: none;">
+    <div class="page-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h2 class="mb-1">Gestion des Utilisateurs</h2>
+          <p class="text-muted mb-0">Recherchez et gérez tous les utilisateurs de la plateforme</p>
+        </div>
+        <a href="#" class="btn btn-primary">
+          <i class="ti-plus mr-2"></i>Ajouter Utilisateur
+        </a>
+      </div>
+    </div>
+
+    <!-- Enhanced Search -->
+    <div class="dashboard-card">
+      <h5 class="mb-3"><i class="ti-search mr-2"></i>Recherche Avancée</h5>
+      <form method="get" action="#">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="admin-search mb-3">
+              <input type="text" name="search" placeholder="Rechercher par nom, email, ID..." value="{{ searchQuery }}" id="userSearch">
+              <button type="submit">Rechercher</button>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <select name="status" class="form-control" style="padding: 15px; border: 2px solid #eef0f8; border-radius: 12px;" onchange="this.form.submit()">
+              <option value="">Tous les statuts</option>
+              <option value="active" {% if statusFilter == 'active' %}selected{% endif %}>Actifs uniquement</option>
+              <option value="inactive" {% if statusFilter == 'inactive' %}selected{% endif %}>Inactifs uniquement</option>
+            </select>
+          </div>
+        </div>
+      </form>
+      
+      <div class="filter-group">
+        <a href="#" class="filter-btn {% if currentFilter == 'all' %}active{% endif %}">Tous ({{ userCounts.total }})</a>
+        <a href="#" class="filter-btn {% if currentFilter == 'active' %}active{% endif %}">Actifs ({{ userCounts.active }})</a>
+        <a href="#" class="filter-btn {% if currentFilter == 'inactive' %}active{% endif %}">Inactifs ({{ userCounts.inactive }})</a>
+        <a href="#" class="filter-btn {% if currentFilter == 'recent' %}active{% endif %}">Récents ({{ userCounts.recent }})</a>
+      </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="dashboard-card">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="mb-0"><i class="ti-list mr-2"></i>Liste des Utilisateurs</h4>
+        <div>
+          <a href="#" class="btn btn-outline-primary btn-sm mr-2">
+            <i class="ti-download mr-2"></i>Exporter CSV
+          </a>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Utilisateur</th>
+              <th>Email</th>
+              <th>Date d'inscription</th>
+              <th>Rôle</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersTableBody">
+            {% for user in users %}
+            <tr>
+              <td><strong>#{{ user.id }}</strong></td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mr-3" style="width: 40px; height: 40px; font-weight: 600;">
+                    {{ user.prenom|slice(0, 1) }}{{ user.nom|slice(0, 1) }}
+                  </div>
+                  <strong>{{ user.prenom }} {{ user.nom }}</strong>
+                </div>
+              </td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.DateInscription ? user.DateInscription|date('d M Y') : 'N/A' }}</td>
+              <td>
+                {% if 'ROLE_ADMIN' in user.roles or 'ROLE_SUPER_ADMIN' in user.roles %}
+                  <span class="badge badge-danger">Admin</span>
+                {% elseif 'ROLE_TEACHER' in user.roles %}
+                  <span class="badge badge-warning">Formateur</span>
+                {% else %}
+                  <span class="badge badge-info">Étudiant</span>
+                {% endif %}
+              </td>
+              <td>
+                <a href="#" class="action-btn view" title="Voir le profil"><i class="ti-eye"></i></a>
+                <a href="#" class="action-btn edit" title="Modifier"><i class="ti-pencil"></i></a>
+                <button class="action-btn delete" title="Supprimer" onclick="confirmDelete({{ user.id }})"><i class="ti-trash"></i></button>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="6" class="text-center py-4">Aucun utilisateur trouvé</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Pagination -->
+      {% if users|length > 0 %}
+      <div class="d-flex justify-content-center mt-4">
+        {{ knp_pagination_render(users) }}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Quiz Section -->
+  <div id="section-quiz" class="content-section" style="display: none;">
+    <div class="page-header">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 class="mb-1">Gestion des Quiz</h2>
+          <p class="text-muted mb-0">Gérez tous les quiz et certifications de la plateforme</p>
+        </div>
+        <a href="{{ path('new_quiz') }}" class="btn btn-primary">
+            <i class="ti-plus mr-2"></i>Créer un Quiz
+        </a>
+      </div>
+    </div>
+
+    <!-- Quiz Statistics Cards -->
+    <div class="row mb-4">
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="stat-card primary">
+          <i class="ti-clipboard stat-icon"></i>
+          <h3>{{ totalQuizzes }}</h3>
+          <p>Total des Quiz</p>
+          <small style="opacity: 0.8;">Tous types confondus</small>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="stat-card success">
+          <i class="ti-medall stat-icon"></i>
+          <h3>{{ totalCertifications }}</h3>
+          <p>Certifications</p>
+          <small style="opacity: 0.8;">Délivrées au total</small>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-md-6 mb-4">
+        <div class="stat-card warning">
+          <i class="ti-stats-up stat-icon"></i>
+          <h3>{{ averageScore|number_format(1) }}/100</h3>
+          <p>Score Moyen</p>
+          <small style="opacity: 0.8;">Tous quiz confondus</small>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quiz Ranking & List Section -->
+    <div class="row">
+      <div class="col-lg-6 mb-4">
+        <div class="dashboard-card">
+          <h4 class="mb-3"><i class="ti-crown mr-2"></i>Classement des Quiz</h4>
+          <p class="text-muted mb-4">Par nombre de certifications délivrées</p>
+          {% if ranking is not empty %}
+            <div class="quiz-ranking" style="max-height: 500px; overflow-y: auto;">
+              {% for rank in ranking|slice(0, 10) %}
+                <div class="ranking-item d-flex justify-content-between align-items-center mb-3 p-3" style="border-bottom: 1px solid #eef0f8;">
+                  <div class="d-flex align-items-center flex-grow-1">
+                    <span class="rank-badge">
+                      #{{ loop.index }}
+                    </span>
+                    <div class="ml-3">
+                      <h6 class="mb-1"><strong>{{ rank.titre }}</strong></h6>
+                      <small class="text-muted">
+                        <i class="ti-medall"></i> {{ rank.certCount }} certification(s)
+                      </small>
+                    </div>
+                  </div>
+                  <div class="progress ml-3" style="width: 120px; height: 10px; border-radius: 5px;">
+                    {% set percentage = totalCertifications > 0 ? (rank.certCount / totalCertifications * 100)|round : 0 %}
+                    <div class="progress-bar" role="progressbar" 
+                         style="width: {{ percentage }}%; background: linear-gradient(90deg, #ffbc3b 0%, #ff8c00 100%);" 
+                         aria-valuenow="{{ percentage }}" 
+                         aria-valuemin="0" 
+                         aria-valuemax="100">
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <div class="text-center py-5">
+              <i class="ti-clipboard text-muted" style="font-size: 48px; opacity: 0.3;"></i>
+              <p class="text-muted mt-3">Aucun quiz disponible</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Quiz List Section -->
+      <div class="col-lg-6 mb-4">
+        <div class="dashboard-card">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+              <h4 class="mb-1"><i class="ti-list mr-2"></i>Liste des Quiz</h4>
+              <small class="text-muted">{{ totalQuizzes }} quiz au total</small>
+            </div>
+            <div class="btn-group">
+              <button class="btn btn-sm btn-outline-primary active" onclick="filterQuiz('all', event)">Tous</button>
+              <button class="btn btn-sm btn-outline-primary" onclick="filterQuiz('intermédiaire', event)">Intermédiaire</button>
+              <button class="btn btn-sm btn-outline-primary" onclick="filterQuiz('final', event)">Final</button>
+            </div>
+          </div>
+          <div class="quiz-list-container" style="max-height: 500px; overflow-y: auto;">
+            {% if quizs is not empty %}
+              {% for quiz in quizs %}
+                <div class="quiz-item p-3 mb-3 quiz-type-{{ quiz.typeQuiz|lower }}" 
+                     data-type="{{ quiz.typeQuiz|lower }}"
+                     style="border: 2px solid #eef0f8; border-radius: 12px; background: white; transition: all 0.3s;">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div class="flex-grow-1">
+                      <h6 class="mb-2"><strong>{{ quiz.titre }}</strong></h6>
+                      <div class="d-flex flex-wrap gap-2 mb-2">
+                        <span class="badge {% if quiz.typeQuiz == 'Final' %}badge-danger{% else %}badge-info{% endif %}">
+                          {{ quiz.typeQuiz }}
+                        </span>
+                        <span class="badge badge-secondary">
+                          <i class="ti-time"></i> {{ quiz.duree }} min
+                        </span>
+                        <span class="badge badge-warning">
+                          <i class="ti-target"></i> {{ quiz.scoreMinimum }}%
+                        </span>
+                      </div>
+                      <small class="text-muted d-block mb-1">
+                        <i class="ti-book"></i> {{ quiz.coursAssocie ? quiz.coursAssocie.titreCours : 'Non assigné' }}
+                      </small>
+                      <small class="text-muted d-block mb-1">
+                        <i class="ti-help-alt"></i> {{ quiz.questions|length }} question(s)
+                      </small>
+                      <small class="text-muted d-block">
+                        <i class="ti-medall"></i> {{ quiz.certifications|length }} certification(s)
+                      </small>
+                    </div>
+                    <div class="dropdown">
+                      <button class="btn btn-sm btn-outline-secondary" type="button" 
+                              id="quizAction{{ quiz.id }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          <i class="ti-more-alt"></i>
+                      </button>
+                      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="quizAction{{ quiz.id }}">
+                          <a class="dropdown-item" href="{{ path('quiz_take', {id: quiz.id}) }}">
+                              <i class="ti-eye"></i> Voir
+                          </a>
+                          <a class="dropdown-item" href="{{ path('back_quiz_edit', {id: quiz.id}) }}">
+                              <i class="ti-pencil"></i> Modifier
+                          </a>
+                          <a class="dropdown-item" href="#">
+                              <i class="ti-help-alt"></i> Gérer Questions
+                          </a>
+                          <div class="dropdown-divider"></div>
+                          <a class="dropdown-item text-danger" href="#" 
+                            onclick="event.preventDefault(); if(confirm('Êtes-vous sûr de vouloir supprimer ce quiz ?')) { document.getElementById('delete-form-{{ quiz.id }}').submit(); }">
+                              <i class="ti-trash"></i> Supprimer
+                          </a>
+                      </div>
+                  </div>
+
+                  {# Hidden form for delete action #}
+                  <form id="delete-form-{{ quiz.id }}" 
+                        action="{{ path('back_quiz_delete', {id: quiz.id}) }}" 
+                        method="POST" 
+                        style="display: none;">
+                      <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ quiz.id) }}">
+                  </form>
+                                    </div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div class="text-center py-5">
+                <i class="ti-clipboard text-muted" style="font-size: 48px; opacity: 0.3;"></i>
+                <p class="text-muted mt-3">Aucun quiz disponible</p>
+                <a href="{{ path('new_quiz') }}" class="btn btn-primary mt-2">
+                  <i class="ti-plus mr-2"></i>Créer votre premier quiz
+                </a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Certifications -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="dashboard-card">
+          <h4 class="mb-3"><i class="ti-medall mr-2"></i>Certifications Récentes</h4>
+          <p class="text-muted mb-4">Les 10 dernières certifications obtenues</p>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Utilisateur</th>
+                  <th>Quiz</th>
+                  <th>Score</th>
+                  <th>Statut</th>
+                  <th>Badge</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% set recentCertifications = [] %}
+                {% for quiz in quizs %}
+                  {% for certification in quiz.certifications %}
+                    {% set recentCertifications = recentCertifications|merge([certification]) %}
+                  {% endfor %}
+                {% endfor %}
+                
+                {% if recentCertifications is not empty %}
+                  {% for cert in recentCertifications|slice(0, 10) %}
+                    <tr>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mr-3" 
+                               style="width: 40px; height: 40px; font-weight: 600;">
+                            {{ cert.user.prenom|slice(0, 1)|upper }}{{ cert.user.nom|slice(0, 1)|upper }}
+                          </div>
+                          <div>
+                            <div><strong>{{ cert.user.prenom }} {{ cert.user.nom }}</strong></div>
+                            <small class="text-muted">{{ cert.user.email }}</small>
+                          </div>
+                        </div>
+                      </td>
+                      <td>{{ cert.quiz.titre }}</td>
+                      <td>
+                        <strong class="{% if cert.scoreObtenu >= cert.quiz.scoreMinimum %}text-success{% else %}text-danger{% endif %}">
+                          {{ cert.scoreObtenu|number_format(1) }}%
+                        </strong>
+                      </td>
+                      <td>
+                        <span class="status-badge {% if cert.statut == 'Réussi' %}active{% else %}inactive{% endif %}">
+                          {{ cert.statut }}
+                        </span>
+                      </td>
+                      <td>
+                        <span class="badge {% if cert.badge == 'Platine' %}badge-primary{% elseif cert.badge == 'Or' %}badge-warning{% elseif cert.badge == 'Argent' %}badge-secondary{% else %}badge-dark{% endif %}">
+                          <i class="ti-medall"></i> {{ cert.badge }}
+                        </span>
+                      </td>
+                      <td>
+                        <small>{{ cert.dateAttribution|date('d/m/Y H:i') }}</small>
+                      </td>
+                      <td>
+                        <a href="#" class="action-btn view" title="Voir">
+                          <i class="ti-eye"></i>
+                        </a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr>
+                    <td colspan="7" class="text-center py-5">
+                      <i class="ti-medall text-muted" style="font-size: 36px; opacity: 0.3;"></i>
+                      <p class="text-muted mt-2">Aucune certification pour le moment</p>
+                    </td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Courses Section -->
+<div id="section-courses" class="content-section" style="display: none;">
+  <div class="page-header">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h2 class="mb-1">Gestion des Cours</h2>
+        <p class="text-muted mb-0">Gérez tous les cours de la plateforme</p>
+      </div>
+      <a href="{{ path('front_cours_index') }}" class="btn btn-primary">
+        <i class="ti-plus mr-2"></i>Créer un Cours
+      </a>
+    </div>
+  </div>
+
+  <!-- Course Statistics Cards -->
+  <div class="row mb-4">
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="stat-card primary">
+        <i class="ti-book stat-icon"></i>
+        <h3>{{ totalCourses }}</h3>
+        <p>Total des Cours</p>
+        <small style="opacity: 0.8;">Tous niveaux confondus</small>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="stat-card success">
+        <i class="ti-user stat-icon"></i>
+        <h3>{{ stats.totalInstructors }}</h3>
+        <p>Formateurs Actifs</p>
+        <small style="opacity: 0.8;">Ayant créé des cours</small>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="stat-card warning">
+        <i class="ti-world stat-icon"></i>
+        <h3>{{ totalLanguages }}</h3>
+        <p>Langues</p>
+        <small style="opacity: 0.8;">Disponibles</small>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6 mb-4">
+      <div class="stat-card info">
+        <i class="ti-layers stat-icon"></i>
+        <h3>{{ totalSubjects }}</h3>
+        <p>Matières</p>
+        <small style="opacity: 0.8;">Différentes</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search and Filter Section -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="dashboard-card">
+        <form method="GET" action="{{ path('app_profile') }}" class="mb-0">
+          <input type="hidden" name="section" value="courses">
+          <div class="row align-items-end">
+            <div class="col-md-4 mb-3 mb-md-0">
+              <label class="form-label">Rechercher</label>
+              <input type="text" 
+                     class="form-control" 
+                     name="search" 
+                     value="{{ courseFilters.search }}" 
+                     placeholder="Titre, matière, langue...">
+            </div>
+            <div class="col-md-3 mb-3 mb-md-0">
+              <label class="form-label">Critère de recherche</label>
+              <select class="form-control" name="search_criteria">
+                <option value="titre" {% if courseFilters.criteria == 'titre' %}selected{% endif %}>Titre</option>
+                <option value="matiere" {% if courseFilters.criteria == 'matiere' %}selected{% endif %}>Matière</option>
+                <option value="niv" {% if courseFilters.criteria == 'niv' %}selected{% endif %}>Niveau</option>
+                <option value="langue" {% if courseFilters.criteria == 'langue' %}selected{% endif %}>Langue</option>
+              </select>
+            </div>
+            <div class="col-md-3 mb-3 mb-md-0">
+              <label class="form-label">Trier par</label>
+              <select class="form-control" name="sort">
+                <option value="id" {% if courseFilters.sort == 'id' %}selected{% endif %}>Plus récent</option>
+                <option value="titre" {% if courseFilters.sort == 'titre' %}selected{% endif %}>Titre (A-Z)</option>
+                <option value="niv" {% if courseFilters.sort == 'niv' %}selected{% endif %}>Niveau</option>
+                <option value="matiere" {% if courseFilters.sort == 'matiere' %}selected{% endif %}>Matière</option>
+                <option value="langue" {% if courseFilters.sort == 'langue' %}selected{% endif %}>Langue</option>
+              </select>
+            </div>
+            <div class="col-md-2">
+              <button type="submit" class="btn btn-primary btn-block">
+                <i class="ti-search mr-1"></i>Rechercher
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Courses List and Statistics -->
+  <div class="row">
+    <!-- Course Statistics by Level -->
+    <div class="col-lg-4 mb-4">
+      <div class="dashboard-card">
+        <h4 class="mb-3"><i class="ti-bar-chart mr-2"></i>Répartition par Niveau</h4>
+        <p class="text-muted mb-4">Distribution des cours par niveau</p>
+        
+        {% set levelStats = {
+          'Débutant': 0,
+          'Intermédiaire': 0,
+          'Avancé': 0,
+          'Expert': 0
+        } %}
+        
+        {% for course in allCourses %}
+          {% set currentLevel = course.nivCours %}
+          {% if currentLevel in levelStats|keys %}
+            {% set levelStats = levelStats|merge({(currentLevel): levelStats[currentLevel] + 1}) %}
+          {% endif %}
+        {% endfor %}
+        
+        <div class="level-stats">
+          {% for level, count in levelStats %}
+            <div class="level-stat-item mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span><strong>{{ level }}</strong></span>
+                <span class="badge badge-primary">{{ count }}</span>
+              </div>
+              <div class="progress" style="height: 10px; border-radius: 5px;">
+                {% set percentage = totalCourses > 0 ? (count / totalCourses * 100)|round : 0 %}
+                <div class="progress-bar" 
+                     role="progressbar" 
+                     style="width: {{ percentage }}%; background: linear-gradient(90deg, #ffbc3b 0%, #ff8c00 100%);" 
+                     aria-valuenow="{{ percentage }}" 
+                     aria-valuemin="0" 
+                     aria-valuemax="100">
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Top Instructors -->
+      <div class="dashboard-card mt-4">
+        <h4 class="mb-3"><i class="ti-crown mr-2"></i>Top Formateurs</h4>
+        <p class="text-muted mb-4">Par nombre de cours créés</p>
+        
+        {% set instructorCourseCount = {} %}
+        {% for course in allCourses %}
+          {% if course.createur %}
+            {% set instructorId = course.createur.id %}
+            {% if instructorId in instructorCourseCount|keys %}
+              {% set instructorCourseCount = instructorCourseCount|merge({(instructorId): {
+                'count': instructorCourseCount[instructorId].count + 1,
+                'instructor': course.createur
+              }}) %}
+            {% else %}
+              {% set instructorCourseCount = instructorCourseCount|merge({(instructorId): {
+                'count': 1,
+                'instructor': course.createur
+              }}) %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+        
+        {% set sortedInstructors = instructorCourseCount|sort((a, b) => b.count <=> a.count) %}
+        
+        {% if sortedInstructors is not empty %}
+          <div class="instructor-ranking" style="max-height: 300px; overflow-y: auto;">
+            {% for instructorId, data in sortedInstructors|slice(0, 5) %}
+              <div class="ranking-item d-flex align-items-center mb-3 p-2" style="border-bottom: 1px solid #eef0f8;">
+                <span class="rank-badge mr-3">#{{ loop.index }}</span>
+                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mr-3" 
+                     style="width: 40px; height: 40px; font-weight: 600; font-size: 14px;">
+                  {{ data.instructor.prenom|slice(0, 1)|upper }}{{ data.instructor.nom|slice(0, 1)|upper }}
+                </div>
+                <div class="flex-grow-1">
+                  <h6 class="mb-0"><strong>{{ data.instructor.prenom }} {{ data.instructor.nom }}</strong></h6>
+                  <small class="text-muted">{{ data.count }} cours</small>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-center py-3">
+            <p class="text-muted">Aucun formateur actif</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Course List -->
+    <div class="col-lg-8 mb-4">
+      <div class="dashboard-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h4 class="mb-1"><i class="ti-list mr-2"></i>Liste des Cours</h4>
+            <small class="text-muted">{{ allCourses|length }} cours au total</small>
+          </div>
+        </div>
+
+        <div class="course-list-container" style="max-height: 600px; overflow-y: auto;">
+          {% if allCourses is not empty %}
+            {% for course in allCourses %}
+              <div class="course-item p-3 mb-3" 
+                   style="border: 2px solid #eef0f8; border-radius: 12px; background: white; transition: all 0.3s;">
+                <div class="d-flex justify-content-between align-items-start">
+                  <div class="flex-grow-1">
+                    <h6 class="mb-2"><strong>{{ course.titreCours }}</strong></h6>
+                    
+                    <div class="d-flex flex-wrap gap-2 mb-2">
+                      <span class="badge badge-primary">
+                        <i class="ti-layers"></i> {{ course.nivCours }}
+                      </span>
+                      <span class="badge badge-info">
+                        <i class="ti-book"></i> {{ course.matiereCours }}
+                      </span>
+                      <span class="badge badge-secondary">
+                        <i class="ti-world"></i> {{ course.langueCours }}
+                      </span>
+                    </div>
+
+                    <div class="mb-2">
+                      {% if course.description %}
+                        <small class="text-muted d-block">
+                          <i class="ti-align-left"></i> 
+                          {{ course.description|length > 100 ? course.description|slice(0, 100) ~ '...' : course.description }}
+                        </small>
+                      {% endif %}
+                    </div>
+
+                    <div class="d-flex align-items-center mt-2">
+                      {% if course.createur %}
+                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mr-2" 
+                             style="width: 30px; height: 30px; font-weight: 600; font-size: 12px;">
+                          {{ course.createur.prenom|slice(0, 1)|upper }}{{ course.createur.nom|slice(0, 1)|upper }}
+                        </div>
+                        <small class="text-muted">
+                          <strong>{{ course.createur.prenom }} {{ course.createur.nom }}</strong>
+                        </small>
+                      {% else %}
+                        <small class="text-muted">Formateur non assigné</small>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  <div class="dropdown ml-3">
+                    <button class="btn btn-sm btn-outline-secondary" 
+                            type="button" 
+                            id="courseAction{{ course.id }}" 
+                            data-toggle="dropdown" 
+                            aria-haspopup="true" 
+                            aria-expanded="false">
+                      <i class="ti-more-alt"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="courseAction{{ course.id }}">
+                      <a class="dropdown-item" href="{{ path('course_show', {id: course.id}) }}">
+                        <i class="ti-eye"></i> Voir
+                      </a>
+                      <a class="dropdown-item" href="#" 
+                         onclick="event.preventDefault(); editCourse({{ course.id }}, '{{ course.titreCours|e('js') }}', '{{ course.nivCours|e('js') }}', '{{ course.matiereCours|e('js') }}', '{{ course.langueCours|e('js') }}', '{{ course.description|e('js') }}')">
+                        <i class="ti-pencil"></i> Modifier
+                      </a>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item text-danger" 
+                         href="#" 
+                         onclick="event.preventDefault(); if(confirm('Êtes-vous sûr de vouloir supprimer ce cours ? Cette action supprimera également tous les chapitres associés.')) { document.getElementById('delete-course-form-{{ course.id }}').submit(); }">
+                        <i class="ti-trash"></i> Supprimer
+                      </a>
+                    </div>
+                  </div>
+
+                  {# Hidden form for delete action #}
+                  <form id="delete-course-form-{{ course.id }}" 
+                        action="{{ path('back_course_delete', {id: course.id}) }}" 
+                        method="POST" 
+                        style="display: none;">
+                  </form>
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="text-center py-5">
+              <i class="ti-book text-muted" style="font-size: 48px; opacity: 0.3;"></i>
+              <p class="text-muted mt-3">Aucun cours disponible</p>
+              <a href="{{ path('front_cours_index') }}" class="btn btn-primary mt-2">
+                <i class="ti-plus mr-2"></i>Créer le premier cours
+              </a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Course Details by Subject -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="dashboard-card">
+        <h4 class="mb-3"><i class="ti-book mr-2"></i>Détails des Cours par Matière</h4>
+        <p class="text-muted mb-4">Vue d'ensemble des cours organisés par matière</p>
+        
+        {% set coursesBySubject = {} %}
+        {% for course in allCourses %}
+          {% set subject = course.matiereCours %}
+          {% if subject not in coursesBySubject|keys %}
+            {% set coursesBySubject = coursesBySubject|merge({(subject): []}) %}
+          {% endif %}
+          {% set coursesBySubject = coursesBySubject|merge({
+            (subject): coursesBySubject[subject]|merge([course])
+          }) %}
+        {% endfor %}
+        
+        <div class="table-responsive">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Titre du Cours</th>
+                <th>Matière</th>
+                <th>Niveau</th>
+                <th>Langue</th>
+                <th>Formateur</th>
+                <th>Date de Création</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if allCourses is not empty %}
+                {% for course in allCourses|slice(0, 20) %}
+                  <tr>
+                    <td><strong>{{ course.titreCours }}</strong></td>
+                    <td>
+                      <span class="badge badge-info">{{ course.matiereCours }}</span>
+                    </td>
+                    <td>
+                      <span class="badge badge-primary">{{ course.nivCours }}</span>
+                    </td>
+                    <td>
+                      <span class="badge badge-secondary">{{ course.langueCours }}</span>
+                    </td>
+                    <td>
+                      {% if course.createur %}
+                        <div class="d-flex align-items-center">
+                          <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mr-2" 
+                               style="width: 30px; height: 30px; font-weight: 600; font-size: 11px;">
+                            {{ course.createur.prenom|slice(0, 1)|upper }}{{ course.createur.nom|slice(0, 1)|upper }}
+                          </div>
+                          <small>{{ course.createur.prenom }} {{ course.createur.nom }}</small>
+                        </div>
+                      {% else %}
+                        <small class="text-muted">Non assigné</small>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <small>{{ 'now'|date('d/m/Y') }}</small>
+                    </td>
+                    <td>
+                      <a href="{{ path('course_show', {id: course.id}) }}" class="action-btn view" title="Voir">
+                        <i class="ti-eye"></i>
+                      </a>
+                      <a href="#" class="action-btn edit" title="Modifier"
+                         onclick="event.preventDefault(); editCourse({{ course.id }}, '{{ course.titreCours|e('js') }}', '{{ course.nivCours|e('js') }}', '{{ course.matiereCours|e('js') }}', '{{ course.langueCours|e('js') }}', '{{ course.description|e('js') }}')">
+                        <i class="ti-pencil"></i>
+                      </a>
+                      <a href="#" class="action-btn delete" title="Supprimer"
+                         onclick="event.preventDefault(); if(confirm('Êtes-vous sûr de vouloir supprimer ce cours ?')) { document.getElementById('delete-course-form-{{ course.id }}').submit(); }">
+                        <i class="ti-trash"></i>
+                      </a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="7" class="text-center py-5">
+                    <i class="ti-book text-muted" style="font-size: 36px; opacity: 0.3;"></i>
+                    <p class="text-muted mt-2">Aucun cours pour le moment</p>
+                  </td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Course Modal -->
+<div class="modal fade" id="editCourseModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content rounded-0 border-0 p-4">
+      <div class="modal-header border-0">
+        <h3><i class="ti-pencil mr-2"></i>Modifier le Cours</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="editCourseForm" method="POST">
+          <div class="form-group">
+            <label>Titre du cours <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="edit_titre_cours" name="titre_cours" required>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Niveau <span class="text-danger">*</span></label>
+                <select class="form-control" id="edit_niv_cours" name="niv_cours" required>
+                  <option value="Débutant">Débutant</option>
+                  <option value="Intermédiaire">Intermédiaire</option>
+                  <option value="Avancé">Avancé</option>
+                  <option value="Expert">Expert</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label>Matière <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" id="edit_matiere_cours" name="matiere_cours" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Langue <span class="text-danger">*</span></label>
+            <select class="form-control" id="edit_langue_cours" name="langue_cours" required>
+              <option value="Français">Français</option>
+              <option value="Anglais">Anglais</option>
+              <option value="Arabe">Arabe</option>
+              <option value="Espagnol">Espagnol</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <textarea class="form-control" id="edit_description" name="description" rows="4"></textarea>
+          </div>
+
+          <div class="text-right">
+            <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">Annuler</button>
+            <button type="submit" class="btn btn-primary">
+              <i class="ti-check mr-1"></i>Enregistrer les modifications
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <div id="section-scholarships" class="content-section" style="display: none;">
+    <h2 class="mb-4">Gestion des Bourses</h2>
+    <div class="dashboard-card">
+      <p>Section des bourses - En développement</p>
+    </div>
+  </div>
+
+  <div id="section-forum" class="content-section" style="display: none;">
+    <h2 class="mb-4">Gestion du Forum</h2>
+    <div class="dashboard-card">
+      <p>Section du forum - En développement</p>
+    </div>
+  </div>
+
+  <div id="section-analytics" class="content-section" style="display: none;">
+    <h2 class="mb-4">Analytiques</h2>
+    <div class="dashboard-card">
+      <p>Section analytiques - En développement</p>
+    </div>
+  </div>
+
+  <div id="section-content" class="content-section" style="display: none;">
+    <h2 class="mb-4">Gestion du Contenu</h2>
+    <div class="dashboard-card">
+      <p>Section contenu - En développement</p>
+    </div>
+  </div>
+
+  <div id="section-settings" class="content-section" style="display: none;">
+    <h2 class="mb-4">Paramètres</h2>
+    <div class="dashboard-card">
+      <p>Section paramètres - En développement</p>
+    </div>
+  </div>
+
+  <div id="section-stats" class="content-section" style="display: none;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="mb-0">Tableau de Bord Statistiques</h2>
+    </div>
+
+    <div class="row mb-5">
+      <!-- Bourses Stats -->
+      <div class="col-lg-6">
+        <div class="dashboard-card h-100">
+          <h4 class="mb-4"><i class="ti-medall text-primary mr-2"></i>Statistiques des Bourses</h4>
+          <div class="row">
+            <div class="col-6 mb-4">
+              <div class="p-3 bg-light rounded-12 text-center">
+                <h3 class="mb-0 text-primary">{{ fullStats.bourses.total }}</h3>
+                <small class="text-muted">Total Bourses</small>
+              </div>
+            </div>
+            <div class="col-6 mb-4">
+              <div class="p-3 bg-light rounded-12 text-center">
+                <h3 class="mb-0 text-success">{{ fullStats.bourses.demandes }}</h3>
+                <small class="text-muted">Total Demandes</small>
+              </div>
+            </div>
+          </div>
+          
+          <div class="mb-4">
+            <h5>Répartition des demandes</h5>
+            <div class="mt-3">
+              {% for s in fullStats.bourses.statusDistribution %}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <span>
+                    {% if s.statut == 'En attente' %}⏳{% elseif s.statut == 'Accepté' %}✅{% else %}❌{% endif %}
+                    {{ s.statut }}
+                  </span>
+                  <span class="font-weight-bold">{{ s.count }}</span>
+                </div>
+                <div class="progress mb-3" style="height: 6px; border-radius: 10px;">
+                  {% set percent = (s.count / fullStats.bourses.demandes * 100)|round %}
+                  <div class="progress-bar {% if s.statut == 'En attente' %}bg-warning{% elseif s.statut == 'Accepté' %}bg-success{% else %}bg-danger{% endif %}" 
+                       style="width: {{ percent }}%"></div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="p-4 bg-primary text-white rounded-12 mt-4 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <small class="opacity-75 d-block">Montant Global</small>
+                <h2 class="mb-0">{{ fullStats.bourses.totalAmount|number_format(0, ',', ' ') }} <small>TND</small></h2>
+              </div>
+              <i class="ti-wallet" style="font-size: 40px; opacity: 0.3;"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Events Stats -->
+      <div class="col-lg-6">
+        <div class="dashboard-card h-100">
+          <h4 class="mb-4"><i class="ti-calendar text-primary mr-2"></i>Statistiques des Événements</h4>
+          <div class="row">
+            <div class="col-6 mb-4">
+              <div class="p-3 bg-light rounded-12 text-center">
+                <h3 class="mb-0 text-warning">{{ fullStats.events.total }}</h3>
+                <small class="text-muted">Total Événements</small>
+              </div>
+            </div>
+            <div class="col-6 mb-4">
+              <div class="p-3 bg-light rounded-12 text-center">
+                <h3 class="mb-0 text-info">{{ fullStats.events.inscriptions }}</h3>
+                <small class="text-muted">Inscriptions</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <h5>Types d'événements</h5>
+            <div class="row mt-3 text-center">
+              {% for t in fullStats.events.typeDistribution %}
+                <div class="col-4">
+                  <div class="p-2 border rounded-12">
+                    <h4 class="mb-0">{{ t.count }}</h4>
+                    <small class="text-muted text-capitalize">{{ t.type }}</small>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <h5>Événements Populaires</h5>
+            <div class="table-responsive mt-2">
+              <table class="table table-sm table-borderless">
+                <tbody>
+                  {% for e in fullStats.events.topEvents %}
+                  <tr class="border-bottom">
+                    <td class="py-2"><strong>{{ e.titre }}</strong></td>
+                    <td class="text-right py-2"><span class="badge badge-info">{{ e.inscriptionCount }} pers.</span></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <div class="row mt-4">
+      <div class="col-lg-6">
+        <div class="dashboard-card h-100">
+          <h5 class="mb-4"><i class="ti-pie-chart mr-2"></i>Détails Bourses</h5>
+          <div class="chart-container mb-4" style="height: 250px;">
+            <canvas id="bourseStatusChart"></canvas>
+          </div>
+          <div class="mt-3">
+             <ul class="list-unstyled">
+                {% for s in fullStats.bourses.statusDistribution %}
+                <li class="mb-2 d-flex justify-content-between">
+                    <span><i class="ti-control-record mr-2" style="color: {% if s.statut == 'En attente' %}#ffbc3b{% elseif s.statut == 'Accepté' %}#28a745{% else %}#dc3545{% endif %}"></i>{{ s.statut }}</span>
+                    <span class="badge badge-light">{{ s.count }}</span>
+                </li>
+                {% endfor %}
+             </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="dashboard-card h-100">
+          <h5 class="mb-4"><i class="ti-bar-chart mr-2"></i>Détails Événements</h5>
+          <div class="chart-container mb-4" style="height: 250px;">
+            <canvas id="eventTypeChart"></canvas>
+          </div>
+          <div class="mt-3">
+             <ul class="list-unstyled">
+                {% for t in fullStats.events.typeDistribution %}
+                <li class="mb-2 d-flex justify-content-between">
+                    <span class="text-capitalize">{{ t.type }}</span>
+                    <span class="badge badge-light">{{ t.count }}</span>
+                </li>
+                {% endfor %}
+             </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="section-reports" class="content-section" style="display: none;">
+    <h2 class="mb-4">Rapports</h2>
+    <div class="dashboard-card">
+      <p>Section rapports - En développement</p>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    
+    <script>
+    // Global chart instances
+    var registrationsChartInstance = null;
+    var bourseStatusChartInstance = null;
+    var eventTypeChartInstance = null;
+    
+    function initStatsCharts() {
+        // Bourse Status Chart
+        var bourseCanvas = document.getElementById('bourseStatusChart');
+        if (bourseCanvas && !bourseStatusChartInstance) {
+            try {
+                var bData = {{ (fullStats.bourses.chartData ?? {labels:[], data:[]})|json_encode|raw }};
+                if (bData.labels.length > 0) {
+                    bourseStatusChartInstance = new Chart(bourseCanvas, {
+                        type: 'doughnut',
+                        data: {
+                            labels: bData.labels,
+                            datasets: [{
+                                data: bData.data,
+                                backgroundColor: ['#ffbc3b', '#28a745', '#dc3545', '#17a2b8', '#6c757d'],
+                                hoverOffset: 4,
+                                borderWidth: 2,
+                                borderColor: '#ffffff'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: false }
+                            },
+                            cutout: '70%'
+                        }
+                    });
+                }
+            } catch(e) { console.error("Error init bourse chart:", e); }
+        }
+
+        // Event Type Chart
+        var eventCanvas = document.getElementById('eventTypeChart');
+        if (eventCanvas && !eventTypeChartInstance) {
+            try {
+                var eData = {{ (fullStats.events.chartData ?? {labels:[], data:[]})|json_encode|raw }};
+                if (eData.labels.length > 0) {
+                    eventTypeChartInstance = new Chart(eventCanvas, {
+                        type: 'bar',
+                        data: {
+                            labels: eData.labels,
+                            datasets: [{
+                                label: 'Nombre d\'événements',
+                                data: eData.data,
+                                backgroundColor: '#ffbc3b',
+                                borderRadius: 8
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: { beginAtZero: true, grid: { display: false }, ticks: { stepSize: 1 } },
+                                x: { grid: { display: false } }
+                            },
+                            plugins: {
+                                legend: { display: false }
+                            }
+                        }
+                    });
+                }
+            } catch(e) { console.error("Error init event chart:", e); }
+        }
+    }
+    
+    // Show/hide sections
+    function showSection(sectionName, evt) {
+        // Hide all sections
+        var sections = document.querySelectorAll('.content-section');
+        sections.forEach(function(section) {
+            section.style.display = 'none';
+        });
+        
+        // Show selected section
+        var selectedSection = document.getElementById('section-' + sectionName);
+        if (selectedSection) {
+            selectedSection.style.display = 'block';
+            
+            // Re-trigger chart resize if section is 'stats'
+            if (sectionName === 'stats') {
+                if (typeof initStatsCharts === 'function') {
+                    initStatsCharts();
+                }
+                setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+            }
+        }
+        
+        // Update active menu item
+        document.querySelectorAll('.sidebar-menu a').forEach(function(link) {
+            link.classList.remove('active');
+        });
+        
+        if (evt && evt.target) {
+            var clickedLink = evt.target.closest('a');
+            if (clickedLink) {
+                clickedLink.classList.add('active');
+            }
+        }
+    }
+
+    // Toggle sidebar
+    function toggleSidebar() {
+        var sidebar = document.getElementById('adminSidebar');
+        var content = document.getElementById('adminContent');
+        
+        if (sidebar) sidebar.classList.toggle('collapsed');
+        if (content) content.classList.toggle('expanded');
+    }
+
+    // Toggle mobile sidebar
+    function toggleMobileSidebar() {
+        var sidebar = document.getElementById('adminSidebar');
+        if (sidebar) sidebar.classList.toggle('mobile-open');
+    }
+
+    // Filter quiz by type
+    function filterQuiz(type, evt) {
+        var quizItems = document.querySelectorAll('.quiz-item');
+        var buttons = document.querySelectorAll('.btn-group button');
+        
+        buttons.forEach(function(btn) {
+            btn.classList.remove('active');
+        });
+        
+        if (evt && evt.target) {
+            evt.target.classList.add('active');
+        }
+        
+        quizItems.forEach(function(item) {
+            var itemType = item.getAttribute('data-type');
+            if (type === 'all' || itemType === type.toLowerCase()) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', function() {
+        // Check URL hash
+        var hash = window.location.hash.substring(1);
+        if (hash) {
+            showSection(hash);
+        } else {
+            var urlParams = new URLSearchParams(window.location.search);
+            var section = urlParams.get('section');
+            if (section) {
+                showSection(section);
+            } else {
+                showSection('dashboard');
+            }
+        }
+        
+        // Initialize chart ONCE
+        var chartCanvas = document.getElementById('registrationsChart');
+        if (chartCanvas && !registrationsChartInstance) {
+            var chartData = {{ chartData|json_encode|raw }};
+            
+            registrationsChartInstance = new Chart(chartCanvas, {
+                type: 'line',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        // Initialize stats charts if we are on the stats section
+        if (hash === 'stats' || (new URLSearchParams(window.location.search)).get('section') === 'stats') {
+            initStatsCharts();
+        }
+    });
+    
+    function confirmDelete(userId) {
+        if(confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
+            window.location.href = "#";
+        }
+    }
+    
+    function editCourse(id, titre, niveau, matiere, langue, description) {
+        var form = document.getElementById('editCourseForm');
+        if (form) {
+            form.action = '/admin/course/' + id + '/update';
+        }
+        
+        document.getElementById('edit_titre_cours').value = titre;
+        document.getElementById('edit_niv_cours').value = niveau;
+        document.getElementById('edit_matiere_cours').value = matiere;
+        document.getElementById('edit_langue_cours').value = langue;
+        document.getElementById('edit_description').value = description || '';
+        
+        if (typeof $ !== 'undefined' && $.fn.modal) {
+            $('#editCourseModal').modal('show');
+        }
+    }
+    </script>
+{% endblock %}

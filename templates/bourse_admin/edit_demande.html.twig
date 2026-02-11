@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Demande - {{ demande.etudiant.nom }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <style>
+        /* Reusing Backoffice Styles */
+        .navigation, header, .header, .top-header, nav.navbar { display: none !important; }
+        body { margin: 0 !important; padding: 0 !important; overflow-x: hidden; background: #f8f9fa; }
+        
+        /* Sidebar */
+        .admin-sidebar { position: fixed; left: 0; top: 0; width: 250px; height: 100vh; background: #2c3e50; color: white; z-index: 1000; padding-top: 20px; transition: all 0.3s; }
+        .sidebar-menu { list-style: none; padding: 0; margin: 20px 0; }
+        .sidebar-menu a { display: flex; align-items: center; padding: 15px 20px; color: rgba(255, 255, 255, 0.7); text-decoration: none; border-left: 3px solid transparent; transition: all 0.3s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background: rgba(255, 188, 59, 0.1); color: #ffbc3b; border-left: 3px solid #ffbc3b; }
+        .sidebar-menu a i { margin-right: 15px; font-size: 18px; min-width: 20px; }
+        
+        /* Content */
+        .admin-content { margin-left: 250px; padding: 20px 30px; min-height: 100vh; background: #f8f9fa; }
+        
+        /* Cards */
+        .dashboard-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); margin-bottom: 30px; border: 1px solid #edf2f9; }
+
+        /* Page Header */
+        .page-header { margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .page-header h2 { font-size: 26px; font-weight: 700; color: #2c3e50; margin: 0; }
+        .page-description { color: #6c757d; margin-top: 5px; font-size: 14px; }
+
+        /* Buttons */
+        .btn-primary { background: #ffbc3b; color: white; padding: 10px 25px; border-radius: 8px; border: none; text-decoration: none; font-weight: 600; box-shadow: 0 4px 6px rgba(255, 188, 59, 0.2); transition: all 0.3s; cursor: pointer; }
+        .btn-primary:hover { background: #ff8c00; color: white; transform: translateY(-2px); box-shadow: 0 6px 12px rgba(255, 188, 59, 0.3); }
+        .btn-back { background: #6c757d; color: white; padding: 10px 25px; border-radius: 8px; border: none; text-decoration: none; font-weight: 600; transition: all 0.3s; }
+        .btn-back:hover { background: #5a6268; color: white; }
+
+        /* Form */
+        .form-control { border: 1px solid #e0e6ed; border-radius: 8px; padding: 10px 15px; font-size: 14px; transition: all 0.3s; }
+        .form-control:focus { border-color: #ffbc3b; box-shadow: 0 0 0 3px rgba(255, 188, 59, 0.1); outline: none; }
+        .form-label { font-weight: 600; color: #2c3e50; margin-bottom: 8px; font-size: 14px; }
+        .error-text { color: #c92a2a; font-size: 12px; margin-top: 5px; }
+    </style>
+{% endblock %}
+
+{% block body %}
+<!-- Sidebar -->
+<div class="admin-sidebar">
+    <div class="sidebar-toggle" style="text-align: center; padding: 20px; font-size: 24px;">
+        <i class="ti-menu"></i>
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="{{ path('app_profile') }}"><i class="ti-dashboard"></i><span>Tableau de Bord</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-user"></i><span>Utilisateurs</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-id-badge"></i><span>Quiz</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-book"></i><span>Cours</span></a></li>
+        <li><a href="{{ path('app_bourse_index') }}" class="active"><i class="ti-medall"></i><span>Bourses</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-comments"></i><span>Forum</span></a></li>
+    </ul>
+</div>
+
+<!-- Main Content -->
+<div class="admin-content">
+    
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h2>Modifier la Demande</h2>
+            <p class="page-description">{{ demande.etudiant.nom }} {{ demande.etudiant.prenom }} — {{ bourse.titre }}</p>
+        </div>
+        <a href="{{ path('app_bourse_applications', {'id': bourse.id}) }}" class="btn-back">
+            <i class="ti-arrow-left mr-2"></i>Retour aux Demandes
+        </a>
+    </div>
+
+    <!-- Edit Form Card -->
+    <div class="dashboard-card">
+        <h4 style="color: #2c3e50; font-size: 18px; margin-bottom: 25px;"><i class="ti-pencil-alt mr-2" style="color: #ffbc3b;"></i>Modifier les Informations</h4>
+        
+        <form method="post" novalidate>
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">Statut</label>
+                    <select name="statut" class="form-control" style="height: 45px;">
+                        <option value="En attente" {{ demande.statut == 'En attente' ? 'selected' : '' }}>En attente</option>
+                        <option value="Accepté" {{ demande.statut == 'Accepté' ? 'selected' : '' }}>Accepté</option>
+                        <option value="Refusé" {{ demande.statut == 'Refusé' ? 'selected' : '' }}>Refusé</option>
+                    </select>
+                    {% if errors.statut is defined %}
+                        <div class="error-text">{{ errors.statut }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <label class="form-label">Niveau d'études</label>
+                    <select name="niveauEtudes" class="form-control" style="height: 45px;">
+                        <option value="Licence" {{ demande.niveauEtudes == 'Licence' ? 'selected' : '' }}>Licence</option>
+                        <option value="Master" {{ demande.niveauEtudes == 'Master' ? 'selected' : '' }}>Master</option>
+                        <option value="Doctorat" {{ demande.niveauEtudes == 'Doctorat' ? 'selected' : '' }}>Doctorat</option>
+                        <option value="Ingénierie" {{ demande.niveauEtudes == 'Ingénierie' ? 'selected' : '' }}>Ingénierie</option>
+                        <option value="Autre" {{ demande.niveauEtudes == 'Autre' ? 'selected' : '' }}>Autre</option>
+                    </select>
+                    {% if errors.niveauEtudes is defined %}
+                        <div class="error-text">{{ errors.niveauEtudes }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Note / Commentaire</label>
+                <textarea name="note" class="form-control" rows="4" placeholder="Ajouter un commentaire...">{{ demande.note }}</textarea>
+            </div>
+
+            <div class="d-flex justify-content-end" style="gap: 10px;">
+                <a href="{{ path('app_bourse_applications', {'id': bourse.id}) }}" class="btn-back">Annuler</a>
+                <button type="submit" class="btn-primary"><i class="ti-check mr-2"></i>Enregistrer</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,580 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de Bord Formateur - Educenter{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <!-- Custom Formateur Profile Styles -->
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+<!-- page title -->
+<section class="page-title-section overlay" data-background="{{ asset('images/backgrounds/page-title.jpg') }}">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <ul class="list-inline custom-breadcrumb">
+          <li class="list-inline-item"><a class="h2 text-primary font-secondary" href="#">{{ instructor.nom}} {{ instructor.prenom }}</a></li>
+          <li class="list-inline-item text-white h3 font-secondary"></li>
+        </ul>
+        <p class="text-lighten">Bienvenue ! Gérez vos cours et suivez les progrès de vos étudiants</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /page title -->
+
+<!-- profile section -->
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <!-- Main Content -->
+      <div class="col-lg-8">
+        
+        <div class="mb-5">
+        <h2 class="section-title">Informations Personnelles</h2>
+        <div class="card border-primary rounded-0 hover-shadow">
+          <div class="card-body">
+            <form id="profileForm" method="POST" action="{{ path('app_instructor_update_profile') }}">
+              <div class="row">
+                <!-- Nom -->
+                <div class="col-md-6">
+                  <div class="info-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <label class="mb-0">Nom</label>
+                      <a href="#" class="text-primary edit-icon edit-toggle" data-field="nom" title="Modifier">
+                        <i class="ti-pencil"></i>
+                      </a>
+                    </div>
+                    <p class="mt-2 field-display" data-field="nom">{{ instructor.nom }}</p>
+                    <input type="text" class="form-control field-input" name="nom" value="{{ instructor.nom }}" data-field="nom" style="display: none;">
+                  </div>
+                </div>
+
+                <!-- Prénom -->
+                <div class="col-md-6">
+                  <div class="info-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <label class="mb-0">Prénom</label>
+                      <a href="#" class="text-primary edit-icon edit-toggle" data-field="prenom" title="Modifier">
+                        <i class="ti-pencil"></i>
+                      </a>
+                    </div>
+                    <p class="mt-2 field-display" data-field="prenom">{{ instructor.prenom }}</p>
+                    <input type="text" class="form-control field-input" name="prenom" value="{{ instructor.prenom }}" data-field="prenom" style="display: none;">
+                  </div>
+                </div>
+
+                <!-- Email -->
+                <div class="col-md-6">
+                  <div class="info-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <label class="mb-0">Adresse Email</label>
+                      <a href="#" class="text-primary edit-icon edit-toggle" data-field="email" title="Modifier">
+                        <i class="ti-pencil"></i>
+                      </a>
+                    </div>
+                    <p class="mt-2 field-display" data-field="email">{{ instructor.email }}</p>
+                    <input type="email" class="form-control field-input" name="email" value="{{ instructor.email }}" data-field="email" style="display: none;">
+                  </div>
+                </div>
+
+                <!-- Identifiant (read-only) -->
+                <div class="col-md-6">
+                  <div class="info-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <label class="mb-0">Identifiant Formateur</label>
+                    </div>
+                    <p class="mt-2">{{ instructor.Id }}</p>
+                  </div>
+                </div>
+
+                <!-- Spécialité -->
+                <div class="col-md-6">
+                  <div class="info-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <label class="mb-0">Spécialité</label>
+                      <a href="#" class="text-primary edit-icon edit-toggle" data-field="specialite" title="Modifier">
+                        <i class="ti-pencil"></i>
+                      </a>
+                    </div>
+                    <p class="mt-2 field-display" data-field="specialite">{{ instructor.specialite ?? 'Non renseignée' }}</p>
+                    <input type="text" class="form-control field-input" name="specialite" value="{{ instructor.specialite }}" data-field="specialite" style="display: none;">
+                  </div>
+                </div>
+
+                <!-- Mot de passe -->
+                <div class="col-md-6">
+                  <div class="info-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <label class="mb-0">Mot de passe</label>
+                      <a href="#" class="text-primary edit-icon edit-toggle" data-field="password" title="Modifier">
+                        <i class="ti-pencil"></i>
+                      </a>
+                    </div>
+                    <p class="mt-2 field-display" data-field="password">••••••••</p>
+                    <input type="password" class="form-control field-input" name="password" placeholder="Nouveau mot de passe" data-field="password" style="display: none;">
+                  </div>
+                </div>
+
+                <!-- Formateur depuis (read-only) -->
+                <div class="col-md-6">
+                  <div class="info-card">
+                    <label>Formateur depuis</label>
+                    <p>{{ instructor.DateInscription|date('d F Y') }}</p>
+                  </div>
+                </div>
+
+                <!-- Dernière connexion (read-only) -->
+                <div class="col-md-6">
+                  <div class="info-card">
+                    <label>Dernière connexion</label>
+                    <p>{{ instructor.DateDerniereCOnnexion|date('d F Y') }}</p>
+                  </div>
+                </div>
+
+                <!-- Expérience -->
+                <div class="col-md-12">
+                  <div class="info-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <label class="mb-0">Expérience Professionnelle</label>
+                      <a href="#" class="text-primary edit-icon edit-toggle" data-field="experience" title="Modifier">
+                        <i class="ti-pencil"></i>
+                      </a>
+                    </div>
+                    <p class="mt-2 field-display" data-field="experience">{{ instructor.experience ?? 'Non renseignée' }}</p>
+                    <textarea class="form-control field-input" name="experience" rows="4" data-field="experience" style="display: none;">{{ instructor.experience }}</textarea>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Save and Cancel buttons (hidden by default) -->
+              <div class="text-right mt-3" id="formActions" style="display: none;">
+                <button type="button" class="btn btn-secondary" id="cancelEdit">Annuler</button>
+                <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+        <!-- My Courses -->
+        <div class="mb-5">
+          <h2 class="section-title">Mes Cours Enseignés</h2>
+          
+          {% for course in courses %}
+          <div class="card border-primary rounded-0 hover-shadow mb-4">
+            <div class="card-body">
+              <form method="POST" action="{{ path('app_instructor_update_course', {id: course.id}) }}" class="course-form" data-course-id="{{ course.id }}">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div class="flex-grow-1">
+                    <!-- Course Title - Editable -->
+                    <div class="info-card mb-2">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <label class="mb-0 text-muted small">Titre du cours</label>
+                        <a href="#" class="text-primary edit-icon course-edit-toggle" data-course-id="{{ course.id }}" data-field="titre_cours" title="Modifier">
+                          <i class="ti-pencil"></i>
+                        </a>
+                      </div>
+                      <h4 class="card-title mb-0 mt-1 course-field-display" data-course-id="{{ course.id }}" data-field="titre_cours">{{ course.title }}</h4>
+                      <input type="text" class="form-control course-field-input" name="titre_cours" data-course-id="{{ course.id }}" data-field="titre_cours" value="{{ course.title }}" style="display: none;">
+                    </div>
+                    
+                    <p class="text-muted mb-0">
+                      <i class="ti-calendar mr-2"></i>
+                      Créé: {{ course.createdAt|date('d F Y') }}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <!-- Level - Editable -->
+                  <div class="col-md-4">
+                    <div class="info-card">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <label class="mb-0 text-muted small">Niveau</label>
+                        <a href="#" class="text-primary edit-icon course-edit-toggle" data-course-id="{{ course.id }}" data-field="niv_cours" title="Modifier">
+                          <i class="ti-pencil"></i>
+                        </a>
+                      </div>
+                      <p class="mb-0 mt-1 course-field-display" data-course-id="{{ course.id }}" data-field="niv_cours">{{ course.niveau ?? 'Non défini' }}</p>
+                      <select class="form-control course-field-input" name="niv_cours" data-course-id="{{ course.id }}" data-field="niv_cours" style="display: none;">
+                        <option value="Débutant" {% if course.niveau == 'Débutant' %}selected{% endif %}>Débutant</option>
+                        <option value="Intermédiaire" {% if course.niveau == 'Intermédiaire' %}selected{% endif %}>Intermédiaire</option>
+                        <option value="Avancé" {% if course.niveau == 'Avancé' %}selected{% endif %}>Avancé</option>
+                        <option value="Expert" {% if course.niveau == 'Expert' %}selected{% endif %}>Expert</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Subject - Editable -->
+                  <div class="col-md-4">
+                    <div class="info-card">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <label class="mb-0 text-muted small">Matière</label>
+                        <a href="#" class="text-primary edit-icon course-edit-toggle" data-course-id="{{ course.id }}" data-field="matiere_cours" title="Modifier">
+                          <i class="ti-pencil"></i>
+                        </a>
+                      </div>
+                      <p class="mb-0 mt-1 course-field-display" data-course-id="{{ course.id }}" data-field="matiere_cours">{{ course.matiere ?? 'Non définie' }}</p>
+                      <input type="text" class="form-control course-field-input" name="matiere_cours" data-course-id="{{ course.id }}" data-field="matiere_cours" value="{{ course.matiere }}" style="display: none;">
+                    </div>
+                  </div>
+
+                  <!-- Language - Editable -->
+                  <div class="col-md-4">
+                    <div class="info-card">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <label class="mb-0 text-muted small">Langue</label>
+                        <a href="#" class="text-primary edit-icon course-edit-toggle" data-course-id="{{ course.id }}" data-field="langue_cours" title="Modifier">
+                          <i class="ti-pencil"></i>
+                        </a>
+                      </div>
+                      <p class="mb-0 mt-1 course-field-display" data-course-id="{{ course.id }}" data-field="langue_cours">{{ course.langue ?? 'Non définie' }}</p>
+                      <select class="form-control course-field-input" name="langue_cours" data-course-id="{{ course.id }}" data-field="langue_cours" style="display: none;">
+                        <option value="Français" {% if course.langue == 'Français' %}selected{% endif %}>Français</option>
+                        <option value="Anglais" {% if course.langue == 'Anglais' %}selected{% endif %}>Anglais</option>
+                        <option value="Arabe" {% if course.langue == 'Arabe' %}selected{% endif %}>Arabe</option>
+                        <option value="Espagnol" {% if course.langue == 'Espagnol' %}selected{% endif %}>Espagnol</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <!-- Description - Editable -->
+                  <div class="col-md-12 mt-3">
+                    <div class="info-card">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <label class="mb-0 text-muted small">Description</label>
+                        <a href="#" class="text-primary edit-icon course-edit-toggle" data-course-id="{{ course.id }}" data-field="description" title="Modifier">
+                          <i class="ti-pencil"></i>
+                        </a>
+                      </div>
+                      <p class="mb-0 mt-1 course-field-display" data-course-id="{{ course.id }}" data-field="description">{{ course.description ?? 'Aucune description' }}</p>
+                      <textarea class="form-control course-field-input" name="description" data-course-id="{{ course.id }}" data-field="description" rows="3" style="display: none;">{{ course.description }}</textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Statistics -->
+                <div class="row mt-3">
+                  <div class="col-md-4">
+                    <div class="stats-box">
+                      <h5>{{ course.enrolledStudents }}</h5>
+                      <p>Étudiants Inscrits</p>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="stats-box">
+                      <h5>{{ course.completionRate }}%</h5>
+                      <p>Taux d'Achèvement</p>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="stats-box">
+                      <h5>{{ course.averageRating }}/5</h5>
+                      <p>Note Moyenne</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Save and Cancel buttons for course editing (hidden by default) -->
+                <div class="text-right mt-3 course-form-actions" data-course-id="{{ course.id }}" style="display: none;">
+                  <button type="button" class="btn btn-secondary course-cancel-edit" data-course-id="{{ course.id }}">Annuler</button>
+                  <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+              </form>
+
+              <!-- Delete button (separate form) -->
+              <form method="POST" action="{{ path('app_instructor_delete_course', {id: course.id}) }}" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce cours ? Cette action est irréversible.');">
+                <button type="submit" class="btn btn-danger btn-sm mt-2">
+                  <i class="ti-trash mr-1"></i>Supprimer ce cours
+                </button>
+              </form>
+
+              <!-- Chapitres button -->
+              <a href="{{ path('back_chapitre_show', {'id': course.id}) }}" class="btn btn-info btn-sm mt-2 ml-2">
+                <i class="ti-book mr-1"></i>Chapitres
+              </a>
+            </div>
+          </div>
+          {% else %}
+          <div class="card border-primary rounded-0 hover-shadow">
+            <div class="card-body text-center">
+              <p class="text-muted">Vous n'avez pas encore créé de cours.</p>
+              <a href="#" class="btn btn-primary">
+                <i class="ti-plus mr-2"></i>Créer Mon Premier Cours
+              </a>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- My Quizzes -->
+        <div class="mb-5">
+          <h2 class="section-title">Mes Quiz Créés</h2>
+          
+          <div class="card border-primary rounded-0 hover-shadow mb-4">
+            <div class="card-body">
+              <div class="row mb-3">
+                <div class="col-md-3">
+                  <div class="stats-box">
+                    <h4>{{ quizStats.totalQuizzes }}</h4>
+                    <p>Total Quiz</p>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="stats-box">
+                    <h4>{{ quizStats.totalAttempts }}</h4>
+                    <p>Tentatives</p>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="stats-box">
+                    <h4>{{ quizStats.averageScore }}%</h4>
+                    <p>Score Moyen</p>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="stats-box">
+                    <h4>{{ quizStats.totalCertifications }}</h4>
+                    <p>Certifications</p>
+                  </div>
+                </div>
+              </div>
+
+              {% if quizzes|length > 0 %}
+              <h5 class="mb-3">Détails des Quiz</h5>
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Titre</th>
+                      <th>Questions</th>
+                      <th>Tentatives</th>
+                      <th>Score Moyen</th>
+                      <th>Taux de Réussite</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for quiz in quizzes %}
+                    <tr>
+                      <td>{{ quiz.title }}</td>
+                      <td>{{ quiz.questionCount }}</td>
+                      <td>{{ quiz.attemptCount }}</td>
+                      <td>{{ quiz.averageScore }}%</td>
+                      <td>{{ quiz.passRate }}%</td>
+                      <td>
+                        <a href="#" class="btn btn-sm btn-primary" title="Voir détails">
+                          <i class="ti-eye"></i>
+                        </a>
+                        <a href="#" class="btn btn-sm btn-warning" title="Modifier">
+                          <i class="ti-pencil"></i>
+                        </a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              {% else %}
+              <p class="text-center text-muted">Aucun quiz créé pour le moment.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Student Reviews -->
+        <div class="mb-5">
+          <h2 class="section-title">Évaluations des Étudiants</h2>
+          <div class="card border-primary rounded-0 hover-shadow">
+            <div class="card-body">
+              <div class="row mb-4">
+                <div class="col-md-4">
+                  <div class="stats-box">
+                    <h4>{{ reviewStats.averageRating }}/5</h4>
+                    <p>Note Moyenne</p>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="stats-box">
+                    <h4>{{ reviewStats.totalReviews }}</h4>
+                    <p>Total Évaluations</p>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="stats-box">
+                    <h4>{{ reviewStats.recommendationRate }}%</h4>
+                    <p>Recommandations</p>
+                  </div>
+                </div>
+              </div>
+              
+              {% if recentReviews|length > 0 %}
+              <h5 class="mb-3">Commentaires Récents</h5>
+              
+              {% for review in recentReviews %}
+              <div class="{% if not loop.last %}border-bottom {% endif %}pb-3 mb-3">
+                <div class="d-flex justify-content-between mb-2">
+                  <div>
+                    <strong>{{ review.student.firstName }} {{ review.student.lastName }}</strong>
+                    <span class="text-muted ml-2">• {{ review.course.title }}</span>
+                  </div>
+                  <span class="rating-stars">
+                    {% for i in 1..5 %}
+                      {% if i <= review.rating %}★{% else %}☆{% endif %}
+                    {% endfor %}
+                  </span>
+                </div>
+                <p class="mb-1 text-muted small">{{ review.createdAt|date('d F Y') }}</p>
+                <p class="mb-0">"{{ review.comment }}"</p>
+              </div>
+              {% endfor %}
+
+              <div class="text-center mt-4">
+                <a href="{{ path('app_all_reviews') }}" class="btn btn-primary-outline btn-sm">Voir Toutes les Évaluations</a>
+              </div>
+              {% else %}
+              <p class="text-center text-muted">Aucune évaluation pour le moment.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <div class="sidebar-card">
+          
+          <!-- Quick Stats Card -->
+          <div class="card border-primary rounded-0 hover-shadow mb-4">
+            <div class="card-body">
+              <h5 class="mb-3">Statistiques Globales</h5>
+              
+              <div class="stats-box mb-2">
+                <h4>{{ stats.activeCourses }}</h4>
+                <p>Cours Actifs</p>
+              </div>
+
+              <div class="stats-box mb-2">
+                <h4>{{ stats.totalStudents }}</h4>
+                <p>Total Étudiants</p>
+              </div>
+
+              <div class="stats-box mb-2">
+                <h4>{{ stats.totalReviews }}</h4>
+                <p>Évaluations Reçues</p>
+              </div>
+
+              <div class="stats-box mb-2">
+                <h4>{{ stats.averageRating }}/5</h4>
+                <p>Note Moyenne</p>
+              </div>
+
+              <div class="stats-box">
+                <h4>{{ stats.averageSuccessRate }}%</h4>
+                <p>Taux de Réussite Moyen</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="card border-primary rounded-0 hover-shadow mb-4">
+            <div class="card-body">
+              <h5 class="mb-3">Actions Rapides</h5>
+              
+              <a href="{{ path('front_cours_index') }}" class="btn btn-primary btn-block mb-2">
+                <i class="ti-plus mr-2"></i>Créer un Cours
+              </a>
+
+              <a href="{{ path('new_quiz') }}" class="btn btn-primary btn-block mb-2">
+                <i class="ti-write mr-2"></i>Créer un Quiz
+              </a>
+
+              <a href="#}" class="btn btn-outline-primary btn-block mb-2">
+                <i class="ti-email mr-2"></i>Messages {% if unreadMessages > 0 %}({{ unreadMessages }}){% endif %}
+              </a>
+
+              <a href="#" class="btn btn-outline-primary btn-block mb-2">
+                <i class="ti-user mr-2"></i>Mes Étudiants
+              </a>
+
+              <a href="#" class="btn btn-outline-primary btn-block">
+                <i class="ti-bar-chart mr-2"></i>Analytiques
+              </a>
+              <a href="{{ path('app_logout') }}" class="btn btn-outline-danger btn-block">
+                <i class="ti-power-off mr-2"></i>Déconnexion
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- /profile section -->
+
+<!-- Delete Account Section -->
+<section class="section bg-gray pt-0">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="delete-account-section">
+          <h4><i class="ti-alert mr-2"></i>Zone Dangereuse</h4>
+          <p class="mb-3">La suppression de votre compte est permanente et irréversible. Tous vos cours, évaluations et données seront définitivement supprimés.</p>
+          <button class="btn btn-danger" data-toggle="modal" data-target="#deleteAccountModal">
+            <i class="ti-trash mr-2"></i>Supprimer Mon Compte
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Delete Account Confirmation Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content rounded-0 border-0 p-4">
+            <div class="modal-header border-0">
+                <h3 class="text-danger"><i class="ti-alert mr-2"></i>Confirmer la Suppression</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">Êtes-vous absolument sûr de vouloir supprimer votre compte ?</p>
+                <div class="alert alert-danger">
+                  <strong>Cette action est irréversible !</strong>
+                  <ul class="mb-0 mt-2">
+                    <li>Tous vos cours seront supprimés</li>
+                    <li>Vos étudiants perdront l'accès à vos cours</li>
+                    <li>Toutes vos évaluations seront effacées</li>
+                    <li>Votre historique d'enseignement sera perdu</li>
+                  </ul>
+                </div>
+                <form action="#" method="post" class="mt-4">
+                    <div class="form-group">
+                        <label>Pour confirmer, tapez votre mot de passe :</label>
+                        <input type="password" class="form-control" name="confirmPassword" placeholder="Votre mot de passe" required>
+                    </div>
+                    <div class="text-right">
+                        <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-danger">Oui, Supprimer Mon Compte</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- Custom Formateur Profile Script -->
+    <script src="{{ asset('js/script.js') }}"></script>
+    <script src="{{ asset('js/formateur-script-simple.js') }}"></script>
+{% endblock %}
