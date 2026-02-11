@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Educenter{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {% block stylesheets %}
+        <link rel="stylesheet" href="{{ asset('assets/plugins/bootstrap/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+        <style>
+            body {
+                font-family: 'Roboto', sans-serif;
+                margin: 0;
+                padding: 0;
+                background-color: #f4f7f6;
+            }
+
+            /* Sidebar */
+            .sidebar {
+                background-color: #34495e;
+                color: white;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 250px;
+                height: 100vh;
+                transition: all 0.3s ease;
+                padding: 20px;
+            }
+
+            .sidebar:hover {
+                width: 280px;
+            }
+
+            .sidebar h4 {
+                font-size: 1.5rem;
+                margin-bottom: 40px;
+                text-align: center;
+                font-weight: 600;
+                color: #ecf0f1;
+            }
+
+            .sidebar .nav-link {
+                font-size: 1.1rem;
+                color: #ecf0f1;
+                display: flex;
+                align-items: center;
+                padding: 15px;
+                margin-bottom: 15px;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: 0.3s;
+            }
+
+            .sidebar .nav-link:hover {
+                background-color: #16a085;
+                transform: translateX(10px);
+            }
+
+            .sidebar .nav-link span {
+                margin-left: 15px;
+            }
+
+            .sidebar .nav-link i {
+                font-size: 1.4rem;
+            }
+
+            /* Active Link */
+            .sidebar .nav-link.active {
+                background-color: #2ecc71;
+                font-weight: bold;
+                color: #fff;
+            }
+
+            /* Content area */
+            .content {
+                margin-left: 250px;
+                padding: 30px;
+                background-color: #ecf0f1;
+                height: 100vh;
+                transition: all 0.3s ease;
+            }
+
+            .content h1 {
+                font-size: 2rem;
+                color: #2c3e50;
+                margin-bottom: 20px;
+            }
+
+            .btn {
+                border-radius: 5px;
+                padding: 10px 15px;
+                font-size: 1rem;
+            }
+
+            .btn-primary {
+                background-color: #2ecc71;
+                border-color: #2ecc71;
+                color: white;
+                font-weight: bold;
+                transition: all 0.3s ease;
+            }
+
+            .btn-primary:hover {
+                background-color: #27ae60;
+                border-color: #27ae60;
+                transform: scale(1.05);
+            }
+
+            /* Footer */
+            .footer {
+                background-color: #34495e;
+                color: white;
+                padding: 20px;
+                text-align: center;
+                font-size: 1rem;
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+            }
+        </style>
+    {% endblock %}
+    
+    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('assets/images/favicon.ico') }}" type="image/x-icon">
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h4>Admin Panel</h4>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link active" href="/admin/quiz">
+                    <i class="fas fa-question-circle"></i><span> Quiz</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/courses">
+                    <i class="fas fa-book"></i><span> Cours</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/users">
+                    <i class="fas fa-users"></i><span> Utilisateurs</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/forum">
+                    <i class="fas fa-comments"></i><span> Forum</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/events">
+                    <i class="fas fa-calendar-alt"></i><span> Événements</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/admin/scholarships">
+                    <i class="fas fa-graduation-cap"></i><span> Bourses</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="content">
+        {% block body %}
+        {% endblock %}
+    </div>
+
+    
+
+    <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/bootstrap/bootstrap.min.js') }}"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</body>
+
+</html>

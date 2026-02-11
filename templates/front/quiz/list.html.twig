@@ -1,0 +1,153 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Quiz – {{ course.titre }}{% endblock %}
+
+{% block body %}
+<section class="section">
+<div class="container">
+
+<h2>Quiz du cours : {{ course.titre }}</h2>
+
+{# ✅ IMPORTANT : initialiser la liste des events #}
+{% set certEvents = [] %}
+
+<form method="get" class="mb-4">
+<div class="row">
+    <!-- Recherche -->
+    <div class="col-md-4">
+        <input type="text" name="title" class="form-control"
+               placeholder="Titre du quiz"
+               value="{{ filters.title }}">
+    </div>
+
+    <div class="col-md-3">
+        <select name="type" class="form-control">
+            <option value="">-- Type --</option>
+            <option value="Intermédiaire" {% if filters.type == 'Intermédiaire' %}selected{% endif %}>Intermédiaire</option>
+            <option value="Final" {% if filters.type == 'Final' %}selected{% endif %}>Final</option>
+        </select>
+    </div>
+
+    <!-- Tri -->
+    <div class="col-md-3">
+        <select name="sort" class="form-control">
+            <option value="">-- Trier par --</option>
+            <option value="titre" {% if filters.sort == 'titre' %}selected{% endif %}>Titre</option>
+            <option value="scoreMinimum" {% if filters.sort == 'scoreMinimum' %}selected{% endif %}>Score minimum</option>
+            <option value="duree" {% if filters.sort == 'duree' %}selected{% endif %}>Durée</option>
+        </select>
+    </div>
+
+    <div class="col-md-2">
+        <select name="order" class="form-control">
+            <option value="asc" {% if filters.order == 'asc' %}selected{% endif %}>ASC</option>
+            <option value="desc" {% if filters.order == 'desc' %}selected{% endif %}>DESC</option>
+        </select>
+    </div>
+</div>
+
+<div class="mt-3">
+    <button type="submit" name="action" value="search" class="btn btn-success">
+        🔍 Rechercher
+    </button>
+
+    <button type="submit" name="action" value="sort" class="btn btn-primary">
+        🔃 Trier
+    </button>
+
+    <a href="{{ path('front_course_quizzes', {'id': course.id}) }}" class="btn btn-secondary">
+        Réinitialiser
+    </a>
+</div>
+</form>
+
+<table class="table table-bordered mt-4">
+<tr>
+    <th>Titre</th>
+    <th>Type</th>
+    <th>Durée</th>
+    <th>Score min</th>
+    <th>Actions</th>
+</tr>
+
+{% for quiz in quizzes %}
+<tr>
+    <td>{{ quiz.titre }}</td>
+    <td>{{ quiz.typeQuiz }}</td>
+    <td>{{ quiz.duree }} min</td>
+    <td>{{ quiz.scoreMinimum }}</td>
+    <td>
+        <a href="{{ path('front_quiz_take', {'id': quiz.id}) }}"
+           class="btn btn-success btn-sm">
+           Passer le quiz
+        </a>
+
+        {# PDF seulement si user id=1 ET statut Réussi #}
+        {% for certif in quiz.certifications %}
+            {% if certif.user is not null
+                and certif.user.id == 1
+                and certif.statut == 'Réussi' %}
+
+                <a href="{{ path('front_certif_pdf', {'id': certif.id}) }}"
+                   class="btn btn-primary btn-sm mt-1">
+                   Télécharger la certification
+                </a>
+
+                {# ✅ Ajouter l'event au calendrier #}
+                {% set certEvents = certEvents|merge([{
+                    title: 'Certif: ' ~ quiz.titre,
+                    start: certif.dateAttribution|date('Y-m-d'),
+                    url: path('front_certif_pdf', {'id': certif.id})
+                }]) %}
+            {% endif %}
+        {% endfor %}
+
+    </td>
+</tr>
+{% else %}
+<tr><td colspan="5">Aucun quiz trouvé</td></tr>
+{% endfor %}
+
+</table>
+
+{# ====================== CALENDRIER ====================== #}
+<h3 class="mt-5">📅 Calendrier des certifications obtenues</h3>
+<div id="certCalendar" class="mt-4"></div>
+
+</div>
+</section>
+
+{# ====================== FULLCALENDAR ====================== #}
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const el = document.getElementById('certCalendar');
+  if (!el) return;
+
+  const events = {{ certEvents|json_encode|raw }};
+
+  const calendar = new FullCalendar.Calendar(el, {
+    initialView: 'dayGridMonth',
+    height: "auto",
+    locale: 'fr',
+    headerToolbar: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'dayGridMonth,listMonth'
+    },
+    events: events,
+    eventClick: function(info) {
+      if (info.event.url) {
+        info.jsEvent.preventDefault();
+        window.open(info.event.url, '_blank');
+      }
+    }
+  });
+
+  calendar.render();
+});
+</script>
+
+{% endblock %}

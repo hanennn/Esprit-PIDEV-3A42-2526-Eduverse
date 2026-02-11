@@ -1,0 +1,17 @@
+# Labels du formulaire
+Titre du quiz: "Titre du quiz"
+Type de quiz: "Type de quiz"
+Choisir un type: "Choisir un type"
+Intermédiaire: "Intermédiaire"
+Final: "Final"
+Durée (minutes): "Durée (minutes)"
+Score minimum: "Score minimum"
+Cours associé: "Cours associé"
+Sélectionnez un cours: "Sélectionnez un cours"
+Créer quiz: "Créer quiz"
+
+# Messages de validation Symfony
+This value should not be blank.: "Cette valeur ne doit pas être vide."
+This value should be positive.: "Cette valeur doit être positive."
+This value should be positive or zero.: "Cette valeur doit être positive ou nulle."
+The CSRF token is invalid.: "Le jeton CSRF est invalide."
