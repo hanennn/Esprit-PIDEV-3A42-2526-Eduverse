@@ -12,11 +12,11 @@ class CoursType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('titreCours')
-            ->add('descCours')
-            ->add('nivCours')
-            ->add('matiereCours')
-            ->add('langueCours')
+            ->add('titre_cours')
+            ->add('description')
+            ->add('niv_cours')
+            ->add('matiere_cours')
+            ->add('langue_cours')
         ;
     }
 
@@ -27,3 +27,4 @@ class CoursType extends AbstractType
         ]);
     }
 }
+

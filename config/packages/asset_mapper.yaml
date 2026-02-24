@@ -1,11 +1,16 @@
-#framework:
-   # asset_mapper:
+framework:
+    asset_mapper:
         # The paths to make available to the asset mapper.
-        #paths:
-            #- assets/
-        #missing_import_mode: strict
+        paths:
+            - assets/
+        missing_import_mode: strict
 
-#when@prod:
-   # framework:
-       # asset_mapper:
-       #     missing_import_mode: warn
+when@prod:
+    framework:
+        asset_mapper:
+            missing_import_mode: warn
+
+doctrine_migrations:
+    migrations_paths:
+        'DoctrineMigrations': '%kernel.project_dir%/migrations'
+    enable_profiler: false

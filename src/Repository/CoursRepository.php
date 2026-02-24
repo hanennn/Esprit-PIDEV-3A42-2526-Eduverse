@@ -2,7 +2,10 @@
 
 namespace App\Repository;
 
+use Doctrine\ORM\Query;
+
 use App\Entity\Cours;
+use App\Entity\user;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -41,78 +44,69 @@ class CoursRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-  public function searchAndSort(?string $search, ?string $criteria, ?string $sort): array
+    public function searchAndSort(?string $search, ?string $criteria, ?string $sort): array
 {
     $qb = $this->createQueryBuilder('c');
 
-    // 🔍 Recherche multicritère
-    if (!empty($search)) {
-        if ($criteria === 'titre') {
-            $qb->andWhere('c.titre_cours LIKE :search')
-               ->setParameter('search', '%' . $search . '%');
-        } elseif ($criteria === 'niveau') {
-            $qb->andWhere('c.niv_cours LIKE :search')
-               ->setParameter('search', '%' . $search . '%');
-        }elseif ($criteria === 'matiere') {
-            $qb->andWhere('c.matiere_cours LIKE :search')
-               ->setParameter('search', '%' . $search . '%');
-    }
+    $map = [
+        'titre'   => 'c.titre_cours',
+        'niv'     => 'c.niv_cours',
+        'matiere' => 'c.matiere_cours',
+        'langue'  => 'c.langue_cours',
+    ];
+
+    // 🔍 recherche
+    if (!empty($search) && isset($map[$criteria])) {
+        $qb->andWhere($map[$criteria] . ' LIKE :search')
+           ->setParameter('search', '%' . $search . '%');
     }
 
-    //  Tri
-    if ($sort === 'titre') {
-        $qb->orderBy('c.titre_cours', 'ASC');
-    } elseif ($sort === 'niveau') {
-        $qb->orderBy('c.niv_cours', 'ASC');
+    // 🔃 tri
+    if (isset($map[$sort])) {
+        $qb->orderBy($map[$sort], 'ASC');
     } else {
-        $qb->orderBy('c.id', 'DESC'); // tri par défaut
+        $qb->orderBy('c.id', 'DESC');
     }
 
     return $qb->getQuery()->getResult();
 }
-// src/Repository/ChapitreRepository.php
 
-public function searchAndSortBack(?string $search, ?string $criteria, ?string $sort): array
-{
-    $qb = $this->createQueryBuilder('c');
+   
+public function searchAndSortBack(?string $search = null, ?string $criteria = null, ?string $sort = null): array
+    {
+        $qb = $this->createQueryBuilder('c');
 
-    if (!empty($search)) {
-        switch ($criteria) {
-            case 'titre':
+        // Apply search filter
+        if (!empty($search) && !empty($criteria)) {
+            if ($criteria === 'titre') {
                 $qb->andWhere('c.titre_cours LIKE :search');
-                break;
-            case 'niv':
+                $qb->setParameter('search', '%' . $search . '%');
+            } elseif ($criteria === 'niv') {
                 $qb->andWhere('c.niv_cours LIKE :search');
-                break;
-            case 'matiere':
+                $qb->setParameter('search', '%' . $search . '%');
+            } elseif ($criteria === 'matiere') {
                 $qb->andWhere('c.matiere_cours LIKE :search');
-                break;
-            case 'langue':
+                $qb->setParameter('search', '%' . $search . '%');
+            } elseif ($criteria === 'langue') {
                 $qb->andWhere('c.langue_cours LIKE :search');
-                break;
+                $qb->setParameter('search', '%' . $search . '%');
+            }
         }
-        $qb->setParameter('search', '%' . $search . '%');
-    }
 
-    switch ($sort) {
-        case 'titre':
+        // Apply sorting - only use valid fields
+        if ($sort === 'titre') {
             $qb->orderBy('c.titre_cours', 'ASC');
-            break;
-        case 'niv':
+        } elseif ($sort === 'niv') {
             $qb->orderBy('c.niv_cours', 'ASC');
-            break;
-        case 'matiere':
+        } elseif ($sort === 'matiere') {
             $qb->orderBy('c.matiere_cours', 'ASC');
-            break;
-        case 'langue':
+        } elseif ($sort === 'langue') {
             $qb->orderBy('c.langue_cours', 'ASC');
-            break;
-        default:
+        } else {
+            // Default sort by most recent
             $qb->orderBy('c.id', 'DESC');
+        }
+
+        return $qb->getQuery()->getResult();
     }
-
-    return $qb->getQuery()->getResult();
-}
-
-
 }

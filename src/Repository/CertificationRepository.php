@@ -2,22 +2,31 @@
 
 namespace App\Repository;
 
-use App\Entity\Chapitres;
+use App\Entity\Certification;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Chapitres>
+ * @extends ServiceEntityRepository<Certification>
  */
-class ChapitresRepository extends ServiceEntityRepository
+class CertificationRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Chapitres::class);
+        parent::__construct($registry, Certification::class);
     }
-
+       public function findRecentCertifications(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.statut = :statut')
+            ->setParameter('statut', 'Réussi')
+            ->orderBy('c.dateAttribution', 'DESC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+    }
     //    /**
-    //     * @return Chapitres[] Returns an array of Chapitres objects
+    //     * @return Certification[] Returns an array of Certification objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +40,7 @@ class ChapitresRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Chapitres
+    //    public function findOneBySomeField($value): ?Certification
     //    {
     //        return $this->createQueryBuilder('c')
     //            ->andWhere('c.exampleField = :val')
@@ -40,10 +49,5 @@ class ChapitresRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
-
-   
-
-
-
-
 }
+

@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\CoursRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -19,44 +18,40 @@ class Cours
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank(message: "Le titre du cours est obligatoire.")]
-    #[Assert\Length(
-        min: 3,
-        max: 255,
-        minMessage: "Le titre du cours doit contenir au moins {{ limit }} caractères.",
-        maxMessage: "Le titre du cours ne peut pas dépasser {{ limit }} caractères." )]
     private ?string $titre_cours = null;
 
-    #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank(message: "La description du cours est obligatoire.")]
-    #[Assert\Length(
-        min: 10,
-        minMessage: "La description doit contenir au moins {{ limit }} caractères."
-    )]
-    private ?string $desc_cours = null;
-
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 100)]
     #[Assert\NotBlank(message: "Le niveau du cours est obligatoire.")]
     private ?string $niv_cours = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 100)]
     #[Assert\NotBlank(message: "La matière du cours est obligatoire.")]
     private ?string $matiere_cours = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 100)]
     #[Assert\NotBlank(message: "La langue du cours est obligatoire.")]
     private ?string $langue_cours = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $description = null;
+
+    #[ORM\ManyToOne(inversedBy: 'coursCreated')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: "Le créateur du cours est obligatoire.")]
+    private ?User $createur = null;
+
+    #[ORM\OneToMany(mappedBy: 'coursAssocie', targetEntity: Quiz::class, orphanRemoval: true)]
+    private Collection $quizzes;
 
     /**
      * @var Collection<int, Chapitres>
      */
-    #[ORM\OneToMany(targetEntity: Chapitres::class, mappedBy: 'cours', orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'cours', targetEntity: Chapitres::class, orphanRemoval: true, cascade: ['persist', 'remove'])]
     private Collection $chapitres;
-
-    #[ORM\Column]
-    private ?int $idUser = null;
 
     public function __construct()
     {
+        $this->quizzes = new ArrayCollection();
         $this->chapitres = new ArrayCollection();
     }
 
@@ -73,19 +68,6 @@ class Cours
     public function setTitreCours(string $titre_cours): static
     {
         $this->titre_cours = $titre_cours;
-
-        return $this;
-    }
-
-    public function getDescCours(): ?string
-    {
-        return $this->desc_cours;
-    }
-
-    public function setDescCours(string $desc_cours): static
-    {
-        $this->desc_cours = $desc_cours;
-
         return $this;
     }
 
@@ -97,7 +79,6 @@ class Cours
     public function setNivCours(string $niv_cours): static
     {
         $this->niv_cours = $niv_cours;
-
         return $this;
     }
 
@@ -109,7 +90,6 @@ class Cours
     public function setMatiereCours(string $matiere_cours): static
     {
         $this->matiere_cours = $matiere_cours;
-
         return $this;
     }
 
@@ -121,7 +101,55 @@ class Cours
     public function setLangueCours(string $langue_cours): static
     {
         $this->langue_cours = $langue_cours;
+        return $this;
+    }
 
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+        return $this;
+    }
+
+    public function getCreateur(): ?User
+    {
+        return $this->createur;
+    }
+
+    public function setCreateur(?User $createur): static
+    {
+        $this->createur = $createur;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Quiz>
+     */
+    public function getQuizzes(): Collection
+    {
+        return $this->quizzes;
+    }
+
+    public function addQuiz(Quiz $quiz): static
+    {
+        if (!$this->quizzes->contains($quiz)) {
+            $this->quizzes->add($quiz);
+            $quiz->setCoursAssocie($this);
+        }
+        return $this;
+    }
+
+    public function removeQuiz(Quiz $quiz): static
+    {
+        if ($this->quizzes->removeElement($quiz)) {
+            if ($quiz->getCoursAssocie() === $this) {
+                $quiz->setCoursAssocie(null);
+            }
+        }
         return $this;
     }
 
@@ -139,31 +167,16 @@ class Cours
             $this->chapitres->add($chapitre);
             $chapitre->setCours($this);
         }
-
         return $this;
     }
 
     public function removeChapitre(Chapitres $chapitre): static
     {
         if ($this->chapitres->removeElement($chapitre)) {
-            // set the owning side to null (unless already changed)
             if ($chapitre->getCours() === $this) {
                 $chapitre->setCours(null);
             }
         }
-
-        return $this;
-    }
-
-    public function getIdUser(): ?int
-    {
-        return $this->idUser;
-    }
-
-    public function setIdUser(int $idUser): static
-    {
-        $this->idUser = $idUser;
-
         return $this;
     }
 }
