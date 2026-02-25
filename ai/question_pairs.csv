@@ -1,0 +1,203 @@
+textA,textB,label
+"C’est quoi un Stream en Java ?","Définir Stream en Java.",1
+"À quoi sert Stream API ?","Quel est le rôle de Stream API en Java ?",1
+"Quelle est la différence entre map() et flatMap() ?","Expliquer la différence entre map et flatMap en Java.",1
+"Définir une exception en Java.","C’est quoi une exception en Java ?",1
+"Quelle est la différence entre checked et unchecked exception ?","Comparer checked exception et unchecked exception.",1
+"Qu’est-ce qu’une clé primaire ?","Définir la clé primaire en base de données.",1
+"Définir une clé étrangère.","C’est quoi une foreign key ?",1
+"Différence entre INNER JOIN et LEFT JOIN ?","Comparer LEFT JOIN et INNER JOIN en SQL.",1
+"À quoi sert GROUP BY ?","Quel est le rôle de GROUP BY en SQL ?",1
+"Définir une transaction SQL.","C’est quoi une transaction en base de données ?",1
+"C’est quoi ORM ?","Définir ORM en Symfony/Doctrine.",1
+"Définir ManyToOne en Doctrine.","C’est quoi une relation ManyToOne ?",1
+"Définir OneToMany en Doctrine.","Qu’est-ce qu’une relation OneToMany ?",1
+"À quoi sert le fichier .env dans Symfony ?","Quel est le rôle du fichier .env en Symfony ?",1
+"Quelle est la différence entre GET et POST ?","Comparer les méthodes HTTP GET et POST.",1
+"Qu’est-ce qu’un contrôleur Symfony ?","Définir Controller dans Symfony.",1
+"À quoi sert une migration Doctrine ?","Quel est le but des migrations Doctrine ?",1
+"Qu’est-ce qu’un Repository Doctrine ?","Définir Repository en Doctrine.",1
+"Définir une route en Symfony.","C’est quoi une route (routing) en Symfony ?",1
+"Qu’est-ce que MVC ?","Définir l’architecture MVC.",1
+"C’est quoi un Stream en Java ?","Qu’est-ce qu’une clé primaire ?",0
+"Définir Stream en Java.","Différence INNER JOIN et LEFT JOIN ?",0
+"map() et flatMap() : différence ?","À quoi sert GROUP BY ?",0
+"Définir une exception en Java.","Définir une transaction SQL.",0
+"checked vs unchecked exception ?","Qu’est-ce qu’un contrôleur Symfony ?",0
+"Définir une clé primaire.","Définir une clé étrangère.",0
+"INNER JOIN vs LEFT JOIN ?","Définir une clé primaire.",0
+"À quoi sert GROUP BY ?","À quoi sert ORDER BY ?",0
+"Définir une transaction SQL.","C’est quoi une indexation en base de données ?",0
+"Qu’est-ce que ORM ?","Qu’est-ce que MVC ?",0
+"Définir ManyToOne.","Définir OneToMany.",0
+"À quoi sert le fichier .env ?","À quoi sert Twig ?",0
+"GET vs POST ?","C’est quoi PUT vs PATCH ?",0
+"Qu’est-ce qu’un contrôleur Symfony ?","Qu’est-ce qu’un EntityManager ?",0
+"À quoi sert une migration Doctrine ?","Qu’est-ce qu’une relation ManyToOne ?",0
+"Définir une route Symfony.","C’est quoi une session PHP ?",0
+"Qu’est-ce qu’un Repository Doctrine ?","Qu’est-ce qu’un service Symfony ?",0
+"Définir une clé étrangère.","C’est quoi un Stream en Java ?",0
+"Définir une transaction SQL.","Définir Stream en Java.",0
+"Définir l’architecture MVC.","C’est quoi une clé primaire ?",0
+"Comparer map et flatMap en Java","Quelle est la différence entre map() et flatMap() ?",1
+"Définir Optional en Java","C’est quoi Optional ?",1
+"Définir List en Java","C’est quoi une List en Java ?",1
+"Expliquer l’héritage en Java","Définir l’héritage en Java.",1
+"Expliquer le polymorphisme","Définir le polymorphisme en Java.",1
+"Comparer ArrayList et LinkedList","Différence entre ArrayList et LinkedList ?",1
+"Définir une interface en Java","C’est quoi une interface ?",1
+"Expliquer try catch","À quoi sert try catch en Java ?",1
+"Définir un index en base de données","C’est quoi un index SQL ?",1
+"Expliquer UNION ALL","Différence entre UNION et UNION ALL ?",1
+"Définir WHERE","À quoi sert la clause WHERE ?",1
+"Expliquer HAVING","À quoi sert HAVING en SQL ?",1
+"Définir DELETE","Différence entre DELETE et TRUNCATE ?",1
+"Définir une vue SQL","C’est quoi une VIEW ?",1
+"Définir EntityManager","C’est quoi un EntityManager en Doctrine ?",1
+"Définir un service Symfony","C’est quoi un service en Symfony ?",1
+"Définir Twig","À quoi sert Twig ?",1
+"Définir JSON","C’est quoi JSON ?",1
+"Définir JWT","C’est quoi un token JWT ?",1
+"Définir REST","C’est quoi une API REST ?",1
+"C’est quoi un Stream en Java ?","Définir une clé étrangère.",0
+"Définir Optional","Définir une transaction SQL.",0
+"Comparer ArrayList et LinkedList","Définir une clé primaire.",0
+"Définir l’héritage en Java","C’est quoi ORM ?",0
+"Expliquer GROUP BY","Définir une interface Java.",0
+"Définir DELETE","Définir ManyToOne.",0
+"Définir JSON","Définir Stream API.",0
+"Définir JWT","Définir une clé étrangère.",0
+"Définir REST","Définir OneToMany.",0
+"Définir une vue SQL","C’est quoi un contrôleur Symfony ?",0
+"Comparer INNER JOIN et LEFT JOIN","Définir l’héritage en Java.",0
+"Définir une route Symfony","Définir une transaction SQL.",0
+"Définir Twig","C’est quoi une exception Java ?",0
+"Définir un service Symfony","C’est quoi GROUP BY ?",0
+"Définir ManyToOne","C’est quoi un Stream ?",0
+"Définir OneToMany","Définir Optional.",0
+"Définir GET","Définir clé primaire.",0
+"Définir PUT","Définir JWT.",0
+"Définir MVC","Définir UNION.",0
+"Définir EntityManager","Définir une vue SQL.",0
+"Définir une dérivée.","C’est quoi la dérivée d’une fonction ?",1
+"Définir une intégrale.","C’est quoi l’intégrale en maths ?",1
+"Qu’est-ce qu’une matrice ?","Définir une matrice en algèbre.",1
+"Différence entre permutation et combinaison ?","Comparer permutation et combinaison.",1
+"Définir une suite arithmétique.","C’est quoi une suite arithmétique ?",1
+"Définir une suite géométrique.","C’est quoi une suite géométrique ?",1
+"Qu’est-ce qu’une limite ?","Définir la notion de limite d’une fonction.",1
+"Définir la probabilité conditionnelle.","C’est quoi une probabilité conditionnelle ?",1
+"Définir l’écart-type.","C’est quoi l’écart-type en statistique ?",1
+"Définir la variance.","C’est quoi la variance ?",1
+
+"Qu’est-ce que HTML ?","Définir HTML.",1
+"Qu’est-ce que CSS ?","Définir CSS.",1
+"Qu’est-ce que JavaScript ?","Définir JavaScript.",1
+"Différence entre front-end et back-end ?","Comparer front-end et back-end.",1
+"À quoi sert une API ?","Quel est le rôle d’une API ?",1
+"Définir une API REST.","C’est quoi une API REST ?",1
+"Différence entre GET et POST ?","Comparer GET et POST.",1
+"Qu’est-ce que le CORS ?","Définir le CORS.",1
+"Qu’est-ce que JSON ?","Définir JSON.",1
+"Qu’est-ce que HTTPS ?","Définir HTTPS.",1
+
+"Définir Flutter.","C’est quoi Flutter ?",1
+"À quoi sert Dart ?","Quel est le rôle du langage Dart ?",1
+"Qu’est-ce qu’un widget en Flutter ?","Définir widget en Flutter.",1
+"Différence entre StatelessWidget et StatefulWidget ?","Comparer StatelessWidget et StatefulWidget.",1
+"À quoi sert setState() ?","Quel est le rôle de setState() en Flutter ?",1
+"Qu’est-ce que Firebase ?","Définir Firebase.",1
+"Qu’est-ce que Firestore ?","Définir Cloud Firestore.",1
+"Différence entre Firestore et Realtime Database ?","Comparer Firestore et Realtime Database.",1
+"Qu’est-ce qu’une route (navigation) en Flutter ?","Définir la navigation (routes) en Flutter.",1
+"À quoi sert un Scaffold ?","Quel est le rôle du Scaffold en Flutter ?",1
+
+"Qu’est-ce que Symfony ?","Définir Symfony.",1
+"Qu’est-ce que Doctrine ?","Définir Doctrine dans Symfony.",1
+"Qu’est-ce qu’une migration Doctrine ?","Définir migration Doctrine.",1
+"À quoi sert un Repository ?","Quel est le rôle d’un Repository Doctrine ?",1
+"Qu’est-ce qu’un service Symfony ?","Définir un service dans Symfony.",1
+"Qu’est-ce que l’injection de dépendances ?","Définir l’injection de dépendances.",1
+"À quoi sert le fichier .env ?","Quel est le rôle du fichier .env dans Symfony ?",1
+"Qu’est-ce qu’un FormType ?","Définir FormType dans Symfony.",1
+"Qu’est-ce que Twig ?","Définir Twig.",1
+"Qu’est-ce que le routeur Symfony ?","Définir le routing dans Symfony.",1
+
+"Qu’est-ce qu’une clé primaire ?","Définir la clé primaire.",1
+"Qu’est-ce qu’une clé étrangère ?","Définir la clé étrangère.",1
+"Définir une contrainte d’unicité.","C’est quoi une contrainte UNIQUE ?",1
+"Différence entre INNER JOIN et LEFT JOIN ?","Comparer INNER JOIN et LEFT JOIN.",1
+"À quoi sert GROUP BY ?","Quel est le rôle de GROUP BY ?",1
+"À quoi sert HAVING ?","Quel est le rôle de HAVING en SQL ?",1
+"Qu’est-ce qu’une transaction ?","Définir une transaction en base de données.",1
+"Qu’est-ce qu’un index ?","Définir un index en base.",1
+"Différence entre DELETE et TRUNCATE ?","Comparer DELETE et TRUNCATE.",1
+"Qu’est-ce que ACID ?","Définir les propriétés ACID.",1
+
+"Qu’est-ce que le phishing ?","Définir le phishing.",1
+"Qu’est-ce qu’un ransomware ?","Définir un ransomware.",1
+"Différence entre authentification et autorisation ?","Comparer authentification et autorisation.",1
+"Qu’est-ce que le hashage ?","Définir le hashage.",1
+"Qu’est-ce que le chiffrement ?","Définir le chiffrement des données.",1
+"Différence entre chiffrement symétrique et asymétrique ?","Comparer chiffrement symétrique et asymétrique.",1
+"Qu’est-ce que 2FA ?","Définir l’authentification à deux facteurs.",1
+"À quoi sert un pare-feu ?","Quel est le rôle d’un firewall ?",1
+"Qu’est-ce que SQL Injection ?","Définir une injection SQL.",1
+"Qu’est-ce que XSS ?","Définir l’attaque XSS.",1
+"C’est quoi une dérivée d'une fonction ?","Définir la dérivée d'une fonction mathématique.",1
+"Qu'est-ce qu'une intégrale ?","Définir l'intégrale d'une fonction.",1
+"Qu'est-ce qu'une matrice en algèbre ?","Définir une matrice en mathématiques.",1
+"Différence entre permutation et combinaison ?","Comparer permutation et combinaison en mathématiques.",1
+"Qu’est-ce qu’une suite arithmétique ?","Définir une suite arithmétique.",1
+"Qu’est-ce qu’une suite géométrique ?","Définir une suite géométrique.",1
+"Qu’est-ce qu’une probabilité conditionnelle ?","Définir la probabilité conditionnelle en statistiques.",1
+"Qu’est-ce que la variance ?","Définir la variance en statistiques.",1
+"Comment calculer l'écart-type d'une distribution ?","Définir l'écart-type en statistiques.",1
+"Qu’est-ce qu'une limite en calcul ?","Définir la notion de limite d’une fonction.",1
+"Qu'est-ce que Flutter ?","Définir Flutter comme framework mobile.",1
+"Qu'est-ce qu'une classe Stateful en Flutter ?","Définir StatefulWidget dans Flutter.",1
+"Qu'est-ce qu'un StatelessWidget ?","Définir StatelessWidget dans Flutter.",1
+"À quoi sert Firebase dans une application mobile ?","Définir Firebase et son utilisation dans le développement mobile.",1
+"Qu'est-ce que Firestore ?","Définir Firestore dans Firebase.",1
+"Qu'est-ce que le widget Scaffold en Flutter ?","Définir le widget Scaffold dans Flutter.",1
+"Qu’est-ce qu’une route dans Flutter ?","Définir les routes en Flutter pour la navigation.",1
+"Qu'est-ce qu'une clé primaire dans une base de données mobile ?","Définir une clé primaire dans le contexte mobile.",1
+"Qu’est-ce qu’une base de données NoSQL ?","Définir la base de données NoSQL et son utilisation dans les applications mobiles.",1
+"Comment gérer l'état dans une application Flutter ?","Expliquer la gestion d'état dans Flutter.",1
+"Qu’est-ce que le capital-risque ?","Définir le capital-risque dans le financement d'entreprise.",1
+"Qu’est-ce que le crowdfunding ?","Définir le crowdfunding dans les investissements financiers.",1
+"Qu’est-ce que l’investissement socialement responsable ?","Définir l'investissement socialement responsable (ISR).",1
+"Quelle est la différence entre le financement par actions et le financement par dette ?","Comparer le financement par actions et par dette.",1
+"Qu’est-ce qu’un plan d'affaires ?","Définir un plan d’affaires et son rôle dans une start-up.",1
+"Qu'est-ce qu'une analyse SWOT en stratégie financière ?","Définir l’analyse SWOT dans le contexte des finances d'entreprise.",1
+"Qu’est-ce qu’une action en bourse ?","Définir une action et comment elle fonctionne sur le marché boursier.",1
+"Quelle est la différence entre une action ordinaire et une action privilégiée ?","Comparer les actions ordinaires et privilégiées.",1
+"Qu’est-ce qu’une obligation ?","Définir une obligation et son fonctionnement dans le marché financier.",1
+"Qu'est-ce que la diversification d'investissement ?","Définir la diversification dans un portefeuille d'investissement.",1
+"Qu’est-ce qu’un web service ?","Définir un web service dans le développement web.",1
+"Qu’est-ce que REST ?","Définir l'architecture REST pour les API.",1
+"Qu'est-ce que JSON ?","Définir JSON dans le contexte des API web.",1
+"Qu’est-ce qu'une API RESTful ?","Définir une API RESTful et son architecture.",1
+"Qu’est-ce qu’un contrôleur HTTP ?","Définir un contrôleur HTTP dans un framework web.",1
+"Qu’est-ce que CORS ?","Définir CORS dans les applications web.",1
+"Qu’est-ce qu’un JWT (JSON Web Token) ?","Définir un JWT et son rôle dans l'authentification.",1
+"Qu'est-ce que le HTTPS ?","Définir HTTPS et son importance pour la sécurité web.",1
+"Qu’est-ce que le DNS ?","Définir le système de noms de domaine (DNS).",1
+"Qu’est-ce qu’un cookie HTTP ?","Définir les cookies HTTP et leur usage dans les navigateurs.",1
+"Qu’est-ce qu’une migration Doctrine ?","Définir migration Doctrine dans Symfony.",1
+"Qu’est-ce qu’un contrôleur Symfony ?","Définir le rôle d'un contrôleur Symfony.",1
+"Qu’est-ce qu’un Repository en Doctrine ?","Définir un Repository Doctrine.",1
+"Qu’est-ce qu’un service Symfony ?","Définir le rôle d'un service dans Symfony.",1
+"Qu’est-ce que le routeur Symfony ?","Définir le système de routing dans Symfony.",1
+"Qu’est-ce que le fichier .env ?","Définir le rôle du fichier .env dans Symfony.",1
+"Qu’est-ce que Twig ?","Définir Twig dans le cadre de Symfony.",1
+"Qu’est-ce qu’une clé primaire ?","Définir une clé primaire en Doctrine.",1
+"Qu’est-ce qu’une clé étrangère ?","Définir une clé étrangère en Doctrine.",1
+"Qu’est-ce que EntityManager ?","Définir EntityManager en Doctrine.",1
+"Qu’est-ce que le phishing ?","Définir le phishing et ses risques.",1
+"Qu’est-ce qu’un ransomware ?","Définir un ransomware et comment se protéger.",1
+"Différence entre authentification et autorisation ?","Comparer authentification et autorisation.",1
+"Qu’est-ce que le hashage ?","Définir le hashage en sécurité informatique.",1
+"Qu’est-ce que le chiffrement des données ?","Définir le chiffrement des données.",1
+"Qu’est-ce que la normalisation des données ?","Définir la normalisation en base de données.",1
+"Qu’est-ce qu’une API GraphQL ?","Définir GraphQL et son utilisation dans le développement.",1

@@ -1,0 +1,105 @@
+text,label
+Qu’est-ce qu’une classe en Java ?,0
+Quelle est la différence entre une classe et un objet en Java ?,0
+Explique le concept d’héritage en Java.,0
+À quoi sert une interface en Java ?,0
+Comment fonctionne le polymorphisme en Java ?,0
+Définir une exception en Java.,0
+Quelle est la différence entre checked et unchecked exception ?,0
+Comment utiliser une ArrayList en Java ?,0
+À quoi sert le mot-clé static en Java ?,0
+Explique le rôle du garbage collector.,0
+Comment fonctionne une boucle for en Java ?,0
+Quelle est la différence entre List et Set ?,0
+À quoi sert le mot-clé final en Java ?,0
+Comment créer un constructeur en Java ?,0
+Qu’est-ce qu’un package en Java ?,0
+Comment gérer les exceptions en Java ?,0
+Quelle est la différence entre abstraction et encapsulation ?,0
+Comment fonctionne une HashMap ?,0
+Qu’est-ce qu’une interface fonctionnelle ?,0
+Comment fonctionne le Stream API en Java ?,0
+Quelle est la différence entre String et StringBuilder ?,0
+Comment déclarer une variable en Java ?,0
+À quoi sert le mot-clé this ?,0
+Comment fonctionne une méthode en Java ?,0
+Qu’est-ce qu’une méthode statique ?,0
+Comment créer un objet en Java ?,0
+Quelle est la différence entre == et equals() ?,0
+Comment fonctionne une classe abstraite ?,0
+Qu’est-ce qu’un thread en Java ?,0
+Comment fonctionne la synchronisation en Java ?,0
+Quelle est la différence entre composition et héritage ?,0
+Comment fonctionne une interface en programmation orientée objet ?,0
+Qu’est-ce qu’un tableau en Java ?,0
+Comment fonctionne une boucle while ?,0
+À quoi sert le mot-clé super ?,0
+Comment fonctionne un enum en Java ?,0
+Quelle est la différence entre throw et throws ?,0
+Comment fonctionne une lambda en Java ?,0
+Qu’est-ce qu’un constructeur par défaut ?,0
+Comment fonctionne l’encapsulation ?,0
+java,1
+classe,1
+objet java,1
+stream api,1
+arraylist,1
+hashmap,1
+polymorphisme,1
+héritage,1
+exception,1
+interface java,1
+constructeur,1
+thread,1
+static,1
+final mot,1
+equals,1
+== java,1
+stringbuilder,1
+garbage collector,1
+package java,1
+abstraction,1
+c’est quoi,1
+différence classe objet,1
+stream ?,1
+boucle,1
+variable,1
+méthode,1
+super,1
+this java,1
+lambda,1
+enum,1
+liste set,1
+hashmap java,1
+thread java ?,1
+exception ???,1
+inheritance,1
+java oop,1
+classe ?,1
+objet ?,1
+definir,1
+qu’est ce,1
+stream api java,1
+comment ?,1
+interface ?,1
+abstraction ?,1
+static java,1
+final ?,1
+garbage ?,1
+thread ?,1
+array ?,1
+map ?,1
+collection,1
+string ?,1
+while,1
+for java,1
+synchronisation,1
+exception type,1
+super mot,1
+this ?,1
+lambda java,1
+enum java ?,1
+abstraction java,1
+polymorphisme ???,1
+définir classe,1
+différence ?,1

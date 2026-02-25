@@ -1,0 +1,508 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tableau de Bord Étudiant - Educenter{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <!-- Custom Student Dashboard Styles -->
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+<!-- page title -->
+<section class="page-title-section overlay" data-background="{{ asset('images/backgrounds/page-title.jpg') }}">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <ul class="list-inline custom-breadcrumb">
+          <li class="list-inline-item"><a class="h2 text-primary font-secondary">{{ user.nom }} {{ user.prenom }}</a></li>
+          <li class="list-inline-item text-white h3 font-secondary"></li>
+        </ul>
+        <p class="text-lighten">Bienvenue ! Suivez votre progression et continuez votre parcours d'apprentissage</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /page title -->
+
+
+<!-- profile section -->
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <!-- Main Content -->
+      <div class="col-lg-8">
+        
+        <!-- Personal Information -->
+        <div class="mb-5">
+            <h2 class="section-title">Informations Personnelles</h2>
+            <form id="profileForm" method="post" action="{{ path('app_instructor_update_profile') }}">
+              <div class="card border-primary rounded-0 hover-shadow">
+                <div class="card-body">
+                  <div class="row">
+
+                    <div class="col-md-6">
+                      <div class="info-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <label class="mb-0">Nom Complet</label>
+                          <a href="#" class="text-primary edit-icon" data-field="nom" title="Modifier"><i class="ti-pencil"></i></a>
+                        </div>
+                        <p class="mt-2 field-display" data-field="nom">{{ user.nom }} {{ user.prenom }}</p>
+                        <input type="text" name="nom" class="form-control mt-2 field-input" data-field="nom" value="{{ user.nom }} {{ user.prenom }}" style="display:none;">
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="info-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <label class="mb-0">Adresse Email</label>
+                          <a href="#" class="text-primary edit-icon" data-field="email" title="Modifier"><i class="ti-pencil"></i></a>
+                        </div>
+                        <p class="mt-2 field-display" data-field="email">{{ user.email }}</p>
+                        <input type="email" name="email" class="form-control mt-2 field-input" data-field="email" value="{{ user.email }}" style="display:none;">
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="info-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <label class="mb-0">Nom d'utilisateur</label>
+                          <a href="#" class="text-primary edit-icon" data-field="username" title="Modifier"><i class="ti-pencil"></i></a>
+                        </div>
+                        <p class="mt-2 field-display" data-field="username">{{ user.username }}</p>
+                        <input type="text" name="username" class="form-control mt-2 field-input" data-field="username" value="{{ user.username }}" style="display:none;">
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="info-card">
+                        <div class="d-flex justify-content-between align-items-center">
+                          <label class="mb-0">Mot de passe</label>
+                          <a href="#" class="text-primary edit-icon" data-field="password" title="Modifier"><i class="ti-pencil"></i></a>
+                        </div>
+                        <p class="mt-2 field-display" data-field="password">••••••••</p>
+                        <input type="password" name="password" class="form-control mt-2 field-input" data-field="password" placeholder="Nouveau mot de passe" style="display:none;">
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="info-card">
+                        <label>Membre depuis</label>
+                        <p>{{ user.DateInscription|date('d F Y') }}</p>
+                      </div>
+                    </div>
+
+                    <div class="col-md-6">
+                      <div class="info-card">
+                        <label>Dernière connexion</label>
+                        <p>{{ user.DateDerniereCOnnexion|date('d F Y') }}</p>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <div id="formActions" style="display:none;" class="mt-3">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                      <i class="ti-save mr-1"></i>Sauvegarder
+                    </button>
+                    <button type="button" id="cancelEdit" class="btn btn-secondary btn-sm ml-2">
+                      <i class="ti-close mr-1"></i>Annuler
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+            </form>
+        </div>
+        <a href="{{ path('app_logout') }}" class="btn btn-outline-danger btn-block">
+          <i class="ti-power-off mr-2"></i>Déconnexion
+        </a>
+        <!-- My Courses -->
+        <div class="mb-5">
+          <h2 class="section-title">Mes Cours</h2>
+          
+          {% for enrollment in enrollments %}
+          <div class="card border-primary rounded-0 hover-shadow mb-4">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                  <h4 class="card-title mb-2">{{ enrollment.course.title }}</h4>
+                  <p class="text-muted mb-0"><i class="ti-calendar mr-2"></i>Inscrit: {{ enrollment.enrolledAt|date('d M Y') }}</p>
+                </div>
+                {% if enrollment.isCompleted %}
+                  <span class="badge badge-success">Terminé</span>
+                {% else %}
+                  <span class="badge badge-primary">En cours</span>
+                {% endif %}
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span>Progression</span>
+                <span class="{% if enrollment.isCompleted %}text-success{% else %}text-primary{% endif %} font-weight-bold">{{ enrollment.progress }}%{% if enrollment.isCompleted %} ✓{% endif %}</span>
+              </div>
+              <div class="progress mb-3">
+                <div class="progress-bar {% if enrollment.isCompleted %}bg-success{% endif %}" role="progressbar" style="width: {{ enrollment.progress }}%" aria-valuenow="{{ enrollment.progress }}" aria-valuemin="0" aria-valuemax="100">
+                  {% if enrollment.isCompleted %}Terminé{% else %}{{ enrollment.progress }}%{% endif %}
+                </div>
+              </div>
+                {% if enrollment.isCompleted %}
+                <a href="#" class="btn btn-success btn-sm">Voir le certificat</a>
+              {% else %}
+                <a href="{{ path('course_show', {'id': enrollment.course.id}) }}" class="btn btn-primary btn-sm">Continuer l'apprentissage</a>
+              {% endif %}
+            </div>
+          </div>
+          {% else %}
+          <div class="card border-primary rounded-0 hover-shadow">
+            <div class="card-body text-center py-5">
+              <i class="ti-book" style="font-size: 3rem; color: #ccc;"></i>
+              <p class="mt-3 mb-0">Vous n'êtes inscrit à aucun cours pour le moment.</p>
+            </div>
+          </div>
+          {% endfor %}
+
+          <div class="text-center">
+            <a href="#" class="btn btn-primary-outline">Parcourir tous les cours</a>
+          </div>
+        </div>
+
+        <!-- Quiz Performance -->
+        <div class="mb-5">
+          <h2 class="section-title">Performance aux Quiz</h2>
+          <div class="card border-primary rounded-0 hover-shadow">
+            <div class="card-body">
+              <div class="row mb-4">
+                <div class="col-md-4">
+                  <div class="stats-box">
+                    <h4>{{ quizStats.totalCompleted }}</h4>
+                    <p>Quiz Complétés</p>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="stats-box">
+                    <h4>{{ quizStats.averageScore }}%</h4>
+                    <p>Score Moyen</p>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="stats-box">
+                    <h4>{{ badges|length }}</h4>
+                    <p>Badges Gagnés</p>
+                  </div>
+                </div>
+              </div>
+              
+              {% if recentQuizResults|length > 0 %}
+              <h5 class="mb-3">Résultats Récents</h5>
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Nom du Quiz</th>
+                    <th>Cours</th>
+                    <th>Score</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for result in recentQuizResults %}
+                  <tr>
+                    <td>{{ result.quiz.title }}</td>
+                    <td>{{ result.course.title }}</td>
+                    <td>
+                      {% if result.score >= 85 %}
+                        <span class="badge badge-success">{{ result.score }}%</span>
+                      {% elseif result.score >= 70 %}
+                        <span class="badge badge-warning">{{ result.score }}%</span>
+                      {% else %}
+                        <span class="badge badge-danger">{{ result.score }}%</span>
+                      {% endif %}
+                    </td>
+                    <td>{{ result.completedAt|date('d M Y') }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              {% else %}
+              <p class="text-center text-muted">Aucun quiz complété pour le moment.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Badges & Achievements -->
+        <div class="mb-5">
+          <h2 class="section-title">Badges & Réalisations</h2>
+          <div class="card border-primary rounded-0 hover-shadow">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                  <h5 class="mb-1">Collection de Badges</h5>
+                  <p class="text-muted mb-0">Vous avez gagné {{ badges|length }} badges. Continuez à apprendre pour en débloquer plus !</p>
+                </div>
+                <div class="text-right">
+                  <h4 class="text-primary mb-0">{{ badgePoints }}</h4>
+                  <p class="text-muted mb-0 small">Points de Badge</p>
+                </div>
+              </div>
+
+              {% if badges|length > 0 %}
+                {% set quizBadges = badges|filter(b => b.category == 'quiz') %}
+                {% set donationBadges = badges|filter(b => b.category == 'donation') %}
+                {% set milestoneBadges = badges|filter(b => b.category == 'milestone') %}
+
+                {% if quizBadges|length > 0 %}
+                <h6 class="mb-3 text-uppercase" style="color: #777; font-size: 0.85rem;">Badges de Réussite aux Quiz</h6>
+                <div class="text-center mb-4">
+                  {% for badge in quizBadges %}
+                  <div class="badge-item">
+                    <div class="badge-icon {{ badge.tier }}">{{ badge.icon }}</div>
+                    <p class="small mb-0"><strong>{{ badge.name }}</strong></p>
+                  </div>
+                  {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if donationBadges|length > 0 %}
+                <h6 class="mb-3 text-uppercase" style="color: #777; font-size: 0.85rem;">Badges de Donation</h6>
+                <div class="text-center mb-4">
+                  {% for badge in donationBadges %}
+                  <div class="badge-item">
+                    <div class="badge-icon {{ badge.tier }}">{{ badge.icon }}</div>
+                    <p class="small mb-0"><strong>{{ badge.name }}</strong></p>
+                  </div>
+                  {% endfor %}
+                </div>
+                {% endif %}
+
+                {% if milestoneBadges|length > 0 %}
+                <h6 class="mb-3 text-uppercase" style="color: #777; font-size: 0.85rem;">Badges Jalons</h6>
+                <div class="text-center">
+                  {% for badge in milestoneBadges %}
+                  <div class="badge-item">
+                    <div class="badge-icon {{ badge.tier }}">{{ badge.icon }}</div>
+                    <p class="small mb-0"><strong>{{ badge.name }}</strong></p>
+                  </div>
+                  {% endfor %}
+                </div>
+                {% endif %}
+              {% else %}
+              <p class="text-center text-muted">Vous n'avez pas encore gagné de badges. Commencez à apprendre pour en débloquer !</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+       {# Calendrier statique pour le 14 février et 18 février #}
+<h3 class="mt-5">📅 Calendrier des Certifications obtenues</h3>
+<div id="certCalendar" class="mt-4"></div>
+
+{# FullCalendar JS #}
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/main.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const el = document.getElementById('certCalendar');
+    if (!el) return;
+
+    // Ajouter des événements statiques pour le 14 février et le 18 février
+    const events = [
+        {
+            title: 'Certification Attribuée',
+            start: '2026-02-14',  // Date statique (14 février)
+            description: 'Certification attribuée après un quiz réussi.',
+            url: '#',  // URL de l'événement (vous pouvez remplacer par une vraie URL)
+        },
+         {
+            title: 'Certification Attribuée',
+            start: '2026-02-25',  // Date statique (25 février)
+            description: 'Certification attribuée après un quiz réussi.',
+            url: '#',  // URL de l'événement (vous pouvez remplacer par une vraie URL)
+        },
+        {
+            title: 'Certification Attribuée',
+            start: '2026-02-18',  // Date statique (18 février)
+            description: 'Certification attribuée après un autre quiz réussi.',
+            url: '#',  // URL de l'événement (vous pouvez remplacer par une vraie URL)
+        }
+    ];
+
+    const calendar = new FullCalendar.Calendar(el, {
+        initialView: 'dayGridMonth',
+        height: "auto",
+        locale: 'fr',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,listMonth'
+        },
+        events: events,  // Ajouter les événements statiques ici
+        eventClick: function(info) {
+            if (info.event.url) {
+                info.jsEvent.preventDefault();  // Empêcher l'action par défaut
+                window.open(info.event.url, '_blank');  // Ouvrir l'URL dans un nouvel onglet
+            }
+        }
+    });
+
+    calendar.render();
+});
+</script>
+
+       
+        <!-- Donations -->
+        <div class="mb-5">
+          <h2 class="section-title">Mes Donations</h2>
+          <div class="card border-primary rounded-0 hover-shadow">
+            <div class="card-body">
+              <div class="row mb-4">
+                <div class="col-md-4">
+                  <div class="stats-box">
+                    <h4>{{ donationStats.totalAmount }}€</h4>
+                    <p>Total Donné</p>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="stats-box">
+                    <h4>{{ donationStats.donorLevel }}</h4>
+                    <p>Niveau Donateur</p>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="stats-box">
+                    <h4>{{ donationStats.badgesEarned }}</h4>
+                    <p>Badges de Donation</p>
+                  </div>
+                </div>
+              </div>
+
+              {% if donations|length > 0 %}
+              <h5 class="mb-3">Historique des Donations</h5>
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Montant</th>
+                    <th>Objectif</th>
+                    <th>Badge Gagné</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for donation in donations %}
+                  <tr>
+                    <td>{{ donation.date|date('d M Y') }}</td>
+                    <td>{{ donation.amount }}€</td>
+                    <td>{{ donation.purpose }}</td>
+                    <td>{{ donation.badgeEarned }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+              {% else %}
+              <p class="text-center text-muted mb-3">Vous n'avez pas encore fait de donations.</p>
+              {% endif %}
+
+              <div class="text-center mt-4">
+                <a href="#" class="btn btn-primary">Faire une Donation</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <div class="sidebar-card">
+
+          <!-- Quick Stats Card -->
+          <div class="card border-primary rounded-0 hover-shadow">
+            <div class="card-body">
+              <h5 class="mb-3">Statistiques Rapides</h5>
+              
+              <div class="stats-box mb-2">
+                <h4>{{ stats.enrolledCourses }}</h4>
+                <p>Cours Inscrits</p>
+              </div>
+
+              <div class="stats-box mb-2">
+                <h4>{{ stats.completedCourses }}</h4>
+                <p>Cours Complétés</p>
+              </div>
+
+              <div class="stats-box mb-2">
+                <h4>{{ stats.streakDays }}</h4>
+                <p>Jours de Série</p>
+              </div>
+
+              <div class="stats-box">
+                <h4>{{ stats.completionRate }}%</h4>
+                <p>Taux de Complétion</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- /profile section -->
+
+<!-- Delete Account Section -->
+<section class="section bg-gray pt-0">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="delete-account-section">
+          <h4><i class="ti-alert mr-2"></i>Zone Dangereuse</h4>
+          <p class="mb-3">La suppression de votre compte est permanente et irréversible. Toutes vos données, cours, badges et progression seront définitivement supprimés.</p>
+          <button class="btn btn-danger" data-toggle="modal" data-target="#deleteAccountModal">
+            <i class="ti-trash mr-2"></i>Supprimer Mon Compte
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Delete Account Confirmation Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content rounded-0 border-0 p-4">
+            <div class="modal-header border-0">
+                <h3 class="text-danger"><i class="ti-alert mr-2"></i>Confirmer la Suppression</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-3">Êtes-vous absolument sûr de vouloir supprimer votre compte ?</p>
+                <div class="alert alert-danger">
+                  <strong>Cette action est irréversible !</strong>
+                  <ul class="mb-0 mt-2">
+                    <li>Tous vos cours seront perdus</li>
+                    <li>Tous vos badges seront supprimés</li>
+                    <li>Votre historique de donations sera effacé</li>
+                  </ul>
+                </div>
+                <form action="{{ path('app_user_delete') }}" method="post" class="mt-4">
+                    <div class="form-group">
+                        <label>Pour confirmer, tapez votre mot de passe :</label>
+                        <input type="password" class="form-control" name="confirmPassword" placeholder="Votre mot de passe" required>
+                    </div>
+                    <div class="text-right">
+                        <button type="button" class="btn btn-secondary mr-2" data-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-danger">Oui, Supprimer Mon Compte</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- Custom Student Dashboard Script -->
+    <script src="{{ asset('js/script.js') }}"></script>
+{% endblock %}

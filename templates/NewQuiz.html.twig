@@ -1,0 +1,153 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un Quiz{% endblock %}
+
+{% block body %}
+<div class="admin-content">
+    {# Page Header #}
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2><i class="fas fa-plus-circle mr-3"></i>Créer un nouveau Quiz</h2>
+                <p class="text-muted mb-0">Remplissez les informations ci-dessous pour créer un nouveau quiz</p>
+            </div>
+            <a href="{{ path('app_profile') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left mr-2"></i>Retour à la liste des quiz
+            </a>
+        </div>
+    </div>
+
+    {# Main Form Card #}
+    <div class="dashboard-card">
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'quiz-form'}}) }}
+        
+        <div class="row">
+            {# Titre du Quiz #}
+            <div class="col-md-12 mb-4">
+                <div class="form-group">
+                    {{ form_label(form.titre, null, {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-with-icon">
+                        <i class="fas fa-heading"></i>
+                        {{ form_widget(form.titre, {
+                            'attr': {'class': 'form-control form-control-modern' },
+                            'class': form.titre.vars.errors|length > 0 ? 'form-control form-control-modern is-invalid' : 'form-control form-control-modern'
+                        }) }}
+                    </div>
+                    {{ form_errors(form.titre) }}
+                </div>
+            </div>
+
+            {# Type de Quiz #}
+            <div class="col-md-6 mb-4">
+                <div class="form-group">
+                    {{ form_label(form.typeQuiz, null, {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-with-icon">
+                        <i class="fas fa-list-ul"></i>
+                        {{ form_widget(form.typeQuiz, {
+                            'attr': {'class': 'form-control form-control-modern' },
+                            'class': form.typeQuiz.vars.errors|length > 0 ? 'form-control form-control-modern is-invalid' : 'form-control form-control-modern'
+                        }) }}
+                    </div>
+                    {{ form_errors(form.typeQuiz) }}
+                </div>
+            </div>
+
+            {# Durée #}
+            <div class="col-md-6 mb-4">
+                <div class="form-group">
+                    {{ form_label(form.duree, null, {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-with-icon">
+                        <i class="fas fa-clock"></i>
+                        {{ form_widget(form.duree, {
+                            'attr': {'class': 'form-control form-control-modern', 'placeholder': 'Durée en minutes...'},
+                            'class': form.duree.vars.errors|length > 0 ? 'form-control form-control-modern is-invalid' : 'form-control form-control-modern'
+                        }) }}
+                    </div>
+                    {{ form_errors(form.duree) }}
+                    <small class="form-text text-muted">
+                        <i class="fas fa-info-circle mr-1"></i>Durée en minutes
+                    </small>
+                </div>
+            </div>
+
+            {# Score Minimum #}
+            <div class="col-md-6 mb-4">
+                <div class="form-group">
+                    {{ form_label(form.scoreMinimum, null, {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-with-icon">
+                        <i class="fas fa-star"></i>
+                        {{ form_widget(form.scoreMinimum, {
+                            'attr': {'class': 'form-control form-control-modern', 'placeholder': 'Score minimum requis...'},
+                            'class': form.scoreMinimum.vars.errors|length > 0 ? 'form-control form-control-modern is-invalid' : 'form-control form-control-modern'
+                        }) }}
+                    </div>
+                    {{ form_errors(form.scoreMinimum) }}
+                    <small class="form-text text-muted">
+                        <i class="fas fa-info-circle mr-1"></i>Score minimum pour réussir le quiz
+                    </small>
+                </div>
+            </div>
+
+            {# Cours Associé #}
+            <div class="col-md-6 mb-4">
+                <div class="form-group">
+                    {{ form_label(form.coursAssocie, null, {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-with-icon">
+                        <i class="fas fa-book"></i>
+                        {{ form_widget(form.coursAssocie, {
+                            'attr': {'class': 'form-control form-control-modern' },
+                            'class': form.coursAssocie.vars.errors|length > 0 ? 'form-control form-control-modern is-invalid' : 'form-control form-control-modern'
+                        }) }}
+                    </div>
+                    {{ form_errors(form.coursAssocie) }}
+                    <small class="form-text text-muted">
+                        <i class="fas fa-info-circle mr-1"></i>Sélectionnez le cours auquel ce quiz appartient
+                    </small>
+                </div>
+            </div>
+
+            {# reCAPTCHA Field added below the "Score Minimum" #}
+            <div class="col-md-12 mb-4">
+                <div class="form-group">
+                    {{ form_label(form.captcha, null, {'label_attr': {'class': 'form-label'}}) }}
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        {{ form_widget(form.captcha, {
+                            'attr': {'class': 'form-control form-control-modern'},
+                            'class': form.captcha.vars.errors|length > 0 ? 'form-control form-control-modern is-invalid' : 'form-control form-control-modern'
+                        }) }}
+                    </div>
+                    {{ form_errors(form.captcha) }}
+                </div>
+            </div>
+        </div>
+
+        {# Action Buttons #}
+        <div class="form-actions mt-4">
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-check-circle mr-2"></i>Créer le quiz et ajouter des questions
+            </button>
+            <a href="{{ path('app_profile') }}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-times-circle mr-2"></i>Annuler
+            </a>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+
+    {# Helper Card #}
+    <div class="dashboard-card mt-4" style="background: linear-gradient(135deg, #fff9f0 0%, #ffffff 100%); border-left: 4px solid #ffbc3b;">
+        <h5 class="mb-3">
+            <i class="fas fa-lightbulb mr-2" style="color: #ffbc3b;"></i>
+            Conseils pour créer un bon quiz
+        </h5>
+        <ul class="helper-list">
+            <li><i class="fas fa-check-circle mr-2" style="color: #11998e;"></i>Choisissez un titre clair et descriptif</li>
+            <li><i class="fas fa-check-circle mr-2" style="color: #11998e;"></i>Adaptez la durée en fonction du nombre de questions</li>
+            <li><i class="fas fa-check-circle mr-2" style="color: #11998e;"></i>Définissez un score minimum réaliste</li>
+            <li><i class="fas fa-check-circle mr-2" style="color: #11998e;"></i>Associez le quiz au cours approprié pour une meilleure organisation</li>
+        </ul>
+    </div>
+</div>
+
+{% endblock %}

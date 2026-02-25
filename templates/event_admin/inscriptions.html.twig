@@ -1,0 +1,293 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscriptions - {{ event.titre }} | Eduverse Admin{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+        .navigation, header, .header, .top-header, nav.navbar { display: none !important; }
+        
+        body { 
+            margin: 0 !important; 
+            padding: 0 !important; 
+            overflow-x: hidden; 
+            background: #f0f2f5; 
+            font-family: 'Outfit', sans-serif;
+            color: #2d3436;
+        }
+        
+        /* Admin Sidebar Refined */
+        .admin-sidebar { 
+            position: fixed; 
+            left: 0; 
+            top: 0; 
+            width: 260px; 
+            height: 100vh; 
+            background: linear-gradient(180deg, #2c3e50 0%, #1a252f 100%); 
+            color: white; 
+            z-index: 1000; 
+            padding-top: 30px; 
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-brand {
+            padding: 0 25px 30px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffbc3b;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-menu { list-style: none; padding: 0; margin: 0; }
+        .sidebar-menu a { 
+            display: flex; 
+            align-items: center; 
+            padding: 14px 25px; 
+            color: rgba(255, 255, 255, 0.6); 
+            text-decoration: none; 
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 4px solid transparent;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active { 
+            background: rgba(255, 188, 59, 0.08); 
+            color: #ffbc3b; 
+            border-left: 4px solid #ffbc3b; 
+        }
+        
+        .sidebar-menu a i { margin-right: 15px; font-size: 18px; }
+        
+        /* Main Content */
+        .admin-content { 
+            margin-left: 260px; 
+            padding: 40px; 
+            min-height: 100vh; 
+            background: #f0f2f5;
+        }
+
+        .page-header { 
+            margin-bottom: 35px; 
+            display: flex; 
+            align-items: center; 
+        }
+
+        .back-btn { 
+            margin-right: 20px; 
+            color: #2d3436; 
+            font-size: 18px; 
+            text-decoration: none; 
+            background: white; 
+            width: 45px; 
+            height: 45px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover { 
+            transform: translateX(-5px); 
+            color: #ffbc3b; 
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+
+        .page-title h2 { 
+            font-size: 28px; 
+            font-weight: 700; 
+            color: #1a252f; 
+            margin: 0; 
+            letter-spacing: -0.5px;
+        }
+        
+        .page-description { color: #636e72; margin-top: 5px; font-size: 15px; }
+
+        /* Dashboard Card */
+        .dashboard-card { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03); 
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Premium Table */
+        .admin-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        .admin-table thead th { 
+            padding: 15px 20px; 
+            font-weight: 700; 
+            color: #636e72; 
+            text-transform: uppercase; 
+            font-size: 12px; 
+            letter-spacing: 1px;
+            border: none;
+        }
+
+        .admin-table tbody tr { transition: all 0.3s; }
+
+        .admin-table tbody td { 
+            padding: 18px 20px; 
+            background: white; 
+            border-top: 1px solid #f1f3f5;
+            border-bottom: 1px solid #f1f3f5;
+            color: #2d3436;
+            vertical-align: middle;
+        }
+
+        .admin-table tbody td:first-child { border-left: 1px solid #f1f3f5; border-radius: 15px 0 0 15px; }
+        .admin-table tbody td:last-child { border-right: 1px solid #f1f3f5; border-radius: 0 15px 15px 0; }
+
+        .admin-table tbody tr:hover td {
+            background: #fcfcfd;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+        }
+
+        /* Status Badges */
+        .status-badge { 
+            padding: 6px 12px; 
+            border-radius: 10px; 
+            font-size: 11px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+        }
+        .status-en-attente { background: #fff9db; color: #f08c00; }
+        .status-accepte { background: #ebfbee; color: #40c057; }
+        .status-refuse { background: #fff5f5; color: #fa5252; }
+
+        /* Action Buttons */
+        .action-group { display: flex; gap: 8px; }
+        .action-btn { 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 38px; 
+            height: 38px; 
+            border-radius: 10px; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            color: #6c757d;
+            background: #f8f9fa;
+            border: 1px solid #eef0f8;
+        }
+
+        .action-btn:hover { transform: scale(1.15); color: #2d3436; background: white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .action-btn.view:hover { color: #1c7ed6; border-color: #1c7ed6; }
+        .action-btn.edit:hover { color: #7048e8; border-color: #7048e8; }
+        .action-btn.delete:hover { color: #fa5252; border-color: #fa5252; }
+
+        .user-info { display: flex; align-items: center; }
+        .user-avatar { 
+            width: 42px; 
+            height: 42px; 
+            border-radius: 12px; 
+            background: #ffbc3b; 
+            color: white; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            margin-right: 15px; 
+            font-weight: 700;
+            font-size: 16px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="admin-sidebar">
+    <div class="sidebar-brand">
+        <i class="ti-book mr-2"></i> EDUVERSE
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="{{ path('app_profile') }}"><i class="ti-dashboard"></i><span>Tableau de Bord</span></a></li>
+        <li><a href="{{ path('app_event_index') }}" class="active"><i class="ti-calendar"></i><span>Événements</span></a></li>
+        <li><a href="{{ path('app_bourse_index') }}"><i class="ti-medall"></i><span>Bourses</span></a></li>
+    </ul>
+</div>
+
+<div class="admin-content">
+    <div class="page-header">
+        <a href="{{ path('app_event_show', {'id': event.id}) }}" class="back-btn"><i class="ti-arrow-left"></i></a>
+        <div class="page-title">
+            <h2>Participants : {{ event.titre }}</h2>
+            <p class="page-description">Gérez les inscriptions et les statuts des participants</p>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Participant</th>
+                        <th>Email</th>
+                        <th>Inscription</th>
+                        <th>Statut</th>
+                        <th class="text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ins in inscriptions %}
+                    <tr>
+                        <td>
+                            <div class="user-info">
+                                <div class="user-avatar">
+                                    {{ ins.participant.prenom|first }}{{ ins.participant.nom|first }}
+                                </div>
+                                <div style="font-weight: 700; color: #1a252f;">{{ ins.participant.prenom }} {{ ins.participant.nom }}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <div style="font-size: 14px; color: #636e72;">{{ ins.participant.email }}</div>
+                        </td>
+                        <td>
+                            <div style="font-size: 13px; font-weight: 500;">
+                                <i class="ti-calendar mr-1 text-muted"></i> {{ ins.dateInscription|date('d/m/Y') }}
+                                <div style="font-size: 11px; color: #b2bec3;">à {{ ins.dateInscription|date('H:i') }}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="status-badge status-{{ ins.statut|lower|replace({' ': '-'}) }}">{{ ins.statut }}</span>
+                        </td>
+                        <td>
+                            <div class="action-group justify-content-end">
+                                <a href="{{ path('app_event_inscription_show', {'id': ins.id}) }}" class="action-btn view" title="Voir les détails"><i class="ti-eye"></i></a>
+                                <a href="{{ path('app_event_inscription_edit', {'id': ins.id}) }}" class="action-btn edit" title="Gérer le statut"><i class="ti-settings"></i></a>
+                                
+                                <form method="post" action="{{ path('app_event_inscription_delete', {'id': ins.id}) }}" style="display:inline;" onsubmit="return confirm('Supprimer cette inscription ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_inscription' ~ ins.id) }}">
+                                    <button type="submit" class="action-btn delete"><i class="ti-trash"></i></button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <i class="ti-user mb-3 d-block" style="font-size: 50px; color: #dfe6e9;"></i>
+                            <h5 style="color: #b2bec3;">Aucune inscription pour cet événement.</h5>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

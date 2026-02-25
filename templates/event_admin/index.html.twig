@@ -1,0 +1,396 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Événements | Eduverse Admin{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+        .navigation, header, .header, .top-header, nav.navbar { display: none !important; }
+        
+        body { 
+            margin: 0 !important; 
+            padding: 0 !important; 
+            overflow-x: hidden; 
+            background: #f0f2f5; 
+            font-family: 'Outfit', sans-serif;
+            color: #2d3436;
+        }
+        
+        /* Admin Sidebar Refined */
+        .admin-sidebar { 
+            position: fixed; 
+            left: 0; 
+            top: 0; 
+            width: 260px; 
+            height: 100vh; 
+            background: linear-gradient(180deg, #2c3e50 0%, #1a252f 100%); 
+            color: white; 
+            z-index: 1000; 
+            padding-top: 30px; 
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-brand {
+            padding: 0 25px 30px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffbc3b;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-menu { list-style: none; padding: 0; margin: 0; }
+        .sidebar-menu a { 
+            display: flex; 
+            align-items: center; 
+            padding: 14px 25px; 
+            color: rgba(255, 255, 255, 0.6); 
+            text-decoration: none; 
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 4px solid transparent;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active { 
+            background: rgba(255, 188, 59, 0.08); 
+            color: #ffbc3b; 
+            border-left: 4px solid #ffbc3b; 
+        }
+        
+        .sidebar-menu a i { margin-right: 15px; font-size: 18px; }
+        
+        /* Main Content */
+        .admin-content { 
+            margin-left: 260px; 
+            padding: 40px; 
+            min-height: 100vh; 
+            background: #f0f2f5;
+        }
+
+        .page-header { 
+            margin-bottom: 35px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        
+        .page-header h2 { 
+            font-size: 28px; 
+            font-weight: 700; 
+            color: #1a252f; 
+            margin: 0; 
+            letter-spacing: -0.5px;
+        }
+        
+        .page-description { color: #636e72; margin-top: 5px; font-size: 15px; }
+
+        .btn-primary { 
+            background: linear-gradient(135deg, #ffbc3b 0%, #ff8c00 100%); 
+            color: white !important; 
+            padding: 12px 25px; 
+            border-radius: 14px; 
+            border: none; 
+            text-decoration: none; 
+            font-weight: 700; 
+            box-shadow: 0 6px 15px rgba(255, 188, 59, 0.3); 
+            transition: all 0.3s; 
+            display: inline-flex;
+            align-items: center;
+            font-size: 14px;
+        }
+        
+        .btn-primary:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 8px 20px rgba(255, 188, 59, 0.4); 
+        }
+
+        /* Dashboard Card & Search */
+        .dashboard-card { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03); 
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .search-area {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            flex: 1;
+        }
+
+        .search-input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #b2bec3;
+        }
+
+        .admin-search-input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: 2px solid #f1f3f5;
+            border-radius: 12px;
+            transition: all 0.3s;
+            background: #f8fafc;
+            outline: none;
+        }
+
+        .admin-search-input:focus {
+            border-color: #ffbc3b;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(255, 188, 59, 0.1);
+        }
+
+        .filter-select {
+            padding: 12px 20px;
+            border: 2px solid #f1f3f5;
+            border-radius: 12px;
+            background: #f8fafc;
+            color: #2d3436;
+            font-weight: 500;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        /* Premium Table */
+        .admin-table { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        .admin-table thead th { 
+            padding: 15px 20px; 
+            font-weight: 700; 
+            color: #636e72; 
+            text-transform: uppercase; 
+            font-size: 12px; 
+            letter-spacing: 1px;
+            border: none;
+        }
+
+        .admin-table tbody tr {
+            transition: all 0.3s;
+        }
+
+        .admin-table tbody td { 
+            padding: 18px 20px; 
+            background: white; 
+            border-top: 1px solid #f1f3f5;
+            border-bottom: 1px solid #f1f3f5;
+            color: #2d3436;
+            vertical-align: middle;
+        }
+
+        .admin-table tbody td:first-child { border-left: 1px solid #f1f3f5; border-radius: 15px 0 0 15px; }
+        .admin-table tbody td:last-child { border-right: 1px solid #f1f3f5; border-radius: 0 15px 15px 0; }
+
+        .admin-table tbody tr:hover td {
+            background: #fcfcfd;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.02);
+        }
+        
+        /* Action Buttons */
+        .action-group { display: flex; gap: 8px; }
+        .action-btn { 
+            display: inline-flex; 
+            align-items: center; 
+            justify-content: center; 
+            width: 38px; 
+            height: 38px; 
+            border-radius: 10px; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .action-btn:hover { transform: scale(1.15); }
+        .action-btn.view { background: #e7f5ff; color: #1c7ed6; }
+        .action-btn.inscriptions { background: #fff4e6; color: #fd7e14; }
+        .action-btn.edit { background: #f3f0ff; color: #7048e8; }
+        .action-btn.delete { background: #fff5f5; color: #fa5252; }
+
+        .type-badge { 
+            padding: 6px 12px; 
+            border-radius: 10px; 
+            font-size: 11px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+        }
+        .badge-webinaire { background: rgba(28, 126, 214, 0.1); color: #1c7ed6; }
+        .badge-atelier { background: rgba(112, 72, 232, 0.1); color: #7048e8; }
+        .badge-challenge { background: rgba(253, 126, 20, 0.1); color: #fd7e14; }
+
+        .event-info { display: flex; align-items: center; }
+        .event-img { 
+            width: 50px; 
+            height: 50px; 
+            border-radius: 12px; 
+            object-fit: cover; 
+            margin-right: 15px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08); 
+        }
+        .event-no-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: #f1f3f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            color: #adb5bd;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="admin-sidebar">
+    <div class="sidebar-brand">
+        <i class="ti-book mr-2"></i> EDUVERSE
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="{{ path('app_profile') }}"><i class="ti-dashboard"></i><span>Tableau de Bord</span></a></li>
+        <li><a href="{{ path('app_event_index') }}" class="active"><i class="ti-calendar"></i><span>Événements</span></a></li>
+        <li><a href="{{ path('app_bourse_index') }}"><i class="ti-medall"></i><span>Bourses</span></a></li>
+    </ul>
+</div>
+
+<div class="admin-content">
+    <div class="page-header">
+        <div>
+            <h2>Gestion des Événements</h2>
+            <p class="page-description">Créez et gérez vos webinaires, ateliers et challenges</p>
+        </div>
+        <a href="{{ path('app_event_add') }}" class="btn-primary">
+            <i class="ti-plus mr-2"></i>Ajouter un Événement
+        </a>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="search-area">
+            <div class="search-input-wrapper">
+                <i class="ti-search"></i>
+                <input type="text" id="searchInput" class="admin-search-input" placeholder="Rechercher par titre...">
+            </div>
+            <select id="filterType" class="filter-select">
+                <option value="">Tous les types</option>
+                <option value="webinaire">Webinaires</option>
+                <option value="atelier">Ateliers</option>
+                <option value="challenge">Challenges</option>
+            </select>
+        </div>
+
+        <div class="table-responsive">
+            <table class="admin-table" id="eventTable">
+                <thead>
+                    <tr>
+                        <th>Événement</th>
+                        <th>Type</th>
+                        <th>Planification</th>
+                        <th>État / Niveau</th>
+                        <th class="text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for event in events %}
+                    <tr class="event-row" data-titre="{{ event.titre|lower }}" data-type="{{ event.type }}">
+                        <td>
+                            <div class="event-info">
+                                {% if event.image %}
+                                    <img src="{{ asset(event.image) }}" class="event-img">
+                                {% else %}
+                                    <div class="event-no-img"><i class="ti-image"></i></div>
+                                {% endif %}
+                                <div>
+                                    <div style="font-weight: 700; color: #1a252f;">{{ event.titre }}</div>
+                                    <div style="font-size: 12px; color: #636e72;">Créé le {{ event.dateCreation|date('d/m/Y') }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="type-badge badge-{{ event.type }}">{{ event.type|capitalize }}</span>
+                        </td>
+                        <td>
+                            <div style="font-size: 13px;">
+                                <div style="font-weight: 600;"><i class="ti-calendar mr-1" style="color:#ffbc3b"></i> {{ event.date|date('d M Y') }}</div>
+                                <div style="color: #636e72; font-size: 12px;">{{ event.heureDeb|date('H:i') }} - {{ event.heureFin|date('H:i') }}</div>
+                            </div>
+                        </td>
+                        <td>
+                            {% if event.type == 'webinaire' %}
+                                <span style="font-size: 12px; color: #1c7ed6; font-weight: 600;"><i class="ti-video-camera mr-1"></i> Live</span>
+                            {% elseif event.type == 'challenge' %}
+                                <span style="font-size: 12px; color: #fd7e14; font-weight: 600;"><i class="ti-stats-up mr-1"></i> {{ event.niveau|capitalize }}</span>
+                            {% else %}
+                                <span style="font-size: 12px; color: #7048e8; font-weight: 600;"><i class="ti-layout mr-1"></i> Workshop</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="action-group justify-content-end">
+                                <a href="{{ path('app_event_show', {'id': event.id}) }}" class="action-btn view" title="Voir les détails"><i class="ti-eye"></i></a>
+                                <a href="{{ path('app_event_inscriptions', {'id': event.id}) }}" class="action-btn inscriptions" title="Gérer les participants"><i class="ti-user"></i></a>
+                                <a href="{{ path('app_event_edit', {'id': event.id}) }}" class="action-btn edit" title="Modifier"><i class="ti-pencil"></i></a>
+                                
+                                <form method="post" action="{{ path('app_event_delete', {'id': event.id}) }}" style="display: inline-block;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet événement ? Cette action est irréversible.');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
+                                    <button class="action-btn delete" type="submit"><i class="ti-trash"></i></button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <i class="ti-calendar mb-3 d-block" style="font-size: 50px; color: #dfe6e9;"></i>
+                            <h5 style="color: #b2bec3;">Aucun événement n'a encore été créé.</h5>
+                            <a href="{{ path('app_event_add') }}" class="btn-primary mt-3">Commencer maintenant</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const filterType = document.getElementById('filterType');
+    const rows = document.querySelectorAll('.event-row');
+
+    function filterTable() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const typeTerm = filterType.value;
+
+        rows.forEach(row => {
+            const titre = row.dataset.titre;
+            const type = row.dataset.type;
+            const matchesSearch = titre.includes(searchTerm);
+            const matchesType = !typeTerm || type === typeTerm;
+
+            if (matchesSearch && matchesType) {
+                row.style.display = '';
+                row.style.animation = 'fadeIn 0.4s ease-out';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    searchInput.addEventListener('input', filterTable);
+    filterType.addEventListener('change', filterTable);
+});
+</script>
+{% endblock %}

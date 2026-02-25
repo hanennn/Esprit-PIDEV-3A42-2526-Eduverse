@@ -1,0 +1,285 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gérer l'Inscription | Eduverse Admin{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+        .navigation, header, .header, .top-header, nav.navbar { display: none !important; }
+        
+        body { 
+            margin: 0 !important; 
+            padding: 0 !important; 
+            overflow-x: hidden; 
+            background: #f0f2f5; 
+            font-family: 'Outfit', sans-serif;
+            color: #2d3436;
+        }
+        
+        /* Admin Sidebar Refined */
+        .admin-sidebar { 
+            position: fixed; 
+            left: 0; 
+            top: 0; 
+            width: 260px; 
+            height: 100vh; 
+            background: linear-gradient(180deg, #2c3e50 0%, #1a252f 100%); 
+            color: white; 
+            z-index: 1000; 
+            padding-top: 30px; 
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-brand {
+            padding: 0 25px 30px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffbc3b;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-menu { list-style: none; padding: 0; margin: 0; }
+        .sidebar-menu a { 
+            display: flex; 
+            align-items: center; 
+            padding: 14px 25px; 
+            color: rgba(255, 255, 255, 0.6); 
+            text-decoration: none; 
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 4px solid transparent;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active { 
+            background: rgba(255, 188, 59, 0.08); 
+            color: #ffbc3b; 
+            border-left: 4px solid #ffbc3b; 
+        }
+        
+        .sidebar-menu a i { margin-right: 15px; font-size: 18px; }
+        
+        /* Main Content */
+        .admin-content { 
+            margin-left: 260px; 
+            padding: 40px; 
+            min-height: 100vh; 
+            background: #f0f2f5;
+        }
+
+        .page-header { 
+            margin-bottom: 35px; 
+            display: flex; 
+            align-items: center; 
+        }
+
+        .back-btn { 
+            margin-right: 20px; 
+            color: #2d3436; 
+            font-size: 18px; 
+            text-decoration: none; 
+            background: white; 
+            width: 45px; 
+            height: 45px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover { 
+            transform: translateX(-5px); 
+            color: #ffbc3b; 
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+
+        .page-title h2 { 
+            font-size: 28px; 
+            font-weight: 700; 
+            color: #1a252f; 
+            margin: 0; 
+            letter-spacing: -0.5px;
+        }
+
+        /* Dashboard Card */
+        .dashboard-card { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 24px; 
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04); 
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-label { 
+            font-weight: 600; 
+            color: #2d3436; 
+            margin-bottom: 10px; 
+            display: block; 
+            font-size: 13px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.8px; 
+        }
+
+        .form-control { 
+            width: 100%; 
+            padding: 0 18px; 
+            border: 2px solid #f1f3f5; 
+            border-radius: 14px; 
+            transition: all 0.3s; 
+            font-size: 15px; 
+            color: #2d3436; 
+            background: #f8fafc; 
+            height: 56px;
+            display: block;
+            line-height: 52px;
+            box-sizing: border-box;
+        }
+
+        select.form-control {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23b2bec3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 18px;
+            padding-right: 45px;
+        }
+
+        .form-control:focus { 
+            border-color: #ffbc3b; 
+            outline: none; 
+            box-shadow: 0 0 0 5px rgba(255, 188, 59, 0.1); 
+            background: white; 
+        }
+
+        .btn-primary { 
+            background: linear-gradient(135deg, #ffbc3b 0%, #ff8c00 100%); 
+            color: white !important; 
+            padding: 14px 30px; 
+            border-radius: 14px; 
+            border: none; 
+            font-weight: 700; 
+            box-shadow: 0 6px 15px rgba(255, 188, 59, 0.3); 
+            transition: all 0.3s; 
+            cursor: pointer;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-primary:hover { 
+            transform: translateY(-3px); 
+            box-shadow: 0 8px 20px rgba(255, 188, 59, 0.4); 
+        }
+
+        .btn-secondary { 
+            background: #ffffff; 
+            color: #636e72; 
+            padding: 14px 30px; 
+            border-radius: 14px; 
+            border: 2px solid #f1f3f5; 
+            text-decoration: none; 
+            font-weight: 600; 
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover { background: #f8fafc; border-color: #dfe6e9; color: #2d3436; }
+
+        .participant-card {
+            background: #f8fafc;
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid #f1f3f5;
+            display: flex;
+            align-items: center;
+        }
+
+        .avatar-circle {
+            width: 50px;
+            height: 50px;
+            background: #ffbc3b;
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 20px;
+            margin-right: 18px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="admin-sidebar">
+    <div class="sidebar-brand">
+        <i class="ti-book mr-2"></i> EDUVERSE
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="{{ path('app_profile') }}"><i class="ti-dashboard"></i><span>Tableau de Bord</span></a></li>
+        <li><a href="{{ path('app_event_index') }}" class="active"><i class="ti-calendar"></i><span>Événements</span></a></li>
+        <li><a href="{{ path('app_bourse_index') }}"><i class="ti-medall"></i><span>Bourses</span></a></li>
+    </ul>
+</div>
+
+<div class="admin-content">
+    <div class="page-header">
+        <a href="{{ path('app_event_inscriptions', {'id': event.id}) }}" class="back-btn"><i class="ti-arrow-left"></i></a>
+        <div class="page-title">
+            <h2>Gérer l'Inscription</h2>
+            <p style="color: #636e72; margin: 4px 0 0;">Mise à jour du statut pour {{ event.titre }}</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-7 mx-auto">
+            <div class="dashboard-card">
+                <div class="participant-card">
+                    <div class="avatar-circle">{{ inscription.participant.prenom|first }}{{ inscription.participant.nom|first }}</div>
+                    <div>
+                        <div style="font-weight: 700; color: #1a252f; font-size: 17px;">{{ inscription.participant.prenom }} {{ inscription.participant.nom }}</div>
+                        <div style="color: #636e72; font-size: 14px;">Inscrit le {{ inscription.dateInscription|date('d/m/Y') }}</div>
+                    </div>
+                </div>
+
+                <form method="post">
+                    <div class="form-group mb-4">
+                        <label class="form-label">Statut de la demande</label>
+                        <select name="statut" class="form-control">
+                            <option value="En attente" {{ inscription.statut == 'En attente' ? 'selected' : '' }}>⏳ En attente</option>
+                            <option value="Accepté" {{ inscription.statut == 'Accepté' ? 'selected' : '' }}>✅ Accepté</option>
+                            <option value="Refusé" {{ inscription.statut == 'Refusé' ? 'selected' : '' }}>❌ Refusé</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group mb-5">
+                        <label class="form-label">Note administrative (interne)</label>
+                        <textarea name="note" class="form-control" rows="5" placeholder="Ajoutez un commentaire sur cette décision...">{{ inscription.note }}</textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{{ path('app_event_inscriptions', {'id': event.id}) }}" class="btn-secondary mr-2">Annuler</a>
+                        <button type="submit" class="btn-primary">
+                            <i class="ti-save mr-2"></i>Valider la décision
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

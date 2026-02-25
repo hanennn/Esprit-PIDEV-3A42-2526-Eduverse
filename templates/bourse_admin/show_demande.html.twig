@@ -1,0 +1,129 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails Demande - {{ demande.etudiant.nom }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <style>
+        /* Reusing Backoffice Styles */
+        .navigation, header, .header, .top-header, nav.navbar { display: none !important; }
+        body { margin: 0 !important; padding: 0 !important; overflow-x: hidden; background: #f8f9fa; }
+        
+        /* Sidebar */
+        .admin-sidebar { position: fixed; left: 0; top: 0; width: 250px; height: 100vh; background: #2c3e50; color: white; z-index: 1000; padding-top: 20px; transition: all 0.3s; }
+        .sidebar-menu { list-style: none; padding: 0; margin: 20px 0; }
+        .sidebar-menu a { display: flex; align-items: center; padding: 15px 20px; color: rgba(255, 255, 255, 0.7); text-decoration: none; border-left: 3px solid transparent; transition: all 0.3s; }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background: rgba(255, 188, 59, 0.1); color: #ffbc3b; border-left: 3px solid #ffbc3b; }
+        .sidebar-menu a i { margin-right: 15px; font-size: 18px; min-width: 20px; }
+        
+        /* Content */
+        .admin-content { margin-left: 250px; padding: 20px 30px; min-height: 100vh; background: #f8f9fa; }
+        
+        /* Cards */
+        .dashboard-card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); margin-bottom: 30px; border: 1px solid #edf2f9; }
+
+        /* Page Header */
+        .page-header { margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .page-header h2 { font-size: 26px; font-weight: 700; color: #2c3e50; margin: 0; }
+        .page-description { color: #6c757d; margin-top: 5px; font-size: 14px; }
+
+        /* Buttons */
+        .btn-back { background: #6c757d; color: white; padding: 10px 25px; border-radius: 8px; border: none; text-decoration: none; font-weight: 600; transition: all 0.3s; }
+        .btn-back:hover { background: #5a6268; color: white; }
+
+        /* Badges */
+        .status-badge { padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .status-badge.en-attente { background: #fff3cd; color: #856404; }
+        .status-badge.accepte, .status-badge.accepté { background: #e3f9e5; color: #1f7a36; }
+        .status-badge.refuse, .status-badge.refusé { background: #ffebeb; color: #c92a2a; }
+
+        /* Detail rows */
+        .detail-row { display: flex; padding: 15px 0; border-bottom: 1px solid #eef0f8; }
+        .detail-row:last-child { border-bottom: none; }
+        .detail-label { font-weight: 600; color: #6c757d; width: 200px; min-width: 200px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .detail-value { color: #2c3e50; font-weight: 500; }
+    </style>
+{% endblock %}
+
+{% block body %}
+<!-- Sidebar -->
+<div class="admin-sidebar">
+    <div class="sidebar-toggle" style="text-align: center; padding: 20px; font-size: 24px;">
+        <i class="ti-menu"></i>
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="{{ path('app_profile') }}"><i class="ti-dashboard"></i><span>Tableau de Bord</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-user"></i><span>Utilisateurs</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-id-badge"></i><span>Quiz</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-book"></i><span>Cours</span></a></li>
+        <li><a href="{{ path('app_bourse_index') }}" class="active"><i class="ti-medall"></i><span>Bourses</span></a></li>
+        <li><a href="{{ path('app_profile') }}"><i class="ti-comments"></i><span>Forum</span></a></li>
+    </ul>
+</div>
+
+<!-- Main Content -->
+<div class="admin-content">
+    
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h2>Détails de la Demande</h2>
+            <p class="page-description">Candidature pour : {{ bourse.titre }}</p>
+        </div>
+        <a href="{{ path('app_bourse_applications', {'id': bourse.id}) }}" class="btn-back">
+            <i class="ti-arrow-left mr-2"></i>Retour aux Demandes
+        </a>
+    </div>
+
+    <!-- Student Info Card -->
+    <div class="dashboard-card">
+        <h4 style="color: #2c3e50; font-size: 18px; margin-bottom: 20px;"><i class="ti-user mr-2" style="color: #ffbc3b;"></i>Informations de l'Étudiant</h4>
+        
+        <div class="detail-row">
+            <div class="detail-label">Nom complet</div>
+            <div class="detail-value">{{ demande.etudiant.nom }} {{ demande.etudiant.prenom }}</div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Email</div>
+            <div class="detail-value">{{ demande.etudiant.email }}</div>
+        </div>
+    </div>
+
+    <!-- Application Info Card -->
+    <div class="dashboard-card">
+        <h4 style="color: #2c3e50; font-size: 18px; margin-bottom: 20px;"><i class="ti-files mr-2" style="color: #ffbc3b;"></i>Détails de la Candidature</h4>
+        
+        <div class="detail-row">
+            <div class="detail-label">Bourse</div>
+            <div class="detail-value">{{ bourse.titre }}</div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Niveau d'études</div>
+            <div class="detail-value">{{ demande.niveauEtudes }}</div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Date de demande</div>
+            <div class="detail-value">{{ demande.dateDemande|date('d/m/Y à H:i') }}</div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Statut</div>
+            <div class="detail-value">
+                <span class="status-badge {{ demande.statut|lower|replace({' ': '-'}) }}">{{ demande.statut }}</span>
+            </div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Note</div>
+            <div class="detail-value">{{ demande.note ?: '-' }}</div>
+        </div>
+        <div class="detail-row">
+            <div class="detail-label">Lettre de motivation</div>
+            <div class="detail-value">
+                <a href="{{ asset('uploads/cancelatures/' ~ demande.lettreMotivation) }}" target="_blank" style="color: #1c7ed6; text-decoration: none; font-weight: 600;">
+                    <i class="ti-download mr-1"></i>Télécharger le PDF
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

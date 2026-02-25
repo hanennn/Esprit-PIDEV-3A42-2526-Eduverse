@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réinitialisation mot de passe{% endblock %}
+
+{% block body %}
+<section class="page-title-section overlay" data-background="{{ asset('images/backgrounds/page-title.jpg') }}">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <ul class="list-inline custom-breadcrumb">
+          <li class="list-inline-item"><a class="h2 text-primary font-secondary" href="{{ path('app_login') }}">Connexion</a></li>
+          <li class="list-inline-item text-white h3 font-secondary nasted">Mot de passe oublié</li>
+        </ul>
+        <p class="text-lighten">Entrez votre email pour recevoir un lien de réinitialisation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="login-container">
+                    <div class="login-card">
+                        <div class="text-center mb-4">
+                            <h2 class="mb-2">Mot de passe oublié ?</h2>
+                        </div>
+
+                        {% for flash_error in app.flashes('reset_password_error') %}
+                            <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+                        {% endfor %}
+
+                        {{ form_start(requestForm) }}
+                            <div class="form-group">
+                                {{ form_label(requestForm.email) }}
+                                {{ form_widget(requestForm.email, {'attr': {'class': 'form-control', 'placeholder': 'votre@email.com'}}) }}
+                                <div class="text-danger">
+                                    {{ form_errors(requestForm.email) }}
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block">Envoyer le lien</button>
+                        {{ form_end(requestForm) }}
+                        
+                        <div class="text-center mt-3">
+                            <a href="{{ path('app_login') }}" class="text-muted">Retour à la connexion</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
