@@ -1,4 +1,5 @@
 <?php
+<<<<<<< HEAD
 namespace App\Entity;
 
 use App\Repository\UserRepository;
@@ -12,6 +13,20 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['Username'])]
+=======
+
+namespace App\Entity;
+
+use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -20,8 +35,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
+<<<<<<< HEAD
     #[Assert\NotBlank(message: "Le numéro d'inscription (Username) est obligatoire.")]
     private ?string $Username = null;
+=======
+    private ?string $email = null;
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 
     /**
      * @var list<string> The user roles
@@ -29,15 +48,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private array $roles = [];
 
+<<<<<<< HEAD
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $googleId = null;
 
+=======
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
     private ?string $password = null;
 
+<<<<<<< HEAD
     #[ORM\Column(length: 100)]
     #[Assert\NotBlank(message: "Le nom est obligatoire.")]
     private ?string $nom = null;
@@ -103,6 +126,39 @@ public function setExperience(?string $experience): static
     {
         $this->isActive = $isActive;
         return $this;
+=======
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $prenom = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $username = null;
+
+    #[ORM\Column]
+    private ?\DateTime $dateInscription = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTime $lastLogin = null;
+
+    /**
+     * @var Collection<int, Certification>
+     */
+    #[ORM\OneToMany(targetEntity: Certification::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $certifications;
+
+    /**
+     * @var Collection<int, DemandeBourse>
+     */
+    #[ORM\OneToMany(targetEntity: DemandeBourse::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $demandeBourses;
+
+    public function __construct()
+    {
+        $this->certifications = new ArrayCollection();
+        $this->demandeBourses = new ArrayCollection();
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
     }
 
     public function getId(): ?int
@@ -110,6 +166,7 @@ public function setExperience(?string $experience): static
         return $this->id;
     }
 
+<<<<<<< HEAD
     public function getUsername(): ?string
     {
         return $this->Username;
@@ -118,6 +175,16 @@ public function setExperience(?string $experience): static
     public function setUsername(string $Username): static
     {
         $this->Username = $Username;
+=======
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): static
+    {
+        $this->email = $email;
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 
         return $this;
     }
@@ -129,7 +196,11 @@ public function setExperience(?string $experience): static
      */
     public function getUserIdentifier(): string
     {
+<<<<<<< HEAD
         return (string) $this->Username;
+=======
+        return (string) $this->email;
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
     }
 
     /**
@@ -199,6 +270,7 @@ public function setExperience(?string $experience): static
         return $this;
     }
 
+<<<<<<< HEAD
     public function getEmail(): ?string
     {
         return $this->email;
@@ -207,10 +279,21 @@ public function setExperience(?string $experience): static
     public function setEmail(string $email): static
     {
         $this->email = $email;
+=======
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): static
+    {
+        $this->username = $username;
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 
         return $this;
     }
 
+<<<<<<< HEAD
     public function getDateInscription(): ?\DateTimeImmutable
     {
         return $this->DateInscription;
@@ -219,10 +302,21 @@ public function setExperience(?string $experience): static
     public function setDateInscription(?\DateTimeImmutable $DateInscription): static
     {
         $this->DateInscription = $DateInscription;
+=======
+    public function getDateInscription(): ?\DateTime
+    {
+        return $this->dateInscription;
+    }
+
+    public function setDateInscription(\DateTime $dateInscription): static
+    {
+        $this->dateInscription = $dateInscription;
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 
         return $this;
     }
 
+<<<<<<< HEAD
     public function getDateDerniereCOnnexion(): ?\DateTimeImmutable
     {
         return $this->DateDerniereCOnnexion;
@@ -231,10 +325,21 @@ public function setExperience(?string $experience): static
     public function setDateDerniereCOnnexion(?\DateTimeImmutable $DateDerniereCOnnexion): static
     {
         $this->DateDerniereCOnnexion = $DateDerniereCOnnexion;
+=======
+    public function getLastLogin(): ?\DateTime
+    {
+        return $this->lastLogin;
+    }
+
+    public function setLastLogin(?\DateTime $lastLogin): static
+    {
+        $this->lastLogin = $lastLogin;
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 
         return $this;
     }
 
+<<<<<<< HEAD
 
 
     #[ORM\OneToMany(mappedBy: 'createur', targetEntity: Cours::class, orphanRemoval: true)]
@@ -283,6 +388,8 @@ public function setExperience(?string $experience): static
         return $this;
     }
 
+=======
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
     /**
      * @return Collection<int, Certification>
      */
@@ -297,16 +404,25 @@ public function setExperience(?string $experience): static
             $this->certifications->add($certification);
             $certification->setUser($this);
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
         return $this;
     }
 
     public function removeCertification(Certification $certification): static
     {
         if ($this->certifications->removeElement($certification)) {
+<<<<<<< HEAD
+=======
+            // set the owning side to null (unless already changed)
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
             if ($certification->getUser() === $this) {
                 $certification->setUser(null);
             }
         }
+<<<<<<< HEAD
         return $this;
     }
 
@@ -328,13 +444,31 @@ public function setExperience(?string $experience): static
     public function getDemandesBourse(): Collection
     {
         return $this->demandesBourse;
+=======
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DemandeBourse>
+     */
+    public function getDemandeBourses(): Collection
+    {
+        return $this->demandeBourses;
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
     }
 
     public function addDemandeBourse(DemandeBourse $demandeBourse): static
     {
+<<<<<<< HEAD
         if (!$this->demandesBourse->contains($demandeBourse)) {
             $this->demandesBourse->add($demandeBourse);
             $demandeBourse->setEtudiant($this);
+=======
+        if (!$this->demandeBourses->contains($demandeBourse)) {
+            $this->demandeBourses->add($demandeBourse);
+            $demandeBourse->setUser($this);
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
         }
 
         return $this;
@@ -342,15 +476,23 @@ public function setExperience(?string $experience): static
 
     public function removeDemandeBourse(DemandeBourse $demandeBourse): static
     {
+<<<<<<< HEAD
         if ($this->demandesBourse->removeElement($demandeBourse)) {
             // set the owning side to null (unless already changed)
             if ($demandeBourse->getEtudiant() === $this) {
                 $demandeBourse->setEtudiant(null);
+=======
+        if ($this->demandeBourses->removeElement($demandeBourse)) {
+            // set the owning side to null (unless already changed)
+            if ($demandeBourse->getUser() === $this) {
+                $demandeBourse->setUser(null);
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
             }
         }
 
         return $this;
     }
+<<<<<<< HEAD
 
     /**
      * @return Collection<int, Sujet>
@@ -444,4 +586,6 @@ public function setExperience(?string $experience): static
 
         return $this;
     }
+=======
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 }

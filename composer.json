@@ -11,12 +11,16 @@
         "doctrine/doctrine-migrations-bundle": "^3.7",
         "doctrine/orm": "^3.6",
         "dompdf/dompdf": "*",
+<<<<<<< HEAD
         "endroid/qr-code": "^5.1",
         "karser/karser-recaptcha3-bundle": "^0.3.0",
         "knplabs/knp-paginator-bundle": "^6.10",
         "knpuniversity/oauth2-client-bundle": "^2.20",
         "league/oauth2-google": "^4.1",
         "phpdocumentor/reflection-docblock": "^5.3",
+=======
+        "phpdocumentor/reflection-docblock": "5.3",
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
         "phpstan/phpdoc-parser": "^2.3",
         "symfony/asset": "6.4.*",
         "symfony/asset-mapper": "6.4.*",
@@ -35,7 +39,12 @@
         "symfony/notifier": "6.4.*",
         "symfony/process": "6.4.*",
         "symfony/property-access": "6.4.*",
+<<<<<<< HEAD
         "symfony/runtime": "^6.4",
+=======
+        "symfony/property-info": "6.4.*",
+        "symfony/runtime": "6.4.*",
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
         "symfony/security-bundle": "6.4.*",
         "symfony/serializer": "6.4.*",
         "symfony/stimulus-bundle": "^2.32",

@@ -1,0 +1,48 @@
+{# templates/front/quiz/new.html.twig #}
+{% extends '/front/quiz/base2.html.twig' %}
+
+{% block title %}Créer un Quiz{% endblock %}
+
+{% block body %}
+<h1>Créer un nouveau Quiz</h1>
+
+{# Démarre le formulaire, désactive la validation HTML5 #}
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+<div class="mb-3">
+    {{ form_label(form.titre) }}
+    {{ form_widget(form.titre, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.titre) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.typeQuiz) }}
+    {{ form_widget(form.typeQuiz, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.typeQuiz) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.duree) }}
+    {{ form_widget(form.duree, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.duree) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.scoreMinimum) }}
+    {{ form_widget(form.scoreMinimum, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.scoreMinimum) }}
+</div>
+
+<div class="mb-3">
+    {{ form_label(form.coursAssocie) }}
+    {{ form_widget(form.coursAssocie, {'attr': {'class': 'form-control'}}) }}
+    {{ form_errors(form.coursAssocie) }}
+</div>
+
+{# Bouton submit unique #}
+<button type="submit" class="btn btn-success">Créer et ajouter des questions</button>
+
+{{ form_end(form) }}
+
+<a href="{{ path('front_quiz_list') }}" class="btn btn-secondary mt-3">Retour à la liste des quiz</a>
+{% endblock %}

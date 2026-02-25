@@ -1,0 +1,292 @@
+{% extends '/back/quiz/baseback.html.twig' %}
+
+{% block title %}Liste des Quiz{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4">📋 Liste des Quiz</h1>
+
+    {# ===================== STATS + CLASSEMENT EASY / HARD ===================== #}
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <div class="text-muted small">Total Quiz</div>
+                    <div class="fs-3 fw-bold">{{ stats.totalQuizzes|default(0) }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <div class="text-muted small">Total Tentatives</div>
+                    <div class="fs-3 fw-bold">{{ stats.totalAttempts|default(0) }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <div class="text-muted small">Réussites</div>
+                    <div class="fs-3 fw-bold text-success">{{ stats.totalSuccess|default(0) }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <div class="text-muted small">Taux global</div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="fs-3 fw-bold">{{ stats.globalRate|default(0) }}%</div>
+                        <div class="progress flex-grow-1" style="height:10px;">
+                            <div class="progress-bar" role="progressbar"
+                                 style="width: {{ stats.globalRate|default(0) }}%;"
+                                 aria-valuenow="{{ stats.globalRate|default(0) }}" aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-muted small mt-1">Réussi / Tentatives</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white fw-bold">
+                    🟢 Quiz les plus faciles (plus de réussites)
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Quiz</th>
+                            <th class="text-center">Réussites</th>
+                            <th class="text-center">Tentatives</th>
+                            <th class="text-center">Taux</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for q in topEasy|default([]) %}
+                            <tr>
+                                <td class="text-truncate" style="max-width: 220px;">{{ q.titre }}</td>
+                                <td class="text-center fw-bold text-success">{{ q.success }}</td>
+                                <td class="text-center">{{ q.attempts }}</td>
+                                <td class="text-center">{{ q.rate }}%</td>
+                            </tr>
+                        {% else %}
+                            <tr><td colspan="4" class="text-center py-3 text-muted">Aucune donnée</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white fw-bold">
+                    🔴 Quiz les plus difficiles (moins de réussites)
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Quiz</th>
+                            <th class="text-center">Réussites</th>
+                            <th class="text-center">Tentatives</th>
+                            <th class="text-center">Taux</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for q in topHard|default([]) %}
+                            <tr>
+                                <td class="text-truncate" style="max-width: 220px;">{{ q.titre }}</td>
+                                <td class="text-center fw-bold text-danger">{{ q.success }}</td>
+                                <td class="text-center">{{ q.attempts }}</td>
+                                <td class="text-center">{{ q.rate }}%</td>
+                            </tr>
+                        {% else %}
+                            <tr><td colspan="4" class="text-center py-3 text-muted">Aucune donnée</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# ================= FORMULAIRE RECHERCHE & TRI MULTI-CRITÈRES ================= #}
+    <form method="get" class="card shadow-sm p-3 mb-4">
+        <div class="row g-3 align-items-end">
+            {# Recherche #}
+            <div class="col-md-3">
+                <label class="form-label">Titre du quiz</label>
+                <input type="text" name="title" class="form-control"
+                       placeholder="Ex: niveau1"
+                       value="{{ filters.title|default('') }}">
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Type</label>
+                <select name="type" class="form-select">
+                    <option value="">-- Tous --</option>
+                    <option value="Intermédiaire" {% if filters.type|default('') == 'Intermédiaire' %}selected{% endif %}>Intermédiaire</option>
+                    <option value="Final" {% if filters.type|default('') == 'Final' %}selected{% endif %}>Final</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Cours</label>
+                <input type="text" name="course" class="form-control"
+                       placeholder="Ex: java"
+                       value="{{ filters.course|default('') }}">
+            </div>
+
+            <div class="col-md-3 d-flex gap-2">
+                <button type="submit" name="action" value="search" class="btn btn-success w-100">
+                    🔍 Rechercher
+                </button>
+                <a href="{{ path('back_quiz_index') }}" class="btn btn-secondary w-100">
+                    Réinitialiser
+                </a>
+            </div>
+        </div>
+
+        <hr class="my-3">
+
+        {# Tri multi-critères #}
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Trier par Titre</label>
+                <select name="sort_title" class="form-select">
+                    <option value="">-- Aucun --</option>
+                    <option value="ASC" {% if filters.sort_title|default('') == 'ASC' %}selected{% endif %}>A → Z</option>
+                    <option value="DESC" {% if filters.sort_title|default('') == 'DESC' %}selected{% endif %}>Z → A</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Trier par Score minimum</label>
+                <select name="sort_score" class="form-select">
+                    <option value="">-- Aucun --</option>
+                    <option value="ASC" {% if filters.sort_score|default('') == 'ASC' %}selected{% endif %}>Faible → Fort</option>
+                    <option value="DESC" {% if filters.sort_score|default('') == 'DESC' %}selected{% endif %}>Fort → Faible</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Trier par Type</label>
+                <select name="sort_type" class="form-select">
+                    <option value="">-- Aucun --</option>
+                    <option value="ASC" {% if filters.sort_type|default('') == 'ASC' %}selected{% endif %}>Intermédiaire → Final</option>
+                    <option value="DESC" {% if filters.sort_type|default('') == 'DESC' %}selected{% endif %}>Final → Intermédiaire</option>
+                </select>
+            </div>
+
+            <div class="col-12 d-flex justify-content-end">
+                <button type="submit" name="action" value="sort" class="btn btn-primary">
+                    🔃 Appliquer le tri
+                </button>
+            </div>
+        </div>
+    </form>
+
+    {# ================= TABLE QUIZ + QUESTIONS + TENTATIVES ================= #}
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Titre</th>
+            <th>Type</th>
+            <th>Durée</th>
+            <th>Score min</th>
+            <th>Cours</th>
+            <th>Questions</th>
+            <th>Tentatives</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for quiz in quizs %}
+            <tr>
+                <td>{{ quiz.id }}</td>
+                <td>{{ quiz.titre }}</td>
+                <td>{{ quiz.typeQuiz }}</td>
+                <td>{{ quiz.duree }} min</td>
+                <td>{{ quiz.scoreMinimum }}</td>
+                <td>{{ quiz.coursAssocie.titre }}</td>
+
+                <td>
+                    {% if quiz.questions|length > 0 %}
+                        <ul class="mb-0">
+                            {% for question in quiz.questions %}
+                                <li>{{ question.question }} ({{ question.points }} pts)</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <em>Aucune question</em>
+                    {% endif %}
+                </td>
+
+                <td>
+                    <table class="table table-bordered table-striped mt-2 mb-0">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>Étudiant</th>
+                            <th>Score</th>
+                            <th>Statut</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for attempt in quiz.certifications %}
+                            <tr>
+                                <td>{{ attempt.user.prenom }} {{ attempt.user.nom }}</td>
+                                <td>{{ attempt.scoreObtenu }}</td>
+                                <td>
+                                    {% if attempt.statut == 'Réussi' %}
+                                        <span class="badge bg-success">Réussi</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Échoué</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ attempt.dateAttribution|date('d/m/Y H:i') }}</td>
+                                <td>
+                                    {% if attempt.statut == 'Réussi' %}
+                                        <a href="{{ path('back_certification_create', {'id': attempt.id}) }}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-certificate"></i>
+                                        </a>
+                                    {% else %}
+                                        <span class="badge bg-warning">Non éligible</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr><td colspan="5" class="text-center">Aucune tentative pour ce quiz</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </td>
+
+                <td>
+                    <a href="{{ path('back_quiz_edit', {'id': quiz.id}) }}" class="btn btn-warning btn-sm">✏ Modifier</a>
+                    <form method="post" action="{{ path('back_quiz_delete', {'id': quiz.id}) }}" style="display:inline-block;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ quiz.id) }}">
+                        <button class="btn btn-sm btn-danger" onclick="return confirm('Supprimer ce quiz ?');">🗑</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="9" class="text-center">Aucun quiz trouvé</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

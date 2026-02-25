@@ -1,5 +1,6 @@
 framework:
     asset_mapper:
+<<<<<<< HEAD
         # The paths to make available to the asset mapper.
         paths:
             - assets/
@@ -14,3 +15,6 @@ doctrine_migrations:
     migrations_paths:
         'DoctrineMigrations': '%kernel.project_dir%/migrations'
     enable_profiler: false
+=======
+        enabled: false
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed

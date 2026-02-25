@@ -13,7 +13,10 @@ return [
     Symfony\Bundle\SecurityBundle\SecurityBundle::class => ['all' => true],
     Symfony\Bundle\MonologBundle\MonologBundle::class => ['all' => true],
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
+<<<<<<< HEAD
     Knp\Bundle\PaginatorBundle\KnpPaginatorBundle::class => ['all' => true],
     Karser\Recaptcha3Bundle\KarserRecaptcha3Bundle::class => ['all' => true],
     KnpU\OAuth2ClientBundle\KnpUOAuth2ClientBundle::class => ['all' => true],
+=======
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 ];

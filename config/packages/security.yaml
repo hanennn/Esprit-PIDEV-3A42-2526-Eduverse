@@ -2,19 +2,27 @@ security:
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+<<<<<<< HEAD
     
+=======
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         # used to reload user from session & other features (e.g. switch_user)
         app_user_provider:
             entity:
                 class: App\Entity\User
+<<<<<<< HEAD
                 property: email  # Changed from Username to email since your login form uses email
     
+=======
+                property: email
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+<<<<<<< HEAD
         
         main:
             lazy: true
@@ -33,6 +41,14 @@ security:
             logout:
                 path: app_logout                # Route name for logout
                 target: app_register            # Where to redirect after logout
+=======
+        main:
+            lazy: true
+            provider: app_user_provider
+
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#the-firewall
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
@@ -54,4 +70,8 @@ when@test:
                 algorithm: auto
                 cost: 4 # Lowest possible value for bcrypt
                 time_cost: 3 # Lowest possible value for argon
+<<<<<<< HEAD
                 memory_cost: 10 # Lowest possible value for argon
+=======
+                memory_cost: 10 # Lowest possible value for argon
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed

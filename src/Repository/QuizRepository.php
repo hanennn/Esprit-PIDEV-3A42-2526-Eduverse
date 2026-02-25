@@ -1,9 +1,13 @@
 <?php
 
 namespace App\Repository;
+<<<<<<< HEAD
 
 use App\Entity\Cours;
 use App\Entity\User;
+=======
+use App\Entity\Course;
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 use App\Entity\Quiz;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -17,7 +21,11 @@ class QuizRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Quiz::class);
     }
+<<<<<<< HEAD
    public function searchByCourse(Cours $course, array $filters)
+=======
+   public function searchByCourse(Course $course, array $filters)
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 {
     $qb = $this->createQueryBuilder('q')
         ->where('q.coursAssocie = :course')
@@ -42,14 +50,22 @@ class QuizRepository extends ServiceEntityRepository
 public function getGlobalStats(): array
     {
         $qb = $this->createQueryBuilder('q')
+<<<<<<< HEAD
             ->leftJoin('q.certifications', 'c') 
+=======
+            ->leftJoin('q.certifications', 'c') // join pour certifications
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
             ->select('COUNT(DISTINCT q.id) as totalQuizzes')
             ->addSelect('COUNT(c.id) as totalCertifications');
 
         return $qb->getQuery()->getSingleResult();
     }
 
+<<<<<<< HEAD
     
+=======
+    // 🔹 Classement des quiz selon le nombre de certifications (desc)
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
     public function getDifficultyRanking(): array
     {
         $qb = $this->createQueryBuilder('q')
@@ -61,6 +77,7 @@ public function getGlobalStats(): array
         return $qb->getQuery()->getResult();
     }
 
+<<<<<<< HEAD
 
     public function findByInstructor(User $instructor): array
     {
@@ -73,6 +90,9 @@ public function getGlobalStats(): array
             ->getResult();
     }
     
+=======
+   
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 
     //    /**
     //     * @return Quiz[] Returns an array of Quiz objects
@@ -98,4 +118,8 @@ public function getGlobalStats(): array
     //            ->getOneOrNullResult()
     //        ;
     //    }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed

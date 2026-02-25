@@ -2,35 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\Certification;
+use App\Entity\Chapitre;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Certification>
+ * @extends ServiceEntityRepository<Chapitre>
  */
-class CertificationRepository extends ServiceEntityRepository
+class ChapitreRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Certification::class);
+        parent::__construct($registry, Chapitre::class);
     }
-<<<<<<< HEAD
-       public function findRecentCertifications(): array
-    {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.statut = :statut')
-            ->setParameter('statut', 'Réussi')
-            ->orderBy('c.dateAttribution', 'DESC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult();
-    }
-=======
 
->>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
     //    /**
-    //     * @return Certification[] Returns an array of Certification objects
+    //     * @return Chapitre[] Returns an array of Chapitre objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -44,7 +31,7 @@ class CertificationRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Certification
+    //    public function findOneBySomeField($value): ?Chapitre
     //    {
     //        return $this->createQueryBuilder('c')
     //            ->andWhere('c.exampleField = :val')
@@ -54,7 +41,3 @@ class CertificationRepository extends ServiceEntityRepository
     //        ;
     //    }
 }
-<<<<<<< HEAD
-
-=======
->>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed

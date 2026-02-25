@@ -1,0 +1,130 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Quiz{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Liste des Quiz</h2>
+
+    {# ===================== RECHERCHE + TRI MULTI-CRITÈRES ===================== #}
+    <form method="get" class="card p-3 shadow-sm mb-3">
+        <div class="row g-3 align-items-end">
+            {# Recherche #}
+            <div class="col-md-4">
+                <label class="form-label">Titre</label>
+                <input type="text" name="title" class="form-control"
+                       placeholder="Titre du quiz"
+                       value="{{ filters.title|default('') }}">
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Type</label>
+                <select name="type" class="form-select">
+                    <option value="">-- Tous --</option>
+                    <option value="Intermédiaire" {% if filters.type|default('') == 'Intermédiaire' %}selected{% endif %}>Intermédiaire</option>
+                    <option value="Final" {% if filters.type|default('') == 'Final' %}selected{% endif %}>Final</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Cours (optionnel)</label>
+                <input type="text" name="course" class="form-control"
+                       placeholder="Ex: java"
+                       value="{{ filters.course|default('') }}">
+            </div>
+
+            <div class="col-md-2 d-grid">
+                <button type="submit" name="action" value="search" class="btn btn-success">
+                    🔍 Rechercher
+                </button>
+            </div>
+        </div>
+
+        <hr class="my-3">
+
+        {# Tri multi-critères #}
+        <div class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label">Trier par Titre</label>
+                <select name="sort_title" class="form-select">
+                    <option value="">-- Aucun --</option>
+                    <option value="ASC" {% if filters.sort_title|default('') == 'ASC' %}selected{% endif %}>A → Z</option>
+                    <option value="DESC" {% if filters.sort_title|default('') == 'DESC' %}selected{% endif %}>Z → A</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Trier par Score minimum</label>
+                <select name="sort_score" class="form-select">
+                    <option value="">-- Aucun --</option>
+                    <option value="ASC" {% if filters.sort_score|default('') == 'ASC' %}selected{% endif %}>Faible → Fort</option>
+                    <option value="DESC" {% if filters.sort_score|default('') == 'DESC' %}selected{% endif %}>Fort → Faible</option>
+                </select>
+            </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Trier par Type</label>
+                <select name="sort_type" class="form-select">
+                    <option value="">-- Aucun --</option>
+                    <option value="ASC" {% if filters.sort_type|default('') == 'ASC' %}selected{% endif %}>Intermédiaire → Final</option>
+                    <option value="DESC" {% if filters.sort_type|default('') == 'DESC' %}selected{% endif %}>Final → Intermédiaire</option>
+                </select>
+            </div>
+
+            <div class="col-12 d-flex gap-2 justify-content-end mt-2">
+                <button type="submit" name="action" value="sort" class="btn btn-primary">
+                    🔃 Appliquer le tri
+                </button>
+                <a href="{{ path('back_quiz_index') }}" class="btn btn-secondary">
+                    Réinitialiser
+                </a>
+            </div>
+        </div>
+    </form>
+
+    {# ===================== BOUTON AJOUT QUIZ ===================== #}
+    <div class="text-end mb-3">
+        <a href="{{ path('back_quiz_new') }}" class="btn btn-success">
+            Ajouter un Quiz
+        </a>
+    </div>
+
+    {# ===================== TABLE QUIZ ===================== #}
+    <table class="table table-bordered mt-3">
+        <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Titre</th>
+            <th>Type</th>
+            <th>Durée</th>
+            <th>Score min</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for quiz in quizs %}
+            <tr>
+                <td>{{ quiz.id }}</td>
+                <td>{{ quiz.titre }}</td>
+                <td>{{ quiz.typeQuiz }}</td>
+                <td>{{ quiz.duree }} min</td>
+                <td>{{ quiz.scoreMinimum }}</td>
+                <td>
+                    <a href="{{ path('back_quiz_edit', {'id': quiz.id}) }}" class="btn btn-warning btn-sm">
+                        Modifier
+                    </a>
+                    <form method="post" action="{{ path('back_quiz_delete', {'id': quiz.id}) }}" style="display:inline-block;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ quiz.id) }}">
+                        <button class="btn btn-danger btn-sm" onclick="return confirm('Supprimer ce quiz ?');">
+                            Supprimer
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr><td colspan="6" class="text-center">Aucun quiz trouvé</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

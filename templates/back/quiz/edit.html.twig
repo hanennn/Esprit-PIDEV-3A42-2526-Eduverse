@@ -1,0 +1,26 @@
+{# templates/back/quiz/edit.html.twig #}
+{% extends 'back/quiz/baseback.html.twig' %}
+
+{% block title %}Attribuer une Certification{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">Attribuer une Certification à {{ attempt.user.prenom }} {{ attempt.user.nom }}</h1>
+
+        {{ form_start(form) }}
+            <div class="mb-3">
+                {{ form_label(form.badge) }}
+                {{ form_widget(form.badge, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.badge) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(form.scoreObtenu) }}
+                {{ form_widget(form.scoreObtenu, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.scoreObtenu) }}
+            </div>
+
+           
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

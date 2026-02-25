@@ -1,4 +1,8 @@
 <?php
+<<<<<<< HEAD
+=======
+
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 namespace App\Entity;
 use App\Entity\Certification;
 use App\Repository\QuizRepository;
@@ -34,6 +38,7 @@ class Quiz
     #[Assert\PositiveOrZero(message: "Le score minimum doit être positif ou nul.")]
     private ?float $scoreMinimum = null;
 
+<<<<<<< HEAD
    
     #[ORM\ManyToOne(inversedBy: 'quizzes')]
     #[ORM\JoinColumn(nullable: false)]
@@ -51,16 +56,39 @@ class Quiz
     #[ORM\OneToMany(mappedBy: 'quiz', targetEntity: CertificationFinale::class, orphanRemoval: true)]
     private Collection $certificationsFinales;
 
+=======
+    // Relation avec Course
+    #[ORM\ManyToOne(inversedBy: 'quizzes')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: "Le cours associé est obligatoire.")]
+    private ?Course $coursAssocie = null;
+
+    // Relation avec Question
+    #[ORM\OneToMany(mappedBy: 'quiz', targetEntity: Question::class, cascade:["persist"], orphanRemoval:true)]
+    #[Assert\Valid]  
+    private Collection $questions;
+    // Relation avec Certification
+    #[ORM\OneToMany(mappedBy: 'quiz', targetEntity: Certification::class, orphanRemoval: true)]
+    private Collection $certifications;
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 
     public function __construct()
     {
         $this->questions = new ArrayCollection();
         $this->certifications = new ArrayCollection();
+<<<<<<< HEAD
          $this->certificationsFinales = new ArrayCollection();
 
     }
 
    
+=======
+    }
+
+    // -------------------------
+    // Getters / Setters
+    // -------------------------
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
     public function getId(): ?int { return $this->id; }
 
     public function getTitre(): ?string { return $this->titre; }
@@ -75,8 +103,13 @@ class Quiz
     public function getScoreMinimum(): ?float { return $this->scoreMinimum; }
     public function setScoreMinimum(float $scoreMinimum): static { $this->scoreMinimum = $scoreMinimum; return $this; }
 
+<<<<<<< HEAD
     public function getCoursAssocie(): ?Cours { return $this->coursAssocie; }
     public function setCoursAssocie(?Cours $coursAssocie): static { $this->coursAssocie = $coursAssocie; return $this; }
+=======
+    public function getCoursAssocie(): ?Course { return $this->coursAssocie; }
+    public function setCoursAssocie(?Course $coursAssocie): static { $this->coursAssocie = $coursAssocie; return $this; }
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
     /**
  * @return Collection<int, Certification>
  */
@@ -127,6 +160,7 @@ public function removeCertification(Certification $certification): static
         }
         return $this;
     }
+<<<<<<< HEAD
       /**
      * @return Collection<int, CertificationFinale>
      */
@@ -156,3 +190,6 @@ public function removeCertification(Certification $certification): static
 
 }
 
+=======
+}
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed

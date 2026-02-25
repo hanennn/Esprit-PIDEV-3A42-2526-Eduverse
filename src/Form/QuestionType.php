@@ -1,13 +1,21 @@
 <?php
+<<<<<<< HEAD
 
 namespace App\Form;
 
 use App\Entity\Question;
+=======
+namespace App\Form;
+
+use App\Entity\Question;
+use App\Form\DataTransformer\ReponsesTransformer;
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+<<<<<<< HEAD
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -68,5 +76,32 @@ class QuestionType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Question::class,
         ]);
+=======
+
+class QuestionType extends AbstractType
+{
+    private ReponsesTransformer $transformer;
+
+    public function __construct(ReponsesTransformer $transformer)
+    {
+        $this->transformer = $transformer;
+    }
+
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('question', TextType::class, ['label' => 'Question'])
+            ->add('points', IntegerType::class, ['label' => 'Points'])
+            ->add('reponses', TextareaType::class, [
+                'label' => 'Réponses (JSON)',
+                'attr' => [
+                    'placeholder' => '[{"texte":"Réponse1","correct":true},{"texte":"Réponse2","correct":false}]',
+                    'rows' => 5
+                ]
+            ]);
+
+        // ⚡ On ajoute le DataTransformer pour gérer le JSON
+        $builder->get('reponses')->addModelTransformer($this->transformer);
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
     }
 }

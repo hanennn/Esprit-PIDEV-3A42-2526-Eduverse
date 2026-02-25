@@ -39,6 +39,7 @@ class Certification
     #[ORM\ManyToOne(inversedBy: 'certifications')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Quiz $quiz = null;
+<<<<<<< HEAD
     #[ORM\OneToOne(targetEntity: CertificationFinale::class, mappedBy: 'tentative')]
     private ?CertificationFinale $certificationFinale = null;
 
@@ -48,6 +49,8 @@ class Certification
         $this->dateAttribution = new \DateTime();
     }
 
+=======
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 
     public function getId(): ?int
     {
@@ -65,6 +68,7 @@ class Certification
 
         return $this;
     }
+<<<<<<< HEAD
      public function getCertificationFinale(): ?CertificationFinale
 {
     return $this->certificationFinale;
@@ -76,6 +80,8 @@ public function setCertificationFinale(?CertificationFinale $certificationFinale
     return $this;
 }
 
+=======
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 
     public function getStatut(): ?string
     {

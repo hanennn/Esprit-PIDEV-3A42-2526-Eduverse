@@ -3,8 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\DemandeBourseRepository;
+<<<<<<< HEAD
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+=======
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 
 #[ORM\Entity(repositoryClass: DemandeBourseRepository::class)]
 class DemandeBourse
@@ -14,6 +19,7 @@ class DemandeBourse
     #[ORM\Column]
     private ?int $id = null;
 
+<<<<<<< HEAD
     #[ORM\Column(type: 'datetime')]
     private ?\DateTimeInterface $dateDemande = null;
 
@@ -47,23 +53,51 @@ class DemandeBourse
         $this->dateDemande = new \DateTime();
     }
 
+=======
+    #[ORM\Column]
+    private ?\DateTime $dateDemande = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $situationFinanciere = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $statut = null;
+
+    #[ORM\ManyToOne(inversedBy: 'demandeBourses')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
+    #[ORM\ManyToOne(inversedBy: 'demandeBourses')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Bourse $bourse = null;
+
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
     public function getId(): ?int
     {
         return $this->id;
     }
 
+<<<<<<< HEAD
     public function getDateDemande(): ?\DateTimeInterface
+=======
+    public function getDateDemande(): ?\DateTime
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
     {
         return $this->dateDemande;
     }
 
+<<<<<<< HEAD
     public function setDateDemande(\DateTimeInterface $dateDemande): static
+=======
+    public function setDateDemande(\DateTime $dateDemande): static
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
     {
         $this->dateDemande = $dateDemande;
 
         return $this;
     }
 
+<<<<<<< HEAD
     public function getNiveauEtudes(): ?string
     {
         return $this->niveauEtudes;
@@ -72,6 +106,16 @@ class DemandeBourse
     public function setNiveauEtudes(string $niveauEtudes): static
     {
         $this->niveauEtudes = $niveauEtudes;
+=======
+    public function getSituationFinanciere(): ?string
+    {
+        return $this->situationFinanciere;
+    }
+
+    public function setSituationFinanciere(string $situationFinanciere): static
+    {
+        $this->situationFinanciere = $situationFinanciere;
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 
         return $this;
     }
@@ -88,6 +132,7 @@ class DemandeBourse
         return $this;
     }
 
+<<<<<<< HEAD
     public function getLettreMotivation(): ?string
     {
         return $this->lettreMotivation;
@@ -108,6 +153,16 @@ class DemandeBourse
     public function setEtudiant(?User $etudiant): static
     {
         $this->etudiant = $etudiant;
+=======
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 
         return $this;
     }
@@ -123,6 +178,7 @@ class DemandeBourse
 
         return $this;
     }
+<<<<<<< HEAD
 
     public function getNote(): ?string
     {
@@ -135,4 +191,6 @@ class DemandeBourse
 
         return $this;
     }
+=======
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 }

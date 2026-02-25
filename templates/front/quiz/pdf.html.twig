@@ -1,0 +1,16 @@
+{# templates/front/quiz/pdf.html.twig #}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Certification</title>
+</head>
+<body>
+    <h1>Certification de {{ certif.user.prenom }} {{ certif.user.nom }}</h1>
+    <p><strong>Quiz :</strong> {{ certif.quiz.titre }}</p>
+    <p><strong>Score :</strong> {{ certif.scoreObtenu }}</p>
+    <p><strong>Statut :</strong> {{ certif.statut }}</p>
+    <p><strong>Badge :</strong> {{ certif.badge }}</p>
+    <p><strong>Date d'attribution :</strong> {{ certif.dateAttribution|date('d/m/Y') }}</p>
+</body>
+</html>

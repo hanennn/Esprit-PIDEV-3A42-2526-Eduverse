@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos Cours{% endblock %}
+
+{% block body %}
+<!-- Page Title Section -->
+<section class="page-title-section overlay" data-background="{{ asset('assets/images/backgrounds/page-title.jpg') }}">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <h2 class="text-white">Nos Cours</h2>
+        <p class="text-lighten">Découvrez nos cours disponibles et accédez à leurs quiz.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Courses Section -->
+<section class="section">
+  <div class="container">
+    <div class="row justify-content-center">
+
+      {% for course in courses %}
+        <div class="col-lg-4 col-sm-6 mb-5">
+          <div class="card p-0 border-primary rounded-0 hover-shadow">
+            <img class="card-img-top rounded-0" src="{{ asset('assets/images/courses/default-course.jpg') }}" alt="{{ course.titre }}">
+            <div class="card-body">
+              <ul class="list-inline mb-2">
+                <li class="list-inline-item"><strong>Matière :</strong> {{ course.matiere }}</li>
+                <li class="list-inline-item"><strong>Niveau :</strong> {{ course.niveau }}</li>
+                <li class="list-inline-item"><strong>Langue :</strong> {{ course.langue }}</li>
+              </ul>
+              <h4 class="card-title">{{ course.titre }}</h4>
+              <p class="card-text mb-3">{{ course.description|slice(0, 100) }}...</p>
+              <a href="{{ path('front_course_quizzes', {'id': course.id}) }}" class="btn btn-primary btn-sm">Voir les quiz</a>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <p>Aucun cours disponible.</p>
+      {% endfor %}
+
+    </div>
+  </div>
+</section>
+
+
+</script>
+{% endblock %}

@@ -4,13 +4,23 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+<<<<<<< HEAD
     uploads_directory: '%kernel.project_dir%/public/uploads'
+=======
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 
 services:
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+<<<<<<< HEAD
+=======
+         # Configure explicitement l'injection pour QuizController
+    App\Controller\Back\QuizController:
+        arguments:
+            $em: '@doctrine.orm.entity_manager'  # Injection explicite de l'EntityManager dans le contrôleur
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name

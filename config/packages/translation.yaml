@@ -1,5 +1,15 @@
+<<<<<<< HEAD
 framework:
     default_locale: en
     translator:
         default_path: '%kernel.project_dir%/translations'
         providers:
+=======
+# config/packages/translation.yaml
+framework:
+    default_locale: 'fr'
+    translator:
+        default_path: '%kernel.project_dir%/translations'
+        fallbacks:
+            - 'fr'
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed

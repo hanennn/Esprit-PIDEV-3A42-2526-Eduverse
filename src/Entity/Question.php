@@ -28,7 +28,11 @@ class Question
     #[Assert\Count(min:1, minMessage:"Ajoutez au moins une réponse")]
     private array $reponses = [];
 
+<<<<<<< HEAD
    
+=======
+    // Getters & setters
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
     public function getId(): ?int { return $this->id; }
     public function getQuiz(): ?Quiz { return $this->quiz; }
     public function setQuiz(?Quiz $quiz): static { $this->quiz = $quiz; return $this; }
@@ -39,4 +43,7 @@ class Question
     public function getReponses(): array { return $this->reponses; }
     public function setReponses(array $r): static { $this->reponses = $r; return $this; }
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
