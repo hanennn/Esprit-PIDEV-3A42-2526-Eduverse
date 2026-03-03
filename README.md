@@ -23,9 +23,9 @@ Elle vise à centraliser et digitaliser la gestion pédagogique en proposant plu
 - MySQL
 ### Frontend
 - Twig
-- HTML5 / CSS3
+- CSS
 - JavaScript
-- Bootstrap
+
 
 ## Architecture
 L’application est conçue selon l’architecture **MVC (Model – View – Controller)** :
