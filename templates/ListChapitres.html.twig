@@ -1,0 +1,258 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Chapitres - {{ cours.titreCours }}{% endblock %}
+
+{% block body %}
+<div class="admin-content">
+    {# Page Header #}
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2><i class="fas fa-book-open mr-3"></i>Chapitres du cours: {{ cours.titreCours }}</h2>
+                <p class="text-muted mb-0">Gérez les chapitres de votre cours</p>
+            </div>
+            <a href="{{ path('front_cours_index') }}" class="btn btn-outline-primary">
+                <i class="fas fa-arrow-left mr-2"></i>Retour aux cours
+            </a>
+        </div>
+    </div>
+
+    {# Add Chapter Button #}
+    <div class="dashboard-card mb-4">
+        <a href="{{ path('front_chapitre_add', {'id': cours.id}) }}" class="btn btn-primary btn-lg">
+            <i class="fas fa-plus-circle mr-2"></i>Ajouter un chapitre
+        </a>
+    </div>
+
+    {# Chapters List Card #}
+    <div class="dashboard-card">
+        {% if chapitres is empty %}
+            <div class="alert alert-info" role="alert" style="border-left: 4px solid #17a2b8; background: linear-gradient(135deg, #f0f8ff 0%, #ffffff 100%);">
+                <i class="fas fa-info-circle mr-2"></i>Aucun chapitre disponible pour ce cours. Créez votre premier chapitre en cliquant sur le bouton ci-dessus.
+            </div>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-header-bg">
+                        <tr>
+                            <th><i class="fas fa-hashtag mr-2"></i>Id</th>
+                            <th><i class="fas fa-heading mr-2"></i>Titre</th>
+                            <th><i class="fas fa-align-left mr-2"></i>Description</th>
+                            <th><i class="fas fa-sort-numeric-up mr-2"></i>Ordre</th>
+                            <th><i class="fas fa-clock mr-2"></i>Durée</th>
+                            <th><i class="fas fa-flag mr-2"></i>Statut</th>
+                            <th><i class="fas fa-file-alt mr-2"></i>Type</th>
+                            <th><i class="fas fa-cogs mr-2"></i>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for chapitre in chapitres %}
+                            <tr>
+                                <td>{{ chapitre.id }}</td>
+                                <td><strong>{{ chapitre.titreChap }}</strong></td>
+                                <td>{{ chapitre.descChap}}</td>
+                                <td>{{ chapitre.ordreChap }}</td>
+                                <td>{{ chapitre.dureeChap }} min</td>
+                                <td>
+                                    <span class="badge badge-warning">{{ chapitre.statutChap }}</span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-info">{{ chapitre.typeContenu }}</span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="{{ path('front_chapitre_edit', {'id': chapitre.id}) }}" class="btn btn-sm btn-warning">
+                                            <i class="fas fa-edit mr-1"></i>Éditer
+                                        </a>
+                                        
+                                        <form method="post" action="{{ path('front_chapitre_delete', {'id': chapitre.id}) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce chapitre?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ chapitre.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash mr-1"></i>Supprimer
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {# Formulaire d'édition inline #}
+                        {% if editId is defined and editId == chapitre.id %}
+                        <tr>
+                            <td colspan="8">
+                                <div class="card p-3 mb-3 bg-light">
+                                    <h5>Modifier le chapitre : {{ chapitre.titreChap }}</h5>
+                                    {{ form_start(form) }}
+                                        {{ form_widget(form) }}
+                                        <button type="submit" class="btn btn-success mt-2">
+                                            <i class="fas fa-save"></i> Enregistrer
+                                        </button>
+                                    {{ form_end(form) }}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+
+    {# Helper Card #}
+    <div class="dashboard-card mt-4" style="background: linear-gradient(135deg, #fff9f0 0%, #ffffff 100%); border-left: 4px solid #ffbc3b;">
+        <h5 class="mb-3">
+            <i class="fas fa-lightbulb mr-2" style="color: #ffbc3b;"></i>
+            Conseils pour gérer vos chapitres
+        </h5>
+        <ul class="helper-list">
+            <li><i class="fas fa-check-circle mr-2" style="color: #11998e;"></i>Organisez les chapitres dans un ordre logique</li>
+            <li><i class="fas fa-check-circle mr-2" style="color: #11998e;"></i>Donnez des titres clairs et descriptifs</li>
+            <li><i class="fas fa-check-circle mr-2" style="color: #11998e;"></i>Définissez une durée réaliste pour chaque chapitre</li>
+            <li><i class="fas fa-check-circle mr-2" style="color: #11998e;"></i>Utilisez le statut pour suivre la progression</li>
+        </ul>
+    </div>
+</div>
+
+<style>
+/* Table Styling */
+.table-responsive {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table-header-bg {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.table-header-bg th {
+    border: none;
+    color: #2d3142;
+    font-weight: 600;
+    padding: 16px;
+    font-size: 0.95rem;
+}
+
+.table tbody tr {
+    border-bottom: 1px solid #eef0f8;
+    transition: all 0.3s ease;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.table tbody td {
+    padding: 16px;
+    vertical-align: middle;
+    color: #2d3142;
+}
+
+.badge {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 0.85rem;
+}
+
+.badge-warning {
+    background-color: #ffd580;
+    color: #2d3142;
+}
+
+.badge-info {
+    background-color: #80c9ff;
+    color: white;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.action-buttons .btn {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: white;
+}
+
+.btn-warning:hover {
+    background-color: #ffb300;
+    border-color: #ffb300;
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background-color: #f5576c;
+    border-color: #f5576c;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #e63946;
+    border-color: #e63946;
+    transform: translateY(-2px);
+}
+
+/* Helper List */
+.helper-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.helper-list li {
+    padding: 10px 0;
+    color: #2d3142;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+}
+
+.helper-list li:not(:last-child) {
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Alert Styling */
+.alert {
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 0;
+}
+
+.alert-info {
+    border: none;
+    color: #0c5460;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .action-buttons {
+        flex-direction: column;
+    }
+    
+    .action-buttons .btn {
+        width: 100%;
+    }
+    
+    .table-responsive {
+        font-size: 0.85rem;
+    }
+    
+    .page-header .d-flex {
+        flex-direction: column;
+        gap: 20px;
+    }
+}
+</style>
+{% endblock %}

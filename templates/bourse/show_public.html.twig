@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails Bourse - {{ bourse.titre }}{% endblock %}
+
+{% block body %}
+<section class="page-title-section overlay" data-background="{{ asset('images/backgrounds/page-title.jpg') }}">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <ul class="list-inline custom-breadcrumb">
+          <li class="list-inline-item"><a class="h2 text-primary font-secondary" href="{{ path('app_bourse_list') }}">Nos Bourses</a></li>
+          <li class="list-inline-item text-white h3 font-secondary nasted">{{ bourse.titre }}</li>
+        </ul>
+        <p class="text-lighten">Détails de l'offre de financement.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <!-- Main Content -->
+      <div class="col-lg-8">
+        <div class="card border-primary rounded-0 hover-shadow mb-5">
+          <img class="card-img-top rounded-0" src="{{ bourse.image ? asset(bourse.image) : asset('images/courses/course-1.jpg') }}" alt="{{ bourse.titre }}" style="max-height: 400px; object-fit: cover;">
+          <div class="card-body p-4">
+            <h2 class="section-title mb-4">{{ bourse.titre }}</h2>
+            
+            <div class="d-flex align-items-center mb-4 text-muted">
+                <div class="mr-4">
+                    <i class="ti-calendar text-primary mr-2"></i> Publié le {{ bourse.dateAttribution|date('d M Y') }}
+                </div>
+                <div class="mr-4">
+                    <i class="ti-money text-primary mr-2"></i> {{ bourse.montant|number_format(0, ',', ' ') }} DT
+                </div>
+                <div>
+                    <i class="ti-time text-primary mr-2"></i> Expire le {{ bourse.dateFin|date('d M Y') }}
+                </div>
+            </div>
+
+            <div class="content">
+                <h4 class="mb-3">Description</h4>
+                <p style="white-space: pre-line; line-height: 1.8; color: #5c5c77;">{{ bourse.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <div class="card border-primary rounded-0 hover-shadow p-4 mb-4">
+            <h4 class="mb-3">Résumé</h4>
+            <ul class="list-unstyled mb-4">
+                <li class="d-flex justify-content-between mb-3 border-bottom pb-2">
+                    <span>Montant:</span>
+                    <span class="font-weight-bold text-primary">{{ bourse.montant|number_format(0, ',', ' ') }} DT</span>
+                </li>
+                <li class="d-flex justify-content-between mb-3 border-bottom pb-2">
+                    <span>Date limite:</span>
+                    <span class="font-weight-bold text-danger">{{ bourse.dateFin|date('d M Y') }}</span>
+                </li>
+                <li class="d-flex justify-content-between mb-3">
+                    <span>État:</span>
+                    <span class="badge badge-success px-3 py-1">Ouverte</span>
+                </li>
+            </ul>
+            {% if alreadyApplied %}
+                <button class="btn btn-secondary btn-block" disabled>
+                    <i class="ti-check mr-2"></i>Candidature déjà envoyée
+                </button>
+            {% else %}
+                <a href="{{ path('app_bourse_apply', {'id': bourse.id}) }}" class="btn btn-primary btn-block">Postuler maintenant</a>
+            {% endif %}
+        </div>
+
+        <div class="card border-primary rounded-0 hover-shadow p-4">
+            <h4 class="mb-3">Besoin d'aide ?</h4>
+            <p>Si vous avez des questions concernant cette bourse, contactez l'administration.</p>
+            <a href="contact.html" class="text-primary font-weight-bold">Contactez-nous</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

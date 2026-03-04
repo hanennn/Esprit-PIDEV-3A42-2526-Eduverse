@@ -1,0 +1,388 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'Événement | Eduverse Admin{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+        .navigation, header, .header, .top-header, nav.navbar { display: none !important; }
+        
+        body { 
+            margin: 0 !important; 
+            padding: 0 !important; 
+            overflow-x: hidden; 
+            background: #f0f2f5; 
+            font-family: 'Outfit', sans-serif;
+            color: #2d3436;
+        }
+        
+        /* Admin Sidebar Refined */
+        .admin-sidebar { 
+            position: fixed; 
+            left: 0; 
+            top: 0; 
+            width: 260px; 
+            height: 100vh; 
+            background: linear-gradient(180deg, #2c3e50 0%, #1a252f 100%); 
+            color: white; 
+            z-index: 1000; 
+            padding-top: 30px; 
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-brand {
+            padding: 0 25px 30px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffbc3b;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-menu { list-style: none; padding: 0; margin: 0; }
+        .sidebar-menu a { 
+            display: flex; 
+            align-items: center; 
+            padding: 14px 25px; 
+            color: rgba(255, 255, 255, 0.6); 
+            text-decoration: none; 
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 4px solid transparent;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active { 
+            background: rgba(255, 188, 59, 0.08); 
+            color: #ffbc3b; 
+            border-left: 4px solid #ffbc3b; 
+        }
+        
+        .sidebar-menu a i { margin-right: 15px; font-size: 18px; }
+        
+        /* Main Content */
+        .admin-content { 
+            margin-left: 260px; 
+            padding: 40px; 
+            min-height: 100vh; 
+            background: #f0f2f5;
+        }
+
+        .page-header { 
+            margin-bottom: 35px; 
+            display: flex; 
+            align-items: center; 
+        }
+
+        .back-btn { 
+            margin-right: 20px; 
+            color: #2d3436; 
+            font-size: 18px; 
+            text-decoration: none; 
+            background: white; 
+            width: 45px; 
+            height: 45px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover { 
+            transform: translateX(-5px); 
+            color: #ffbc3b; 
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+
+        .page-title h2 { 
+            font-size: 28px; 
+            font-weight: 700; 
+            color: #1a252f; 
+            margin: 0; 
+            letter-spacing: -0.5px;
+        }
+
+        /* Show Card */
+        .dashboard-card { 
+            background: white; 
+            border-radius: 24px; 
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04); 
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            overflow: hidden;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .event-hero {
+            height: 350px;
+            width: 100%;
+            position: relative;
+            background: #2c3e50;
+        }
+
+        .event-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 40px;
+            background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+
+        .type-badge { 
+            padding: 8px 16px; 
+            border-radius: 12px; 
+            font-size: 12px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: inline-block;
+        }
+        .badge-webinaire { background: #e7f5ff; color: #1c7ed6; }
+        .badge-atelier { background: #f3f0ff; color: #7048e8; }
+        .badge-challenge { background: #fff4e6; color: #fd7e14; }
+
+        .card-body-content { padding: 40px; }
+
+        .info-section { margin-bottom: 40px; }
+        .info-label { 
+            font-size: 12px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            color: #b2bec3; 
+            margin-bottom: 10px; 
+            letter-spacing: 1px; 
+        }
+        
+        .info-value { 
+            font-size: 17px; 
+            color: #2d3436; 
+            font-weight: 500; 
+            line-height: 1.6;
+        }
+
+        .sidebar-info-box {
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid #f1f3f5;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .info-item:last-child { margin-bottom: 0; }
+
+        .info-item i {
+            width: 40px;
+            height: 40px;
+            background: white;
+            color: #ffbc3b;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            font-size: 18px;
+        }
+
+        .info-item-text div:first-child {
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #b2bec3;
+            letter-spacing: 0.5px;
+        }
+
+        .info-item-text div:last-child {
+            font-weight: 600;
+            color: #2d3436;
+        }
+
+        /* Buttons */
+        .btn-warning { 
+            background: #ffbc3b; 
+            color: white !important; 
+            padding: 12px 25px; 
+            border-radius: 14px; 
+            text-decoration: none; 
+            font-weight: 700; 
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            box-shadow: 0 6px 15px rgba(255, 188, 59, 0.2);
+            border: none;
+        }
+        .btn-warning:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255, 188, 59, 0.4); }
+
+        .btn-danger { 
+            background: #fff5f5; 
+            color: #fa5252; 
+            border: none; 
+            padding: 12px 25px; 
+            border-radius: 14px; 
+            cursor: pointer; 
+            font-weight: 700;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+        }
+        .btn-danger:hover { background: #fa5252; color: white; transform: translateY(-3px); }
+
+        .btn-secondary { 
+            background: #f8fafc; 
+            color: #636e72; 
+            padding: 12px 25px; 
+            border-radius: 14px; 
+            text-decoration: none; 
+            font-weight: 600; 
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid #f1f3f5;
+        }
+        .btn-secondary:hover { background: #f1f3f5; color: #2d3436; }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="admin-sidebar">
+    <div class="sidebar-brand">
+        <i class="ti-book mr-2"></i> EDUVERSE
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="{{ path('app_profile') }}"><i class="ti-dashboard"></i><span>Tableau de Bord</span></a></li>
+        <li><a href="{{ path('app_event_index') }}" class="active"><i class="ti-calendar"></i><span>Événements</span></a></li>
+        <li><a href="{{ path('app_bourse_index') }}"><i class="ti-medall"></i><span>Bourses</span></a></li>
+    </ul>
+</div>
+
+<div class="admin-content">
+    <div class="page-header">
+        <a href="{{ path('app_event_index') }}" class="back-btn"><i class="ti-arrow-left"></i></a>
+        <div class="page-title">
+            <h2>Détails de l'Événement</h2>
+        </div>
+    </div>
+
+    <div class="dashboard-card">
+        <div class="event-hero">
+            {% if event.image %}
+                <img src="{{ asset(event.image) }}" alt="{{ event.titre }}">
+            {% else %}
+                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #2c3e50; color: rgba(255,255,255,0.2);">
+                    <i class="ti-image" style="font-size: 100px;"></i>
+                </div>
+            {% endif %}
+            <div class="hero-overlay">
+                <div>
+                    <span class="type-badge badge-{{ event.type }}">{{ event.type|capitalize }}</span>
+                    <h1 style="color: white; font-weight: 800; margin: 0; letter-spacing: -1px; text-shadow: 0 2px 10px rgba(0,0,0,0.3);">{{ event.titre }}</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body-content">
+            <div class="row">
+                <div class="col-lg-8 pr-lg-5" style="border-right: 1px solid #f1f3f5;">
+                    <div class="info-section">
+                        <div class="info-label">À Propos de l'événement</div>
+                        <div class="info-value" style="white-space: pre-line;">{{ event.description }}</div>
+                    </div>
+
+                    {% if event.type == 'webinaire' %}
+                        <div class="info-section">
+                            <div class="info-label">Accès Webinaire</div>
+                            <div class="info-value">
+                                <a href="{{ event.lienWebinaire }}" target="_blank" class="btn-secondary" style="color: #1c7ed6; border-color: #1c7ed6;">
+                                    <i class="ti-video-camera mr-2"></i>Rejoindre la session
+                                </a>
+                            </div>
+                        </div>
+                    {% elseif event.type == 'challenge' %}
+                        <div class="info-section">
+                            <div class="info-label">Niveau de Difficulté</div>
+                            <div class="info-value">
+                                <span class="type-badge badge-challenge">
+                                    <i class="ti-stats-up mr-2"></i>{{ event.niveau|capitalize }}
+                                </span>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="col-lg-4 pl-lg-5">
+                    <div class="sidebar-info-box">
+                        <div class="info-item">
+                            <i class="ti-calendar"></i>
+                            <div class="info-item-text">
+                                <div>Date</div>
+                                <div>{{ event.date|date('d F Y') }}</div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="ti-time"></i>
+                            <div class="info-item-text">
+                                <div>Horaire</div>
+                                <div>{{ event.heureDeb|date('H:i') }} - {{ event.heureFin|date('H:i') }}</div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="ti-user"></i>
+                            <div class="info-item-text">
+                                <div>Participants</div>
+                                <div>{{ event.inscriptions|length }} inscrits</div>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="ti-plus"></i>
+                            <div class="info-item-text">
+                                <div>Créé le</div>
+                                <div>{{ event.dateCreation|date('d/m/Y') }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex flex-column gap-3">
+                        <a href="{{ path('app_event_inscriptions', {'id': event.id}) }}" class="btn-secondary w-100 justify-content-center mb-2">
+                            <i class="ti-user mr-2"></i>Gérer les inscriptions
+                        </a>
+                        <a href="{{ path('app_event_edit', {'id': event.id}) }}" class="btn-warning w-100 justify-content-center mb-2">
+                            <i class="ti-pencil mr-2"></i>Modifier
+                        </a>
+                        
+                        <form method="post" action="{{ path('app_event_delete', {'id': event.id}) }}" onsubmit="return confirm('Supprimer cet événement ?');" class="w-100">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ event.id) }}">
+                            <button class="btn-danger w-100 justify-content-center"><i class="ti-trash mr-2"></i>Supprimer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

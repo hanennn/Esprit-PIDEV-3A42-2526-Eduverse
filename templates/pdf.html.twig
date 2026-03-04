@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Certificat Officiel</title>
+
+    <style>
+        body {
+            font-family: DejaVu Sans, Arial, sans-serif;
+            background: #f4f6f9;
+            padding: 40px;
+        }
+
+        .certificate {
+            background: #ffffff;
+            padding: 50px;
+            border: 5px solid #2a7bbd;
+            border-radius: 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 36px;
+            color: #2a7bbd;
+            margin-bottom: 30px;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            margin-bottom: 40px;
+        }
+
+        .name {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #000;
+        }
+
+        .details {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        .badge {
+            font-size: 20px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 50px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .signature {
+            margin-top: 60px;
+            text-align: right;
+        }
+
+        .qr-section {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            text-align: center;
+        }
+
+        .qr-section img {
+            width: 120px;
+        }
+
+        .verify-link {
+            font-size: 10px;
+            word-break: break-all;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="certificate">
+
+    <h1>Certificat de Réussite</h1>
+
+    <div class="subtitle">
+        Ce certificat est décerné à :
+    </div>
+
+    <div class="name">
+        {{ certificationFinale.user.prenom }} {{ certificationFinale.user.nom }}
+    </div>
+
+    <div class="details">
+        Pour avoir réussi avec succès le quiz :
+        <br><strong>{{ certificationFinale.quiz.titre }}</strong>
+        <br><br>
+        Score obtenu : <strong>{{ certificationFinale.tentative.scoreObtenu }}/20</strong>
+        <br>
+        Date d'attribution : <strong>{{ certificationFinale.dateEmission|date('d/m/Y') }}</strong>
+    </div>
+
+    <div class="badge">
+        Badge : {{ certificationFinale.tentative.badge }}
+    </div>
+
+    <!-- QR Code -->
+    <div class="qr-section">
+        <img src="data:image/png;base64,{{ qrBase64 }}" alt="QR Code">
+        <div class="verify-link">
+            Vérifier : {{ verifyUrl }}
+        </div>
+    </div>
+
+    <!-- Signature -->
+    <div class="signature">
+        <p>________________________</p>
+        <p>Signature Officielle</p>
+        <p>Educenter</p>
+    </div>
+
+    <div class="footer">
+        Certificat sécurisé avec signature numérique.
+        <br>
+        ID Certificat : {{ certificationFinale.id }}
+    </div>
+
+</div>
+
+</body>
+</html>

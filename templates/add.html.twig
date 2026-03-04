@@ -1,0 +1,40 @@
+{# templates/add.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter Certification Finale{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h2 class="mb-1">Ajouter Certification Finale</h2>
+      <p class="text-muted mb-0">
+        Attribuer une certification finale pour la tentative de certification de
+        {{ certification.user.prenom }} {{ certification.user.nom }}
+      </p>
+    </div>
+
+    {# ✅ Bouton retour dashboard #}
+    <a href="{{ path('app_profile') }}" class="btn btn-outline-primary">
+      <i class="ti-arrow-left mr-1"></i> Retour au Dashboard
+    </a>
+  </div>
+
+  <div class="dashboard-card">
+    {{ form_start(form) }}
+
+      {{ form_row(form.badge) }}
+      {{ form_row(form.dateEmission) }}
+
+      <div class="d-flex justify-content-end mt-3">
+        <button class="btn btn-primary" type="submit">
+          Ajouter Certification Finale
+        </button>
+      </div>
+
+    {{ form_end(form) }}
+  </div>
+
+</div>
+{% endblock %}

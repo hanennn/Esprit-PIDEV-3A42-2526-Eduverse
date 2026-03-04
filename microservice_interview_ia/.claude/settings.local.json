@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(source:*)",
+      "Bash(venv/Scripts/python.exe:*)",
+      "Bash(curl:*)",
+      "Bash(php:*)",
+      "Bash(mysql:*)",
+      "Bash(symfony version:*)",
+      "Bash(\"/c/xampp/mysql/bin/mysql.exe\":*)",
+      "Bash(symfony server:start:*)",
+      "Bash(taskkill:*)",
+      "Bash(symfony server:stop:*)"
+    ]
+  }
+}

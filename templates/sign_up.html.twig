@@ -1,0 +1,191 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription - Educenter{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <!-- Custom Signup Styles -->
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+{% endblock %}
+{% block body %}
+<!-- page title -->
+<section class="page-title-section overlay" data-background="{{ asset('images/backgrounds/page-title.jpg') }}">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <ul class="list-inline custom-breadcrumb">
+          <li class="list-inline-item"><a class="h2 text-primary font-secondary" href="index.html">Accueil</a></li>
+          <li class="list-inline-item text-white h3 font-secondary nasted">Inscription</li>
+        </ul>
+        <p class="text-lighten">Créez votre compte et commencez votre parcours d'apprentissage</p>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /page title -->
+
+<!-- signup section -->
+<section class="section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="signup-container">
+          <div class="signup-card">
+            <div class="text-center mb-4">
+              <h2 class="mb-2">Créer un Compte</h2>
+              <p class="text-muted">Rejoignez notre communauté d'apprenants</p>
+            </div>
+
+            <!-- Account Type Selection -->
+            <div class="mb-4">
+              <h5 class="mb-3">Type de Compte</h5>
+              <div class="row">
+                <div class="col-md-6">
+                  <label class="account-type-card active" id="studentCard">
+                    <input type="radio" name="accountType" value="student" checked>
+                    <i class="ti-user"></i>
+                    <h5 class="mb-1">Étudiant</h5>
+                    <p class="text-muted small mb-0">Je veux apprendre</p>
+                  </label>
+                </div>
+                <div class="col-md-6">
+                  <label class="account-type-card" id="teacherCard">
+                    <input type="radio" name="accountType" value="teacher">
+                    <i class="ti-briefcase"></i>
+                    <h5 class="mb-1">Formateur</h5>
+                    <p class="text-muted small mb-0">Je veux enseigner</p>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {{ form_start(registrationForm, {'action': path('app_register'), 'method': 'post', 'attr': {'id': 'signupForm', 'novalidate': 'novalidate'}}) }}
+              
+              <div style="display:none;">{{ form_widget(registrationForm.accountType) }}</div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="firstName" class="font-weight-bold">Prénom <span class="text-danger">*</span></label>
+                    {{ form_widget(registrationForm.prenom, {'attr': {'class': 'form-control', 'id': 'firstName', 'placeholder': 'Votre prénom'}}) }}
+                    <div class="text-danger">{{ form_errors(registrationForm.prenom) }}</div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="lastName" class="font-weight-bold">Nom <span class="text-danger">*</span></label>
+                    {{ form_widget(registrationForm.nom, {'attr': {'class': 'form-control', 'id': 'lastName', 'placeholder': 'Votre nom'}}) }}
+                    <div class="text-danger">{{ form_errors(registrationForm.nom) }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="email" class="font-weight-bold">Adresse Email <span class="text-danger">*</span></label>
+                {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control', 'id': 'email', 'placeholder': 'votre@email.com'}}) }}
+                <div class="text-danger">{{ form_errors(registrationForm.email) }}</div>
+              </div>
+
+              <div class="form-group">
+                <label for="username" class="font-weight-bold">Nom d'utilisateur <span class="text-danger">*</span></label>
+                {{ form_widget(registrationForm.Username, {'attr': {'class': 'form-control', 'id': 'username', 'placeholder': 'Choisissez un nom d\'utilisateur'}}) }}
+                <div class="text-danger">{{ form_errors(registrationForm.Username) }}</div>
+              </div>
+
+              <!-- Teacher-only fields -->
+              <div id="teacherFields" style="display: none;">
+                <div class="form-group">
+                  <label for="specialite" class="font-weight-bold">Spécialité <span class="text-danger">*</span></label>
+                  {{ form_widget(registrationForm.specialite, {'attr': {'class': 'form-control', 'id': 'specialite'}}) }}
+                  <small class="text-muted">Indiquez votre domaine d'expertise (Ex: Développement Web, Marketing Digital...)</small>
+                </div>
+
+                <div class="form-group">
+                  <label for="experience" class="font-weight-bold">Expérience Professionnelle <span class="text-danger">*</span></label>
+                  {{ form_widget(registrationForm.experience, {'attr': {'class': 'form-control', 'id': 'experience'}}) }}
+                  <small class="text-muted">Partagez votre parcours et vos qualifications</small>
+                </div>
+              </div>
+
+              <div class="form-group form-group-password">
+                <label for="password" class="font-weight-bold">Mot de passe <span class="text-danger">*</span></label>
+                {{ form_widget(registrationForm.plainPassword.first, {'attr': {'class': 'form-control', 'id': 'password', 'placeholder': 'Créez un mot de passe fort'}}) }}
+                <i class="ti-eye password-toggle" id="togglePassword"></i>
+                <div class="text-danger">{{ form_errors(registrationForm.plainPassword.first) }}</div>
+                <small class="text-muted">Au moins 8 caractères</small>
+              </div>
+
+              <div class="form-group form-group-password">
+                <label for="confirmPassword" class="font-weight-bold">Confirmer le mot de passe <span class="text-danger">*</span></label>
+                {{ form_widget(registrationForm.plainPassword.second, {'attr': {'class': 'form-control', 'id': 'confirmPassword', 'placeholder': 'Retapez votre mot de passe'}}) }}
+                <i class="ti-eye password-toggle" id="toggleConfirmPassword"></i>
+                 <div class="text-danger">{{ form_errors(registrationForm.plainPassword.second) }}</div>
+              </div>
+
+              <div class="form-group">
+                <div class="form-check">
+                  {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input', 'id': 'agreeTerms'}}) }}
+                  <label class="form-check-label" for="agreeTerms">
+                    J'accepte les <a href="#" class="text-primary">Conditions d'utilisation</a> et la <a href="#" class="text-primary">Politique de confidentialité</a>
+                  </label>
+                  <div class="text-danger">{{ form_errors(registrationForm.agreeTerms) }}</div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="form-check">
+                  {{ form_widget(registrationForm.newsletter, {'attr': {'class': 'form-check-input', 'id': 'newsletter'}}) }}
+                  <label class="form-check-label" for="newsletter">
+                    Je souhaite recevoir les actualités et les offres spéciales
+                  </label>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-signup btn-block text-white">
+                <i class="ti-check mr-2"></i>Créer Mon Compte
+              </button>
+              {# Display form errors #}
+              {% if form_errors(registrationForm) %}
+                <div class="alert alert-danger">
+                  {{ form_errors(registrationForm) }}
+                </div>
+              {% endif %}
+
+              {# Display flash messages #}
+              {% for message in app.flashes('success') %}
+                <div class="alert alert-success">
+                  {{ message }}
+                </div>
+              {% endfor %}
+
+            {{ form_end(registrationForm) }}
+
+            <div class="divider">
+              <span>OU</span>
+            </div>
+
+            <a href="{{ path('connect_google_start') }}" class="btn btn-block social-signup-btn">
+              <i class="ti-google"></i>S'inscrire avec Google
+            </a>
+
+            <button class="btn btn-block social-signup-btn">
+              <i class="ti-facebook"></i>S'inscrire avec Facebook
+            </button>
+
+            <div class="text-center mt-4">
+              <p class="mb-0">Vous avez déjà un compte ? <a href="{{ path('app_login') }}" class="text-primary font-weight-bold">Connectez-vous</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /signup section -->
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- Custom Signup Script -->
+
+{% endblock %}

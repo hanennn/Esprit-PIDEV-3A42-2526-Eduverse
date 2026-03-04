@@ -1,0 +1,859 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un Événement | Eduverse Admin{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+        .navigation, header, .header, .top-header, nav.navbar { display: none !important; }
+        
+        body { 
+            margin: 0 !important; 
+            padding: 0 !important; 
+            overflow-x: hidden; 
+            background: #f0f2f5; 
+            font-family: 'Outfit', sans-serif;
+            color: #2d3436;
+        }
+        
+        /* Admin Sidebar Refined */
+        .admin-sidebar { 
+            position: fixed; 
+            left: 0; 
+            top: 0; 
+            width: 260px; 
+            height: 100vh; 
+            background: linear-gradient(180deg, #2c3e50 0%, #1a252f 100%); 
+            color: white; 
+            z-index: 1000; 
+            padding-top: 30px; 
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar-brand {
+            padding: 0 25px 30px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #ffbc3b;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
+
+        .sidebar-menu { list-style: none; padding: 0; margin: 0; }
+        .sidebar-menu a { 
+            display: flex; 
+            align-items: center; 
+            padding: 14px 25px; 
+            color: rgba(255, 255, 255, 0.6); 
+            text-decoration: none; 
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 4px solid transparent;
+        }
+        
+        .sidebar-menu a:hover, .sidebar-menu a.active { 
+            background: rgba(255, 188, 59, 0.08); 
+            color: #ffbc3b; 
+            border-left: 4px solid #ffbc3b; 
+        }
+        
+        .sidebar-menu a i { margin-right: 15px; font-size: 18px; }
+        
+        /* Main Content */
+        .admin-content { 
+            margin-left: 260px; 
+            padding: 40px; 
+            min-height: 100vh; 
+            background: #f0f2f5;
+            position: relative;
+        }
+
+        /* Glassmorphism Dashboard Card */
+        .dashboard-card { 
+            background: rgba(255, 255, 255, 0.9); 
+            backdrop-filter: blur(10px);
+            padding: 40px; 
+            border-radius: 24px; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04); 
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .page-header { 
+            margin-bottom: 35px; 
+            display: flex; 
+            align-items: center; 
+        }
+
+        .back-btn { 
+            margin-right: 20px; 
+            color: #2d3436; 
+            font-size: 18px; 
+            text-decoration: none; 
+            background: white; 
+            width: 45px; 
+            height: 45px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); 
+            transition: all 0.3s;
+        }
+        
+        .back-btn:hover { 
+            transform: translateX(-5px); 
+            color: #ffbc3b; 
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+
+        .page-title h2 { 
+            font-size: 28px; 
+            font-weight: 700; 
+            color: #1a252f; 
+            margin: 0; 
+            letter-spacing: -0.5px;
+        }
+        
+        .page-title p { color: #636e72; margin: 4px 0 0; font-size: 15px; }
+        
+        /* Modern Form Styling */
+        .form-section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #dfe6e9;
+        }
+
+        .form-section-header i {
+            width: 35px;
+            height: 35px;
+            background: rgba(255, 188, 59, 0.1);
+            color: #ffbc3b;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 16px;
+        }
+
+        .form-section-header h5 {
+            margin: 0;
+            font-weight: 700;
+            color: #2d3436;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-label { 
+            font-weight: 600; 
+            color: #2d3436; 
+            margin-bottom: 10px; 
+            display: block; 
+            font-size: 13px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.8px; 
+        }
+
+        .input-group-custom {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .input-group-custom i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #b2bec3;
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .form-control { 
+            width: 100%; 
+            padding: 0 15px 0 45px; 
+            border: 2px solid #f1f3f5; 
+            border-radius: 14px; 
+            transition: all 0.3s; 
+            font-size: 15px; 
+            color: #2d3436; 
+            background: #f8fafc; 
+            height: 56px;
+            display: block;
+            line-height: 52px;
+            box-sizing: border-box;
+        }
+
+        select.form-control {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23b2bec3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 18px;
+            padding-right: 45px;
+        }
+
+        textarea.form-control { height: auto; padding-top: 15px; }
+
+        .form-control:focus { 
+            border-color: #ffbc3b; 
+            outline: none; 
+            box-shadow: 0 0 0 5px rgba(255, 188, 59, 0.1); 
+            background: white; 
+        }
+
+        .form-control:focus + i { color: #ffbc3b; }
+        
+        .btn-primary { 
+            background: linear-gradient(135deg, #ffbc3b 0%, #ff8c00 100%); 
+            color: white; 
+            padding: 15px 35px; 
+            border-radius: 16px; 
+            border: none; 
+            font-weight: 700; 
+            box-shadow: 0 8px 20px rgba(255, 188, 59, 0.3); 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            cursor: pointer; 
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-primary:hover { 
+            transform: translateY(-5px) scale(1.02); 
+            box-shadow: 0 12px 25px rgba(255, 188, 59, 0.4); 
+        }
+
+        .btn-secondary { 
+            background: #ffffff; 
+            color: #636e72; 
+            padding: 15px 30px; 
+            border-radius: 16px; 
+            border: 2px solid #f1f3f5; 
+            text-decoration: none; 
+            font-weight: 600; 
+            margin-right: 15px;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover { background: #f8fafc; border-color: #dfe6e9; color: #2d3436; }
+
+        /* Custom File Upload */
+        .file-upload-wrapper {
+            border: 2px dashed #dfe6e9;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            background: #f8fafc;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .file-upload-wrapper:hover {
+            border-color: #ffbc3b;
+            background: rgba(255, 188, 59, 0.03);
+        }
+
+        .file-upload-wrapper i { font-size: 40px; color: #b2bec3; margin-bottom: 10px; display: block; }
+        .file-upload-wrapper p { margin: 0; color: #636e72; font-weight: 500; }
+        .file-upload-wrapper input { 
+            position: absolute; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            opacity: 0; 
+            cursor: pointer; 
+        }
+
+        .is-invalid { border-color: #ff7675 !important; }
+        .error-hint { color: #ff7675; font-size: 12px; margin-top: 5px; font-weight: 500; }
+
+        .conditional-field { 
+            max-height: 0; 
+            overflow: hidden; 
+            transition: all 0.4s ease-out; 
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        .conditional-field.active { 
+            max-height: 200px; 
+            opacity: 1; 
+            transform: translateY(0);
+            margin-bottom: 25px;
+        }
+
+        /* Type Badges within Select */
+        .type-select-container {
+            position: relative;
+        }
+
+        /* Responsive */
+        @media (max-width: 992px) {
+            .admin-sidebar { transform: translateX(-100%); }
+            .admin-content { margin-left: 0; }
+            .dashboard-card { padding: 25px; }
+        }
+
+        /* ── AI BUTTON ── */
+        .btn-ai {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 11px 22px;
+            background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(124,58,237,0.35);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            letter-spacing: 0.4px;
+            margin-left: auto;
+        }
+        .btn-ai:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 10px 25px rgba(124,58,237,0.45); }
+        .btn-ai:disabled { opacity: 0.65; cursor: not-allowed; transform: none; }
+
+        /* ── AI PANEL (slide-in from right) ── */
+        .ai-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 2000;
+            display: none;
+            backdrop-filter: blur(3px);
+        }
+        .ai-panel {
+            position: fixed;
+            top: 0; right: 0;
+            width: 480px;
+            max-width: 95vw;
+            height: 100vh;
+            background: white;
+            box-shadow: -8px 0 40px rgba(0,0,0,0.15);
+            z-index: 2001;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .ai-panel.open { transform: translateX(0); }
+        .ai-panel-header {
+            padding: 22px 24px;
+            background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+        .ai-panel-header h3 { font-size: 17px; font-weight: 700; margin: 0; }
+        .ai-panel-header p  { font-size: 12px; opacity: 0.85; margin: 2px 0 0; }
+        .ai-close {
+            margin-left: auto;
+            background: rgba(255,255,255,0.2);
+            border: none; color: white;
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .ai-close:hover { background: rgba(255,255,255,0.35); }
+        .ai-panel-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+        .ai-panel-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #f1f3f5;
+            flex-shrink: 0;
+            display: flex;
+            gap: 10px;
+        }
+
+        /* AI spinner */
+        .ai-spinner {
+            display: none;
+            text-align: center;
+            padding: 50px 20px;
+        }
+        .ai-spinner .ring {
+            width: 52px; height: 52px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #7c3aed;
+            border-radius: 50%;
+            animation: ai-spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+        @keyframes ai-spin { to { transform: rotate(360deg); } }
+        .ai-spinner p { color: #718096; font-size: 0.9rem; }
+
+        /* AI result card */
+        .ai-result { display: none; }
+        .ai-field { margin-bottom: 16px; }
+        .ai-field label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 4px;
+        }
+        .ai-field-value {
+            font-size: 14px;
+            color: #2d3436;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 9px 13px;
+            line-height: 1.5;
+        }
+        .ai-confidence {
+            background: linear-gradient(135deg, #ebf4ff, #e9d8fd);
+            border: 1px solid #c3dafe;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: #3730a3;
+            font-weight: 600;
+        }
+        .ai-reason {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-size: 13px;
+            color: #166534;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+        .ai-error-box {
+            display: none;
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            border-radius: 12px;
+            padding: 16px;
+            color: #c53030;
+            font-size: 13px;
+        }
+        .btn-use-ai {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+            color: white; border: none;
+            border-radius: 12px;
+            font-size: 14px; font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn-use-ai:hover { opacity: 0.9; }
+        .btn-use-ai:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-regen {
+            padding: 12px 18px;
+            background: #f1f3f5;
+            color: #2d3436; border: none;
+            border-radius: 12px;
+            font-size: 13px; font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-regen:hover { background: #e2e8f0; }
+        .btn-regen:disabled { opacity: 0.5; cursor: not-allowed; }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="admin-sidebar">
+    <div class="sidebar-brand">
+        <i class="ti-book mr-2"></i> EDUVERSE
+    </div>
+    <ul class="sidebar-menu">
+        <li><a href="{{ path('app_profile') }}"><i class="ti-dashboard"></i><span>Tableau de Bord</span></a></li>
+        <li><a href="{{ path('app_event_index') }}" class="active"><i class="ti-calendar"></i><span>Événements</span></a></li>
+        <li><a href="{{ path('app_bourse_index') }}"><i class="ti-medall"></i><span>Bourses</span></a></li>
+        <li><a href="#"><i class="ti-user"></i><span>Utilisateurs</span></a></li>
+        <li><a href="#"><i class="ti-settings"></i><span>Paramètres</span></a></li>
+    </ul>
+</div>
+
+<div class="admin-content">
+    <div class="page-header" style="display:flex;align-items:center;">
+        <a href="{{ path('app_event_index') }}" class="back-btn"><i class="ti-arrow-left"></i></a>
+        <div class="page-title">
+            <h2>Nouvel Événement</h2>
+            <p>Créez une expérience mémorable pour votre communauté</p>
+        </div>
+        <button class="btn-ai" id="btnOpenAI" onclick="openAiPanel()">
+            🤖 Générer avec l'IA
+        </button>
+    </div>
+
+<!-- ── AI PANEL OVERLAY ── -->
+<div class="ai-overlay" id="aiOverlay" onclick="closeAiPanel()"></div>
+<div class="ai-panel" id="aiPanel">
+    <div class="ai-panel-header">
+        <span style="font-size:1.6rem">🤖</span>
+        <div>
+            <h3>Générateur IA</h3>
+            <p>Analyse vos données et propose un événement optimisé</p>
+        </div>
+        <button class="ai-close" onclick="closeAiPanel()">✕</button>
+    </div>
+
+    <div class="ai-panel-body">
+        <!-- Intro -->
+        <div id="aiIntro" style="text-align:center;padding:30px 10px;color:#718096">
+            <div style="font-size:3rem;margin-bottom:12px">✨</div>
+            <p style="font-size:0.95rem;line-height:1.6">
+                L'IA va analyser vos événements passés et leurs inscriptions<br>
+                pour proposer l'événement avec le meilleur potentiel.
+            </p>
+        </div>
+
+        <!-- Spinner -->
+        <div class="ai-spinner" id="aiSpinner">
+            <div class="ring"></div>
+            <p>L'IA analyse vos données…</p>
+        </div>
+
+        <!-- Erreur -->
+        <div class="ai-error-box" id="aiError"></div>
+
+        <!-- Résultat -->
+        <div class="ai-result" id="aiResult">
+            <div class="ai-confidence" id="aiConfidence"></div>
+
+            <div class="ai-field">
+                <label>📌 Titre suggéré</label>
+                <div class="ai-field-value" id="aiTitre"></div>
+            </div>
+            <div class="ai-field">
+                <label>📝 Description</label>
+                <div class="ai-field-value" id="aiDescription" style="min-height:70px"></div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div class="ai-field">
+                    <label>🏷️ Type</label>
+                    <div class="ai-field-value" id="aiType"></div>
+                </div>
+                <div class="ai-field">
+                    <label>📶 Niveau</label>
+                    <div class="ai-field-value" id="aiNiveau"></div>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div class="ai-field">
+                    <label>🕐 Heure début</label>
+                    <div class="ai-field-value" id="aiHeureDeb"></div>
+                </div>
+                <div class="ai-field">
+                    <label>🕕 Heure fin</label>
+                    <div class="ai-field-value" id="aiHeureFin"></div>
+                </div>
+            </div>
+            <div class="ai-reason" id="aiRaison"></div>
+        </div>
+    </div>
+
+    <div class="ai-panel-footer">
+        <button class="btn-use-ai" id="btnUseAI" onclick="applyAiToForm()" disabled>✅ Utiliser cette suggestion</button>
+        <button class="btn-regen" id="btnRegen" onclick="runAiGenerate()" disabled>🔄 Régénérer</button>
+    </div>
+</div>
+
+    <div class="row">
+        <div class="col-xl-11 mx-auto">
+            <div class="dashboard-card">
+                <form method="post" enctype="multipart/form-data" novalidate id="eventForm">
+                    <div class="row">
+                        <div class="col-lg-7 pr-lg-5" style="border-right: 1px solid #f1f3f5;">
+                            <div class="form-section-header">
+                                <i class="ti-info"></i>
+                                <h5>Informations Générales</h5>
+                            </div>
+
+                            <label class="form-label">Titre de l'Événement <span class="text-danger">*</span></label>
+                            <div class="input-group-custom">
+                                <input type="text" name="titre" value="{{ old_values.titre ?? '' }}" class="form-control {{ errors.titre is defined ? 'is-invalid' : '' }}" placeholder="Ex: Masterclass de Design UI/UX">
+                                <i class="ti-pencil"></i>
+                                {% if errors.titre is defined %}<div class="error-hint">{{ errors.titre }}</div>{% endif %}
+                            </div>
+
+                            <label class="form-label">Description Détaillée <span class="text-danger">*</span></label>
+                            <div class="input-group-custom">
+                                <textarea name="description" class="form-control {{ errors.description is defined ? 'is-invalid' : '' }}" rows="6" placeholder="Qu'est-ce que les participants vont apprendre ?">{{ old_values.description ?? '' }}</textarea>
+                                <i class="ti-text" style="top: 25px;"></i>
+                                {% if errors.description is defined %}<div class="error-hint">{{ errors.description }}</div>{% endif %}
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <label class="form-label">Type d'Événement <span class="text-danger">*</span></label>
+                                    <div class="input-group-custom">
+                                        <select name="type" id="eventTypeSelector" class="form-control">
+                                            <option value="atelier" {{ (old_values.type ?? '') == 'atelier' ? 'selected' : '' }}>Atelier (Présentiel / Pratique)</option>
+                                            <option value="webinaire" {{ (old_values.type ?? '') == 'webinaire' ? 'selected' : '' }}>Webinaire (En ligne)</option>
+                                            <option value="challenge" {{ (old_values.type ?? '') == 'challenge' ? 'selected' : '' }}>Challenge (Compétition)</option>
+                                        </select>
+                                        <i class="ti-layers"></i>
+                                        {% if errors.type is defined %}<div class="error-hint">{{ errors.type }}</div>{% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="webinaireField" class="conditional-field">
+                                <label class="form-label">Lien du Webinaire</label>
+                                <div class="input-group-custom">
+                                    <input type="url" name="lienWebinaire" value="{{ old_values.lienWebinaire ?? '' }}" class="form-control" placeholder="https://zoom.us/j/...">
+                                    <i class="ti-link"></i>
+                                </div>
+                            </div>
+
+                            <div id="challengeField" class="conditional-field">
+                                <label class="form-label">Niveau de Difficulté</label>
+                                <div class="input-group-custom">
+                                    <select name="niveau" class="form-control">
+                                        <option value="debutant" {{ (old_values.niveau ?? '') == 'debutant' ? 'selected' : '' }}>🟢 Débutant</option>
+                                        <option value="intermediaire" {{ (old_values.niveau ?? '') == 'intermediaire' ? 'selected' : '' }}>🟡 Intermédiaire</option>
+                                        <option value="avance" {{ (old_values.niveau ?? '') == 'avance' ? 'selected' : '' }}>🔴 Avancé</option>
+                                    </select>
+                                    <i class="ti-stats-up"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-5 pl-lg-5">
+                            <div class="form-section-header">
+                                <i class="ti-calendar"></i>
+                                <h5>Planification & Média</h5>
+                            </div>
+
+                            <label class="form-label">Date de l'événement <span class="text-danger">*</span></label>
+                            <div class="input-group-custom">
+                                <input type="date" name="date" value="{{ old_values.date ?? '' }}" class="form-control {{ errors.date is defined ? 'is-invalid' : '' }}">
+                                <i class="ti-calendar"></i>
+                                {% if errors.date is defined %}<div class="error-hint">{{ errors.date }}</div>{% endif %}
+                            </div>
+
+                            <div class="row">
+                                <div class="col-6">
+                                    <label class="form-label">Heure Début <span class="text-danger">*</span></label>
+                                    <div class="input-group-custom">
+                                        <input type="time" name="heureDeb" value="{{ old_values.heureDeb ?? '' }}" class="form-control {{ errors.heureDeb is defined ? 'is-invalid' : '' }}">
+                                        <i class="ti-time"></i>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Heure Fin <span class="text-danger">*</span></label>
+                                    <div class="input-group-custom">
+                                        <input type="time" name="heureFin" value="{{ old_values.heureFin ?? '' }}" class="form-control {{ errors.heureFin is defined ? 'is-invalid' : '' }}">
+                                        <i class="ti-time"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <label class="form-label mt-2">Visuel de Couverture</label>
+                            <div class="file-upload-wrapper" id="imageDropZone">
+                                <i class="ti-cloud-up"></i>
+                                <p id="fileName">Cliquez ou glissez une image ici</p>
+                                <small class="text-muted">Recommandé: 1200x600px</small>
+                                <input type="file" name="image" id="imageInput" accept="image/*" onchange="previewImage(this)">
+                            </div>
+                            <div id="imagePreview" class="mt-3" style="display:none;">
+                                <img src="" style="width: 100%; height: 150px; object-fit: cover; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 pt-4 d-flex justify-content-end border-top">
+                        <a href="{{ path('app_event_index') }}" class="btn-secondary">Annuler</a>
+                        <button type="submit" class="btn-primary">
+                            <i class="ti-check mr-2"></i>Publier l'Événement
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selector = document.getElementById('eventTypeSelector');
+    const webinaireField = document.getElementById('webinaireField');
+    const challengeField = document.getElementById('challengeField');
+
+    function toggleFields() {
+        const type = selector.value;
+        if (type === 'webinaire') {
+            webinaireField.classList.add('active');
+            challengeField.classList.remove('active');
+        } else if (type === 'challenge') {
+            challengeField.classList.add('active');
+            webinaireField.classList.remove('active');
+        } else {
+            webinaireField.classList.remove('active');
+            challengeField.classList.remove('active');
+        }
+    }
+
+    selector.addEventListener('change', toggleFields);
+    toggleFields();
+});
+
+function previewImage(input) {
+    const file = input.files[0];
+    const previewContainer = document.getElementById('imagePreview');
+    const previewImg = previewContainer.querySelector('img');
+    const fileNameText = document.getElementById('fileName');
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            previewContainer.style.display = 'block';
+            fileNameText.textContent = file.name;
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
+// ── AI PANEL ──────────────────────────────────────────────────────
+let _aiData = null;
+
+function openAiPanel() {
+    document.getElementById('aiOverlay').style.display = 'block';
+    document.getElementById('aiPanel').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    // Lancer la génération automatiquement si pas encore fait
+    if (!_aiData) runAiGenerate();
+}
+
+function closeAiPanel() {
+    document.getElementById('aiOverlay').style.display = 'none';
+    document.getElementById('aiPanel').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+async function runAiGenerate() {
+    // UI : reset
+    document.getElementById('aiIntro').style.display    = 'none';
+    document.getElementById('aiResult').style.display   = 'none';
+    document.getElementById('aiError').style.display    = 'none';
+    document.getElementById('aiSpinner').style.display  = 'block';
+    document.getElementById('btnUseAI').disabled  = true;
+    document.getElementById('btnRegen').disabled  = true;
+
+    try {
+        const res  = await fetch('{{ path('app_event_ai_generate') }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({})
+        });
+        const json = await res.json();
+
+        document.getElementById('aiSpinner').style.display = 'none';
+
+        if (!json.success) {
+            const errBox = document.getElementById('aiError');
+            errBox.style.display = 'block';
+            errBox.textContent   = '❌ ' + (json.error || 'Erreur inconnue');
+            return;
+        }
+
+        _aiData = json.event;
+        renderAiResult(_aiData);
+
+    } catch (e) {
+        document.getElementById('aiSpinner').style.display = 'none';
+        const errBox = document.getElementById('aiError');
+        errBox.style.display = 'block';
+        errBox.textContent   = '❌ Erreur réseau : ' + e.message;
+    } finally {
+        document.getElementById('btnRegen').disabled = false;
+    }
+}
+
+function renderAiResult(ev) {
+    document.getElementById('aiResult').style.display = 'block';
+    document.getElementById('btnUseAI').disabled = false;
+
+    const score = ev.score_confiance || '–';
+    document.getElementById('aiConfidence').textContent =
+        `🎯 Score de succès estimé : ${score}  —  Type recommandé : ${ev.type_le_plus_populaire || '–'}`;
+
+    document.getElementById('aiTitre').textContent       = ev.titre       || '';
+    document.getElementById('aiDescription').textContent = ev.description || '';
+    document.getElementById('aiType').textContent        = ev.type        || '';
+    document.getElementById('aiNiveau').textContent      = ev.niveau      || '';
+    document.getElementById('aiHeureDeb').textContent    = ev.heure_deb   || '';
+    document.getElementById('aiHeureFin').textContent    = ev.heure_fin   || '';
+    document.getElementById('aiRaison').textContent      = ev.raison      || '';
+}
+
+function applyAiToForm() {
+    if (!_aiData) return;
+
+    // Remplir les champs du formulaire principal
+    const setVal = (name, val) => {
+        const el = document.querySelector(`[name="${name}"]`);
+        if (el) el.value = val || '';
+    };
+
+    setVal('titre',       _aiData.titre);
+    setVal('description', _aiData.description);
+    setVal('heureDeb',    _aiData.heure_deb);
+    setVal('heureFin',    _aiData.heure_fin);
+
+    // Type select
+    const typeSelect  = document.querySelector('[name="type"]');
+    const niveauSelect = document.querySelector('[name="niveau"]');
+
+    if (typeSelect && _aiData.type) {
+        // chercher l'option correspondante
+        for (let opt of typeSelect.options) {
+            if (opt.value.toLowerCase() === (_aiData.type || '').toLowerCase()) {
+                typeSelect.value = opt.value;
+                break;
+            }
+        }
+        typeSelect.dispatchEvent(new Event('change'));
+    }
+
+    if (niveauSelect && _aiData.niveau) {
+        for (let opt of niveauSelect.options) {
+            if (opt.value.toLowerCase() === (_aiData.niveau || '').toLowerCase()) {
+                niveauSelect.value = opt.value;
+                break;
+            }
+        }
+    }
+
+    // Confirmation visuelle + fermeture du panel
+    document.getElementById('btnUseAI').textContent = '✅ Appliqué !';
+    setTimeout(() => {
+        document.getElementById('btnUseAI').textContent = '✅ Utiliser cette suggestion';
+        closeAiPanel();
+    }, 900);
+}
+</script>
+{% endblock %}
