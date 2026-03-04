@@ -1,0 +1,332 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Interview IA — {{ demande.bourse.titre }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .interview-header {
+            background: linear-gradient(135deg, #1A3A5C, #2E86AB);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .interview-card {
+            border: none;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        .interview-card .card-header {
+            background: #EAF2FB;
+            font-weight: 700;
+            border-radius: 8px 8px 0 0 !important;
+        }
+        #visualizer {
+            background: #1A3A5C;
+            border-radius: 8px;
+            max-width: 100%;
+        }
+        .score-bar { height: 12px; border-radius: 6px; }
+        .result-card {
+            border-left: 4px solid #28a745;
+        }
+        .ai-unavailable {
+            border-left: 4px solid #dc3545;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<section class="page-title-section overlay" data-background="{{ asset('images/backgrounds/page-title.jpg') }}">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <ul class="list-inline custom-breadcrumb">
+                    <li class="list-inline-item"><a class="h2 text-primary font-secondary" href="{{ path('app_bourse_list') }}">Bourses</a></li>
+                    <li class="list-inline-item"><a class="h2 text-primary font-secondary" href="{{ path('app_mes_candidatures') }}">Mes Candidatures</a></li>
+                    <li class="list-inline-item text-white h3 font-secondary nasted">Interview IA</li>
+                </ul>
+                <p class="text-lighten">{{ demande.bourse.titre }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container" style="max-width: 850px;">
+
+        {% if not aiAvailable %}
+        <div class="alert alert-danger ai-unavailable p-4 mb-4">
+            <h5 class="mb-2"><i class="ti-alert mr-2"></i>Service IA indisponible</h5>
+            <p class="mb-0">Le service d'analyse vocale est actuellement hors ligne. Veuillez réessayer plus tard ou contacter l'administration.</p>
+        </div>
+        {% endif %}
+
+        {# Instructions #}
+        <div class="card interview-card">
+            <div class="card-header">
+                <i class="ti-info-alt mr-2"></i>Comment ça marche ?
+            </div>
+            <div class="card-body">
+                <p>Répondez à voix haute aux <strong>3 questions</strong> ci-dessous. L'IA analysera votre voix et
+                votre discours pour produire un profil (motivation, détermination, confiance).</p>
+                <p class="mb-0 text-muted"><small>L'admin verra le rapport d'analyse mais <strong>pas l'enregistrement audio</strong>.</small></p>
+            </div>
+        </div>
+
+        {# Questions #}
+        <div class="card interview-card">
+            <div class="card-header">
+                <i class="ti-list mr-2"></i>Questions à répondre
+            </div>
+            <div class="card-body">
+                <ol class="mb-0" style="line-height: 2.4; font-size: 15px;">
+                    <li>Pourquoi avez-vous postulé à cette bourse ?</li>
+                    <li>Quels sont vos objectifs une fois la bourse obtenue ?</li>
+                    <li>Comment gérez-vous les difficultés dans vos études ?</li>
+                </ol>
+            </div>
+        </div>
+
+        {# Recording Interface #}
+        <div class="card interview-card">
+            <div class="card-body text-center p-5">
+
+                <canvas id="visualizer" width="600" height="80" class="d-none mb-3"></canvas>
+
+                <div class="d-flex justify-content-center flex-wrap" style="gap: 15px;">
+                    <button id="btnStart" class="btn btn-danger btn-lg px-5" {{ not aiAvailable ? 'disabled' : '' }}>
+                        <i class="ti-microphone mr-2"></i>Démarrer l'enregistrement
+                    </button>
+                    <button id="btnStop" class="btn btn-dark btn-lg px-5 d-none">
+                        <i class="ti-control-stop mr-2"></i>Arrêter et analyser
+                    </button>
+                </div>
+
+                <div id="timerBox" class="mt-3 d-none">
+                    <span class="badge badge-danger px-3 py-2" style="font-size: 16px;">
+                        <i class="ti-timer mr-1"></i> <span id="seconds">0</span>s
+                    </span>
+                    <p class="text-muted mt-2 small">Parlez clairement — minimum 30 secondes recommandé</p>
+                </div>
+
+                <div id="loadingBox" class="mt-4 d-none">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Chargement...</span>
+                    </div>
+                    <p class="mt-2 text-muted">
+                        Analyse en cours... (transcription + détection émotions)<br>
+                        <small>Cela peut prendre 30 à 90 secondes</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        {# Error box #}
+        <div id="errorBox" class="alert alert-danger d-none mb-4">
+            <i class="ti-alert mr-2"></i><span id="errorText"></span>
+        </div>
+
+        {# Results #}
+        <div id="resultatBox" class="d-none">
+            <div class="card interview-card result-card">
+                <div class="card-header" style="background: #d4edda;">
+                    <i class="ti-check-box mr-2 text-success"></i>Analyse terminée !
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-primary">
+                        <strong>Votre profil IA :</strong>
+                        <span id="profilTexte" class="ml-2"></span>
+                    </div>
+
+                    <div class="alert" style="background:#FEF6EA; border-left: 4px solid #7A3B00;">
+                        <strong>Recommandation :</strong>
+                        <span id="recommandationTexte" class="ml-2"></span>
+                    </div>
+
+                    <h6 class="font-weight-bold">Scores émotionnels :</h6>
+                    <div id="scoresBox" class="mb-4"></div>
+
+                    <h6 class="font-weight-bold">Transcription de votre réponse :</h6>
+                    <blockquote class="blockquote" style="border-left: 3px solid #2E86AB; padding-left: 15px;">
+                        <p id="transcriptionTexte" class="font-italic text-muted small"></p>
+                    </blockquote>
+
+                    <div class="text-center mt-4">
+                        <a href="{{ path('app_mes_candidatures') }}" class="btn btn-primary">
+                            <i class="ti-arrow-left mr-2"></i>Retour à mes candidatures
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+let mediaRecorder, audioChunks = [], timerInterval, analyserNode, animFrameId;
+let secondes = 0;
+
+const btnStart    = document.getElementById('btnStart');
+const btnStop     = document.getElementById('btnStop');
+const timerBox    = document.getElementById('timerBox');
+const secondsEl   = document.getElementById('seconds');
+const loadingBox  = document.getElementById('loadingBox');
+const resultatBox = document.getElementById('resultatBox');
+const errorBox    = document.getElementById('errorBox');
+const errorText   = document.getElementById('errorText');
+const canvas      = document.getElementById('visualizer');
+const canvasCtx   = canvas.getContext('2d');
+
+// Start recording
+btnStart.addEventListener('click', async () => {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        // Audio visualizer
+        const audioCtx = new AudioContext();
+        const source = audioCtx.createMediaStreamSource(stream);
+        analyserNode = audioCtx.createAnalyser();
+        analyserNode.fftSize = 256;
+        source.connect(analyserNode);
+        canvas.classList.remove('d-none');
+        dessinerVisualizer();
+
+        mediaRecorder.ondataavailable = e => {
+            if (e.data.size > 0) audioChunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = () => envoyerAudio(stream);
+        mediaRecorder.start(100);
+
+        // UI updates
+        btnStart.classList.add('d-none');
+        btnStop.classList.remove('d-none');
+        timerBox.classList.remove('d-none');
+        errorBox.classList.add('d-none');
+        secondes = 0;
+        timerInterval = setInterval(() => {
+            secondes++;
+            secondsEl.textContent = secondes;
+        }, 1000);
+
+    } catch (err) {
+        showError('Impossible d\'accéder au microphone : ' + err.message);
+    }
+});
+
+// Stop recording
+btnStop.addEventListener('click', () => {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+    }
+    clearInterval(timerInterval);
+    cancelAnimationFrame(animFrameId);
+    btnStop.classList.add('d-none');
+    timerBox.classList.add('d-none');
+    canvas.classList.add('d-none');
+    loadingBox.classList.remove('d-none');
+});
+
+// Send audio to server
+async function envoyerAudio(stream) {
+    stream.getTracks().forEach(track => track.stop());
+
+    const blob = new Blob(audioChunks, { type: 'audio/webm' });
+    const formData = new FormData();
+    formData.append('audio', blob, 'interview.webm');
+
+    try {
+        const response = await fetch(
+            '{{ path("bourse_interview_analyser", {"id": demande.id}) }}',
+            { method: 'POST', body: formData }
+        );
+        const data = await response.json();
+        loadingBox.classList.add('d-none');
+
+        if (data.success) {
+            afficherResultat(data);
+        } else {
+            showError(data.error || 'Erreur inconnue lors de l\'analyse.');
+            btnStart.classList.remove('d-none');
+            btnStart.innerHTML = '<i class="ti-microphone mr-2"></i>Réessayer';
+        }
+    } catch (err) {
+        loadingBox.classList.add('d-none');
+        showError('Erreur réseau : ' + err.message);
+        btnStart.classList.remove('d-none');
+    }
+}
+
+function showError(msg) {
+    errorText.textContent = msg;
+    errorBox.classList.remove('d-none');
+}
+
+// Display results
+function afficherResultat(data) {
+    document.getElementById('profilTexte').textContent = data.profil;
+    document.getElementById('transcriptionTexte').textContent = data.transcription;
+    document.getElementById('recommandationTexte').textContent = data.recommandation || '';
+
+    const scoresBox = document.getElementById('scoresBox');
+    const couleurs = {
+        'déterminé': '#1A3A5C',
+        'motivé':    '#1A5C2A',
+        'confiant':  '#0D6B6B',
+        'anxieux':   '#7A3B00',
+        'hésitant':  '#4A5568'
+    };
+    const emojis = {
+        'déterminé': '💪', 'motivé': '🔥', 'confiant': '😊',
+        'anxieux': '😰', 'hésitant': '🤔'
+    };
+
+    let html = '';
+    for (const [label, score] of Object.entries(data.scores)) {
+        const pct = Math.round(score * 100);
+        const couleur = couleurs[label] || '#6c757d';
+        const emoji = emojis[label] || '';
+        html += `
+            <div class="mb-3">
+                <div class="d-flex justify-content-between mb-1">
+                    <span>${emoji} ${label.charAt(0).toUpperCase() + label.slice(1)}</span>
+                    <strong>${pct}%</strong>
+                </div>
+                <div class="progress score-bar">
+                    <div class="progress-bar" style="width:${pct}%; background:${couleur}; border-radius:6px;"></div>
+                </div>
+            </div>`;
+    }
+    scoresBox.innerHTML = html;
+    resultatBox.classList.remove('d-none');
+}
+
+// Audio visualizer
+function dessinerVisualizer() {
+    animFrameId = requestAnimationFrame(dessinerVisualizer);
+    const bufferLength = analyserNode.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+    analyserNode.getByteFrequencyData(dataArray);
+
+    canvasCtx.fillStyle = '#1A3A5C';
+    canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const barWidth = (canvas.width / bufferLength) * 2.5;
+    let x = 0;
+    dataArray.forEach(value => {
+        const barHeight = (value / 255) * canvas.height;
+        canvasCtx.fillStyle = 'rgb(46, 134, 171)';
+        canvasCtx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+        x += barWidth + 1;
+    });
+}
+</script>
+{% endblock %}

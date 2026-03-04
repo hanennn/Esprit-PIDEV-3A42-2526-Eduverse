@@ -1,4 +1,19 @@
 {
+<<<<<<< Updated upstream
+=======
+    "ahmed-bhs/doctrine-doctor": {
+        "version": "1.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "0.1",
+            "ref": "0a0c0e3972f784e628c4f759d2fb446e9eeb4959"
+        },
+        "files": [
+            "./config/packages/doctrine_doctor.yaml"
+        ]
+    },
+>>>>>>> Stashed changes
     "doctrine/deprecations": {
         "version": "1.1",
         "recipe": {
@@ -35,7 +50,10 @@
             "./migrations/.gitignore"
         ]
     },
+<<<<<<< Updated upstream
 <<<<<<< HEAD
+=======
+>>>>>>> Stashed changes
     "karser/karser-recaptcha3-bundle": {
         "version": "0.3",
         "recipe": {
@@ -60,8 +78,23 @@
             "ref": "1ff300d8c030f55c99219cc55050b97a695af3f6"
         }
     },
+<<<<<<< Updated upstream
 =======
 >>>>>>> ee09f695887cdbc96e92b8b02f40161029db34ed
+=======
+    "phpstan/phpstan": {
+        "version": "2.1",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "1.0",
+            "ref": "5e490cc197fb6bb1ae22e5abbc531ddc633b6767"
+        },
+        "files": [
+            "./phpstan.dist.neon"
+        ]
+    },
+>>>>>>> Stashed changes
     "phpunit/phpunit": {
         "version": "9.6",
         "recipe": {

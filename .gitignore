@@ -1,4 +1,3 @@
-
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
@@ -23,3 +22,41 @@
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+###> interview-ia-microservice ###
+/microservice_interview_ia/venv/
+/microservice_interview_ia/__pycache__/
+/microservice_interview_ia/*.pyc
+/microservice_interview_ia/mon_modele_bourse/model.safetensors
+/microservice_interview_ia/.env.local
+###< interview-ia-microservice ###
+
+###> phpstan/phpstan ###
+phpstan.neon
+###< phpstan/phpstan ###
+
+# -------------------------
+# Sécurité : ne jamais push les fichiers .env
+# -------------------------
+.env
+.env.*
+!.env.example
+
+# -------------------------
+# fichiers système
+# -------------------------
+.DS_Store
+Thumbs.db
+
+# -------------------------
+# IDE
+# -------------------------
+.idea/
+.vscode/
+
+# -------------------------
+# Node / assets
+# -------------------------
+node_modules/
+npm-debug.log
+yarn-error.log
