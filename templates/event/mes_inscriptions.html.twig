@@ -1,0 +1,85 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Inscriptions - Eduverse{% endblock %}
+
+{% block body %}
+<!-- page title -->
+<section class="page-title-section overlay" data-background="{{ asset('images/backgrounds/page-title.jpg') }}">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <ul class="list-inline custom-breadcrumb">
+          <li class="list-inline-item"><a class="h2 text-primary font-secondary" href="{{ path('app_event_list') }}">Événements</a></li>
+          <li class="list-inline-item text-white h3 font-secondary nasted">Mes Inscriptions</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /page title -->
+
+<section class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="card border-primary rounded-0 p-4">
+          <h2 class="section-title mb-4">Historique de mes inscriptions</h2>
+          
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Événement</th>
+                  <th>Date de l'événement</th>
+                  <th>Date d'inscription</th>
+                  <th>Statut</th>
+                  <th class="text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for ins in inscriptions %}
+                <tr>
+                  <td class="align-middle">
+                    <span class="font-weight-bold" style="color: #2d3436;">{{ ins.event.titre }}</span>
+                    <br><small class="text-muted">{{ ins.event.type|capitalize }}</small>
+                  </td>
+                  <td class="align-middle">{{ ins.event.date|date('d M Y') }} à {{ ins.event.heureDeb|date('H:i') }}</td>
+                  <td class="align-middle">{{ ins.dateInscription|date('d/m/Y H:i') }}</td>
+                  <td class="align-middle">
+                    {% if ins.statut == 'Accepté' %}
+                      <span class="badge badge-success px-3 py-2">Confirmé</span>
+                    {% elseif ins.statut == 'Refusé' %}
+                      <span class="badge badge-danger px-3 py-2">Refusé</span>
+                    {% else %}
+                      <span class="badge badge-warning px-3 py-2">En attente</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-right align-middle">
+                    <div class="d-flex justify-content-end align-items-center">
+                        <a href="{{ path('app_event_details', {'id': ins.event.id}) }}" class="btn btn-sm btn-outline-primary mr-2">Voir</a>
+                        
+                        <form method="post" action="{{ path('app_inscription_cancel', {'id': ins.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler votre inscription à cet événement ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ ins.id) }}">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Annuler</button>
+                        </form>
+                    </div>
+                  </td>
+                </tr>
+                {% else %}
+                <tr>
+                  <td colspan="5" class="text-center py-5">
+                    <i class="ti-calendar mb-3 d-block" style="font-size: 3rem; color: #dfe6e9;"></i>
+                    <p class="text-muted">Vous n'avez pas encore d'inscriptions aux événements.</p>
+                    <a href="{{ path('app_event_list') }}" class="btn btn-primary mt-3">Découvrir les événements</a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

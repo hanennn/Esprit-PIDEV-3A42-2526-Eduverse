@@ -1,0 +1,10 @@
+<html>
+<head>
+    <title>Votre Certification Finale</title>
+</head>
+<body>
+    <h1>Félicitations, {{ user.prenom }} {{ user.nom }}!</h1>
+    <p>Vous avez obtenu votre certification finale pour le quiz : {{ certificationFinale.quiz.titre }}.</p>
+    <p>La date de l'attribution est : {{ certificationFinale.dateEmission|date('d/m/Y') }}.</p>
+</body>
+</html>

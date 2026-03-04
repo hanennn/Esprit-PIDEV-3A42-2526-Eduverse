@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau mot de passe{% endblock %}
+
+{% block body %}
+<section class="page-title-section overlay" data-background="{{ asset('images/backgrounds/page-title.jpg') }}">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <ul class="list-inline custom-breadcrumb">
+          <li class="list-inline-item"><a class="h2 text-primary font-secondary" href="{{ path('app_login') }}">Connexion</a></li>
+          <li class="list-inline-item text-white h3 font-secondary nasted">Nouveau mot de passe</li>
+        </ul>
+        <p class="text-lighten">Définissez votre nouveau mot de passe.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="login-container">
+                    <div class="login-card">
+                        <div class="text-center mb-4">
+                            <h2 class="mb-2">Réinitialiser le mot de passe</h2>
+                        </div>
+
+                        {{ form_start(resetForm) }}
+                            <div class="form-group">
+                                {{ form_label(resetForm.plainPassword.first) }}
+                                {{ form_widget(resetForm.plainPassword.first, {'attr': {'class': 'form-control'}}) }}
+                                <div class="text-danger">
+                                    {{ form_errors(resetForm.plainPassword.first) }}
+                                </div>
+                            </div>
+                            
+                             <div class="form-group">
+                                {{ form_label(resetForm.plainPassword.second) }}
+                                {{ form_widget(resetForm.plainPassword.second, {'attr': {'class': 'form-control'}}) }}
+                                <div class="text-danger">
+                                    {{ form_errors(resetForm.plainPassword.second) }}
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block">Réinitialiser</button>
+                        {{ form_end(resetForm) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

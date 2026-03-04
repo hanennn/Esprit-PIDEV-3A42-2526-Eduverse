@@ -1,0 +1,153 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ sujet.titre }} - Forum{% endblock %}
+
+{% block body %}
+<div style="margin-top: 200px; margin-left: auto; margin-right: auto; max-width: 1000px;">
+    <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <a href="{{ path('app_forum_index') }}" class="btn btn-outline-secondary mb-3">
+                <i class="ti-arrow-left"></i> Retour aux Sujets
+            </a>
+            {% if app.user %}
+                <div>
+                    <a href="{{ path('app_notification_index') }}" class="btn btn-outline-warning mb-3 mr-2 position-relative">
+                        <i class="ti-bell"></i> Notifications
+                        <span id="notification-badge" class="badge badge-danger position-absolute" style="top: -5px; right: -5px; display: none;">0</span>
+                    </a>
+                    <a href="{{ path('app_assistant') }}" class="btn btn-outline-info mb-3">
+                        <i class="ti-comments"></i> Assistant IA
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+
+    <!-- Topic -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="mb-0">{{ sujet.titre }}</h3>
+                        {% if app.user and (app.user == sujet.auteur or 'ROLE_ADMIN' in app.user.roles) and 'ROLE_TEACHER' in app.user.roles %}
+                            <div>
+                                <a href="{{ path('app_forum_edit', {'id': sujet.id}) }}" class="btn btn-light btn-sm">Modifier</a>
+                                <form method="post" action="{{ path('app_forum_delete', {'id': sujet.id}) }}" style="display:inline-block;" onsubmit="return confirm('Êtes-vous sûr?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sujet.id) }}">
+                                    <button class="btn btn-light btn-sm">Supprimer</button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <p class="lead">{{ sujet.contenu }}</p>
+                    </div>
+                    <div class="border-top pt-3">
+                        <ul class="list-inline mb-0 small">
+                            <li class="list-inline-item">
+                                <i class="ti-user text-primary mr-2"></i>
+                                <strong>Auteur:</strong> {{ sujet.auteur.prenom }} {{ sujet.auteur.nom }}
+                            </li>
+                            <li class="list-inline-item">
+                                <i class="ti-calendar text-primary mr-2"></i>
+                                <strong>Créé:</strong> {{ sujet.dateCreation|date('d/m/Y H:i') }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="row">
+        <div class="col-12">
+            <h3 class="mb-4">Messages ({{ sujet.messages|length }})</h3>
+            
+            {% if sujet.messages is empty %}
+                <div class="alert alert-info">
+                    Aucun message pour l'instant. Soyez le premier à répondre!
+                </div>
+            {% else %}
+                {% for message in sujet.messages %}
+                    <div class="card mb-3 hover-shadow">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <strong><i class="ti-user text-primary mr-2"></i>{{ message.auteur.prenom }} {{ message.auteur.nom }}</strong>
+                                    <small class="text-muted ml-3">
+                                        <i class="ti-calendar mr-1"></i>{{ message.datePublication|date('d/m/Y H:i') }}
+                                    </small>
+                                </div>
+                                {% if app.user and (app.user == message.auteur or (app.user == sujet.auteur and 'ROLE_TEACHER' in app.user.roles) or 'ROLE_ADMIN' in app.user.roles) %}
+                                    <div>
+                                        {% if app.user == message.auteur or 'ROLE_ADMIN' in app.user.roles %}
+                                            <a href="{{ path('app_forum_message_edit', {'id': message.id}) }}" class="btn btn-sm btn-outline-primary mr-2">Modifier</a>
+                                        {% endif %}
+                                        <form method="post" action="{{ path('app_forum_message_delete', {'id': message.id}) }}" style="display:inline-block;" onsubmit="return confirm('Êtes-vous sûr?');">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ message.id) }}">
+                                            <button class="btn btn-sm btn-outline-danger">Supprimer</button>
+                                        </form>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <p class="mb-0">{{ message.contenu }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Add message form -->
+            {% if app.user %}
+                <div class="card border-primary mt-4">
+                    <div class="card-header bg-light">
+                        <h4 class="mb-0">Ajouter une Réponse</h4>
+                    </div>
+                    <div class="card-body">
+                        {{ form_start(form) }}
+                            <div class="form-group">
+                                {{ form_row(form.contenu, {'attr': {'class': 'form-control', 'rows': 4, 'placeholder': 'Écrivez votre message...'}}) }}
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="ti-comment"></i> Poster Réponse
+                            </button>
+                        {{ form_end(form) }}
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-warning">
+                    Vous devez <a href="{{ path('app_login') }}">vous connecter</a> pour répondre.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+// Fetch and display unread notification count
+{% if app.user %}
+fetch('{{ path("app_notification_unread_count") }}')
+    .then(response => response.json())
+    .then(data => {
+        const badge = document.getElementById('notification-badge');
+        if (data.count > 0) {
+            badge.textContent = data.count;
+            badge.style.display = 'inline-block';
+        }
+    })
+    .catch(error => console.error('Error fetching notification count:', error));
+{% endif %}
+</script>
+{% endblock %}

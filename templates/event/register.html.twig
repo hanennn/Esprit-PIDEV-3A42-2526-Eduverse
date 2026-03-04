@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription - {{ event.titre }}{% endblock %}
+
+{% block body %}
+<!-- page title -->
+<section class="page-title-section overlay" data-background="{{ asset('images/backgrounds/page-title.jpg') }}">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <ul class="list-inline custom-breadcrumb">
+          <li class="list-inline-item"><a class="h2 text-primary font-secondary" href="{{ path('app_event_list') }}">Événements</a></li>
+          <li class="list-inline-item text-white h3 font-secondary nasted">Inscription</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- /page title -->
+
+<section class="section">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-7">
+        <div class="card border-primary rounded-0 p-5">
+          <h2 class="section-title">Confirmer votre inscription</h2>
+          <p class="mb-4">Vous êtes sur le point de vous inscrire à l'événement : <br><strong>{{ event.titre }}</strong> le {{ event.date|date('d M Y') }}.</p>
+          
+          {{ form_start(form) }}
+            <div class="form-group">
+                {{ form_label(form.note) }}
+                {{ form_widget(form.note, {'attr': {'class': 'form-control rounded-0'}}) }}
+                {{ form_errors(form.note) }}
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary btn-block">Valider mon inscription</button>
+                <a href="{{ path('app_event_details', {'id': event.id}) }}" class="btn btn-link btn-block">Annuler</a>
+            </div>
+          {{ form_end(form) }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,142 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Candidatures{% endblock %}
+
+{% block body %}
+<section class="page-title-section overlay" data-background="{{ asset('images/backgrounds/page-title.jpg') }}">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <ul class="list-inline custom-breadcrumb">
+          <li class="list-inline-item"><a class="h2 text-primary font-secondary" href="{{ path('app_bourse_list') }}">Nos Bourses</a></li>
+          <li class="list-inline-item text-white h3 font-secondary nasted">Mes Candidatures</li>
+        </ul>
+        <p class="text-lighten">Suivez l'état de vos candidatures aux bourses.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="ti-check-box mr-2"></i>{{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="ti-alert mr-2"></i>{{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+
+    <div class="row">
+      {% for demande in demandes %}
+      <div class="col-lg-6 mb-4">
+        <div class="card p-0 border-primary rounded-0 hover-shadow h-100">
+          <div class="card-body">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <a href="{{ path('app_bourse_details_student', {'id': demande.bourse.id}) }}">
+                  <h4 class="card-title text-dark font-weight-bold mb-1">{{ demande.bourse.titre }}</h4>
+                </a>
+                <small class="text-muted"><i class="ti-calendar mr-1"></i>Postulé le {{ demande.dateDemande|date('d/m/Y à H:i') }}</small>
+              </div>
+              <span class="badge px-3 py-2" style="border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase;
+                {% if demande.statut == 'En attente' %}
+                  background: #fff3cd; color: #856404;
+                {% elseif demande.statut == 'Accepté' %}
+                  background: #d4edda; color: #155724;
+                {% elseif demande.statut == 'Refusé' %}
+                  background: #f8d7da; color: #721c24;
+                {% else %}
+                  background: #e2e3e5; color: #383d41;
+                {% endif %}
+              ">{{ demande.statut }}</span>
+            </div>
+
+            <!-- Details -->
+            <div class="mb-3" style="border-top: 1px solid #eee; padding-top: 15px;">
+              <div class="row">
+                <div class="col-6 mb-2">
+                  <small class="text-muted d-block" style="text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px;">Montant</small>
+                  <strong class="text-primary">{{ demande.bourse.montant|number_format(0, ',', ' ') }} DT</strong>
+                </div>
+                <div class="col-6 mb-2">
+                  <small class="text-muted d-block" style="text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px;">Niveau d'études</small>
+                  <strong>{{ demande.niveauEtudes }}</strong>
+                </div>
+                <div class="col-6 mb-2">
+                  <small class="text-muted d-block" style="text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px;">Date limite</small>
+                  <strong>{{ demande.bourse.dateFin|date('d/m/Y') }}</strong>
+                </div>
+                <div class="col-6 mb-2">
+                  <small class="text-muted d-block" style="text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px;">Lettre de motivation</small>
+                  <a href="{{ asset('uploads/cancelatures/' ~ demande.lettreMotivation) }}" target="_blank" style="color: #1c7ed6; font-weight: 600; font-size: 13px;">
+                    <i class="ti-download mr-1"></i>Télécharger
+                  </a>
+                </div>
+              </div>
+              {% if demande.note %}
+              <div class="mt-2">
+                <small class="text-muted d-block" style="text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px;">Note</small>
+                <p class="mb-0" style="font-size: 13px; color: #555;">{{ demande.note }}</p>
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Interview IA -->
+            {% if demande.statut == 'Accepté' and demande.analyseInterview is null %}
+            <div style="border-top: 1px solid #eee; padding-top: 15px; margin-bottom: 10px;">
+              <a href="{{ path('bourse_interview', {'id': demande.id}) }}" class="btn btn-sm rounded-0 btn-block"
+                 style="background: linear-gradient(135deg, #1A3A5C, #2E86AB); color: white; font-weight: 600;">
+                <i class="ti-microphone mr-1"></i>Passer l'interview IA
+              </a>
+            </div>
+            {% elseif demande.analyseInterview is not null %}
+            <div style="border-top: 1px solid #eee; padding-top: 15px; margin-bottom: 10px;">
+              <div class="text-center">
+                <span class="badge px-3 py-2" style="background: #d4edda; color: #155724; border-radius: 20px; font-size: 11px;">
+                  <i class="ti-check mr-1"></i>Interview IA réalisée
+                </span>
+              </div>
+            </div>
+            {% endif %}
+
+            <!-- Actions -->
+            <div style="border-top: 1px solid #eee; padding-top: 15px;">
+              <div class="d-flex justify-content-between align-items-center">
+                <a href="{{ path('app_bourse_details_student', {'id': demande.bourse.id}) }}" class="btn btn-outline-primary btn-sm rounded-0">
+                  <i class="ti-eye mr-1"></i>Voir la bourse
+                </a>
+                <form method="post" action="{{ path('app_candidature_annuler', {'id': demande.id}) }}" style="display: inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette candidature ? Cette action est irréversible.');">
+                  <input type="hidden" name="_token" value="{{ csrf_token('annuler' ~ demande.id) }}">
+                  <button type="submit" class="btn btn-outline-danger btn-sm rounded-0">
+                    <i class="ti-close mr-1"></i>Annuler la candidature
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% else %}
+        <div class="col-12 text-center py-5">
+            <i class="ti-folder mb-3 text-muted" style="font-size: 3rem;"></i>
+            <h3 class="text-muted">Vous n'avez encore soumis aucune candidature.</h3>
+            <p class="text-muted mb-4">Découvrez nos bourses disponibles et postulez dès maintenant.</p>
+            <a href="{{ path('app_bourse_list') }}" class="btn btn-primary rounded-0">Voir les bourses</a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endblock %}

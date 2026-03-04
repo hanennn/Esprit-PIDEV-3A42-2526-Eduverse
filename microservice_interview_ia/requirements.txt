@@ -1,0 +1,9 @@
+fastapi==0.110.0
+uvicorn==0.27.1
+openai-whisper==20231117
+transformers==4.38.0
+torch==2.2.0
+librosa==0.10.1
+python-multipart==0.0.9
+numpy==1.26.4
+python-dotenv==1.0.1
